@@ -1,0 +1,24 @@
+---
+description: Shared agentic coding guidelines for writing, reviewing, refactoring, and debugging code.
+alwaysApply: true
+---
+
+# Agentic Coding Guidelines
+
+## Core Principles
+
+- Think before coding: state assumptions, surface uncertainty, and ask when ambiguity matters.
+- Simplicity first: prefer the smallest clear change that solves the request.
+- Surgical changes: touch only what the task requires and preserve existing style.
+- Goal-driven execution: define success criteria and verify with focused checks.
+- Repository-aware work: inspect relevant files and nearby tests before editing.
+
+## Default Workflow
+
+- Prefer existing helpers, patterns, and local conventions.
+- Avoid speculative abstractions, broad rewrites, and opportunistic cleanup.
+- Clean up only unused code introduced by your own changes.
+- Never revert user or maintainer changes unless explicitly asked.
+- Run focused tests or explain why they were not run.
+- Summarize changed files and verification clearly.
+

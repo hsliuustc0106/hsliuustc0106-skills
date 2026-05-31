@@ -1,170 +1,104 @@
-# Karpathy-Inspired Claude Code Guidelines
+# Agentic Coding Skills
 
-> Check out my new project [Multica](https://github.com/multica-ai/multica) — an open-source platform for running and managing coding agents with reusable skills.
->
-> Follow me on X: [https://x.com/jiayuan_jy](https://x.com/jiayuan_jy)
+Portable coding-agent rules for Codex, Claude Code, and Cursor.
 
-A single `CLAUDE.md` file to improve Claude Code behavior, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
+This repo is based on the compact skills layout popularized by the Karpathy-inspired agent guidelines, but adapted for reusable day-to-day work across inference, multimodal, plugin, and cookbook repositories.
 
-English | [简体中文](./README.zh.md)
+## What This Provides
 
-## The Problems
+- `AGENTS.md`: shared source of truth for Codex and other agents that read root instruction files.
+- `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
+- `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
+- `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
+- `external/vllm-omni-review.md`: pointer to the external vLLM Omni review skill without hard-coding a personal account.
 
-From Andrej's post:
+## Core Principles
 
-> "The models make wrong assumptions on your behalf and just run along with them without checking. They don't manage their confusion, don't seek clarifications, don't surface inconsistencies, don't present tradeoffs, don't push back when they should."
+1. Think before coding.
+2. Prefer simple, local, surgical changes.
+3. Preserve existing project style and maintainer changes.
+4. Turn tasks into verifiable goals.
+5. Inspect the repository before editing and verify before handoff.
 
-> "They really like to overcomplicate code and APIs, bloat abstractions, don't clean up dead code... implement a bloated construction over 1000 lines when 100 would do."
+## Layout
 
-> "They still sometimes change/remove comments and code they don't sufficiently understand as side effects, even if orthogonal to the task."
-
-## The Solution
-
-Four principles in one file that directly address these issues:
-
-| Principle | Addresses |
-|-----------|-----------|
-| **Think Before Coding** | Wrong assumptions, hidden confusion, missing tradeoffs |
-| **Simplicity First** | Overcomplication, bloated abstractions |
-| **Surgical Changes** | Orthogonal edits, touching code you shouldn't |
-| **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
-
-## The Four Principles in Detail
-
-### 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning:
-
-- **State assumptions explicitly** — If uncertain, ask rather than guess
-- **Present multiple interpretations** — Don't pick silently when ambiguity exists
-- **Push back when warranted** — If a simpler approach exists, say so
-- **Stop when confused** — Name what's unclear and ask for clarification
-
-### 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-Combat the tendency toward overengineering:
-
-- No features beyond what was asked
-- No abstractions for single-use code
-- No "flexibility" or "configurability" that wasn't requested
-- No error handling for impossible scenarios
-- If 200 lines could be 50, rewrite it
-
-**The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
-
-### 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting
-- Don't refactor things that aren't broken
-- Match existing style, even if you'd do it differently
-- If you notice unrelated dead code, mention it — don't delete it
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused
-- Don't remove pre-existing dead code unless asked
-
-**The test:** Every changed line should trace directly to the user's request.
-
-### 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform imperative tasks into verifiable goals:
-
-| Instead of... | Transform to... |
-|--------------|-----------------|
-| "Add validation" | "Write tests for invalid inputs, then make them pass" |
-| "Fix the bug" | "Write a test that reproduces it, then make it pass" |
-| "Refactor X" | "Ensure tests pass before and after" |
-
-For multi-step tasks, state a brief plan:
-
+```text
+.
+├── AGENTS.md
+├── CLAUDE.md
+├── CURSOR.md
+├── .cursor/
+│   └── rules/
+│       ├── agentic-coding-guidelines.mdc
+│       ├── vllm.mdc
+│       ├── vllm-omni.mdc
+│       ├── afd-plugin.mdc
+│       └── vllm-omni-cookbook.mdc
+├── skills/
+│   ├── agentic-coding-guidelines/
+│   ├── vllm-guidelines/
+│   ├── vllm-omni-guidelines/
+│   ├── afd-plugin-guidelines/
+│   └── vllm-omni-cookbook-guidelines/
+├── external/
+│   └── vllm-omni-review.md
+└── scripts/
+    └── sync-project.sh
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
 
 ## Install
 
-**Option A: Claude Code Plugin (recommended)**
+Clone this repository somewhere stable:
 
-From within Claude Code, first add the marketplace:
-```
-/plugin marketplace add forrestchang/andrej-karpathy-skills
-```
-
-Then install the plugin:
-```
-/plugin install andrej-karpathy-skills@karpathy-skills
-```
-
-This installs the guidelines as a Claude Code plugin, making the skill available across all your projects.
-
-**Option B: CLAUDE.md (per-project)**
-
-New project:
 ```bash
-curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md
+git clone <this-repo-url> ~/.agentic-coding-rules
 ```
 
-Existing project (append):
+Sync into a project:
+
 ```bash
-echo "" >> CLAUDE.md
-curl https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md >> CLAUDE.md
+cd /path/to/project
+~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools codex,claude,cursor
 ```
 
-## Using with Cursor
+Supported projects:
 
-This repository includes a committed Cursor project rule ([`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc)) so the same guidelines apply when you open the project in Cursor. See **[CURSOR.md](CURSOR.md)** for setup, using the rule in other projects, and how this relates to Claude Code.
+- `vllm`
+- `vllm-omni`
+- `afd-plugin`
+- `vllm-omni-cookbook`
 
-## Key Insight
+Supported tools:
 
-From Andrej:
+- `codex`: installs `AGENTS.md`
+- `claude`: installs `CLAUDE.md` and `AGENTS.md`
+- `cursor`: installs `.cursor/rules/*.mdc`
 
-> "LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go."
+## Direct Use
 
-The "Goal-Driven Execution" principle captures this: transform imperative instructions into declarative goals with verification loops.
+For Codex:
 
-## How to Know It's Working
-
-These guidelines are working if you see:
-
-- **Fewer unnecessary changes in diffs** — Only requested changes appear
-- **Fewer rewrites due to overcomplication** — Code is simple the first time
-- **Clarifying questions come before implementation** — Not after mistakes
-- **Clean, minimal PRs** — No drive-by refactoring or "improvements"
-
-## Customization
-
-These guidelines are designed to be merged with project-specific instructions. Add them to your existing `CLAUDE.md` or create a new one.
-
-For project-specific rules, add sections like:
-
-```markdown
-## Project-Specific Guidelines
-
-- Use TypeScript strict mode
-- All API endpoints must have tests
-- Follow the existing error handling patterns in `src/utils/errors.ts`
+```bash
+cp ~/.agentic-coding-rules/AGENTS.md ./AGENTS.md
 ```
 
-## Tradeoff Note
+For Claude Code:
 
-These guidelines bias toward **caution over speed**. For trivial tasks (simple typo fixes, obvious one-liners), use judgment — not every change needs the full rigor.
+```bash
+cp ~/.agentic-coding-rules/AGENTS.md ./AGENTS.md
+cp ~/.agentic-coding-rules/CLAUDE.md ./CLAUDE.md
+```
 
-The goal is reducing costly mistakes on non-trivial work, not slowing down simple tasks.
+For Cursor:
+
+```bash
+mkdir -p .cursor/rules
+cp ~/.agentic-coding-rules/.cursor/rules/agentic-coding-guidelines.mdc .cursor/rules/
+```
+
+## vLLM Omni Review
+
+For vLLM Omni code review, use the external `vllm-omni-review` skill repository as the source of truth. This repo intentionally keeps that URL configurable instead of hard-coding a personal GitHub account.
 
 ## License
 

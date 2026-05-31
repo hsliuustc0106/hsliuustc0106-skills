@@ -1,28 +1,30 @@
 # Using this repo with Cursor
 
-This project includes a **Cursor project rule** so the Karpathy-inspired behavioral guidelines apply automatically when you work here.
+This repository includes Cursor project rules under [`.cursor/rules`](.cursor/rules). Open the folder in Cursor and the rules will be available from Cursor's project rules UI.
 
 ## In this repository
 
-1. Open the folder in Cursor.
-2. The rule [`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc) is committed with `alwaysApply: true`, so you do not need extra installation steps.
-3. In Cursor, you can confirm it under **Settings → Rules** (or the project rules UI), where `karpathy-guidelines` should appear.
+- [`.cursor/rules/agentic-coding-guidelines.mdc`](.cursor/rules/agentic-coding-guidelines.mdc) applies the shared behavior rules.
+- Project-specific rules are available for `vllm`, `vllm-omni`, `afd-plugin`, and `vllm-omni-cookbook`.
+- The legacy `.cursorrules` format is intentionally not used.
 
-## Use the same guidelines in another project
+## Use in another project
 
-**Cursor (recommended):** Copy `.cursor/rules/karpathy-guidelines.mdc` into that project’s `.cursor/rules/` directory (create the folders if needed). Adjust or merge with existing rules as you like.
+Copy the relevant `.mdc` files into that project's `.cursor/rules/` directory:
 
-**Other tools:** If a stack only supports a root instruction file, copy [`CLAUDE.md`](CLAUDE.md) into that project instead (or merge its contents into your existing instructions).
+```bash
+mkdir -p .cursor/rules
+cp ~/.agentic-coding-rules/.cursor/rules/agentic-coding-guidelines.mdc .cursor/rules/
+cp ~/.agentic-coding-rules/.cursor/rules/vllm-omni.mdc .cursor/rules/
+```
 
-## Optional: personal Agent Skills
+For Codex and Claude Code, copy or symlink `AGENTS.md` and `CLAUDE.md` as needed.
 
-If you want the same content as a reusable skill under `~/.cursor/skills`, use [`skills/karpathy-guidelines/SKILL.md`](skills/karpathy-guidelines/SKILL.md). You can copy or symlink it into your personal skills directory; use whatever layout you use for other skills.
+## Keep files in sync
 
-## Claude Code vs Cursor
+When the shared rules change, update:
 
-- **Claude Code:** Install via the plugin marketplace and [`README.md`](README.md) instructions; the plugin exposes the skill from this repo. Per-project use can also rely on `CLAUDE.md`.
-- **Cursor:** Use the committed `.cursor/rules/` file as described above. Cursor does not read `.claude-plugin/` or `CLAUDE.md` by default.
-
-## For contributors
-
-When you change the four principles, keep **[`CLAUDE.md`](CLAUDE.md)** and **[`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc)** in sync. If the published skill/plugin text should match, update **[`skills/karpathy-guidelines/SKILL.md`](skills/karpathy-guidelines/SKILL.md)** as well.
+- `AGENTS.md`
+- `CLAUDE.md`
+- `.cursor/rules/agentic-coding-guidelines.mdc`
+- `skills/agentic-coding-guidelines/SKILL.md`

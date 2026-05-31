@@ -1,29 +1,32 @@
 {
-  "name": "karpathy-skills",
-  "id": "karpathy-skills",
+  "name": "agentic-coding-skills",
+  "id": "agentic-coding-skills",
   "owner": {
-    "name": "forrestchang"
+    "name": "repo-owner"
   },
   "metadata": {
-    "description": "Behavioral guidelines to reduce common LLM coding mistakes, derived from Andrej Karpathy's observations",
+    "description": "Portable coding-agent guidelines for Codex, Claude Code, Cursor, and project-specific workflows",
     "version": "1.0.0"
   },
   "plugins": [
     {
-      "name": "andrej-karpathy-skills",
+      "name": "agentic-coding-skills",
       "source": "./",
-      "description": "Behavioral guidelines to reduce common LLM coding mistakes: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution",
+      "description": "Shared coding-agent behavior plus project guidance for vLLM, vLLM Omni, AFD Plugin, and vLLM Omni Cookbook",
       "version": "1.0.0",
       "author": {
-        "name": "forrestchang"
+        "name": "repo-owner"
       },
       "keywords": [
         "guidelines",
         "best-practices",
         "coding",
-        "karpathy"
+        "codex",
+        "claude-code",
+        "cursor"
       ],
       "category": "workflow"
     }
   ]
 }
+

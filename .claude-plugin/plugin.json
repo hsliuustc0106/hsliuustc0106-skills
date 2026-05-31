@@ -1,11 +1,17 @@
 {
-  "name": "andrej-karpathy-skills",
-  "description": "Behavioral guidelines to reduce common LLM coding mistakes, derived from Andrej Karpathy's observations on LLM coding pitfalls",
+  "name": "agentic-coding-skills",
+  "description": "Portable coding-agent guidelines for Codex, Claude Code, Cursor, and project-specific workflows",
   "version": "1.0.0",
   "author": {
-    "name": "forrestchang"
+    "name": "repo-owner"
   },
   "license": "MIT",
-  "keywords": ["guidelines", "best-practices", "coding", "karpathy"],
-  "skills": ["./skills/karpathy-guidelines"]
+  "keywords": ["guidelines", "best-practices", "coding", "codex", "claude-code", "cursor"],
+  "skills": [
+    "./skills/agentic-coding-guidelines",
+    "./skills/vllm-guidelines",
+    "./skills/vllm-omni-guidelines",
+    "./skills/afd-plugin-guidelines",
+    "./skills/vllm-omni-cookbook-guidelines"
+  ]
 }

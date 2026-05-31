@@ -1,0 +1,13 @@
+---
+description: AFD plugin guidance for plugin boundaries, host framework integration, and compatibility.
+globs: "**/*"
+alwaysApply: false
+---
+
+# AFD Plugin Guidance
+
+- Preserve plugin boundaries and avoid leaking project-specific logic into generic utilities.
+- Be conservative with public APIs, config names, integration behavior, and compatibility assumptions.
+- Check host framework expectations before changing lifecycle, registration, loading, or config behavior.
+- Prefer focused tests that exercise plugin integration points.
+
