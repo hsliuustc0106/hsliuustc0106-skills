@@ -112,17 +112,21 @@ Structure the post following this template:
 ## 4. Performance Results
 <HTML table: configuration | metric | speedup>
 
-## 5. Key PR Index
-<HTML table: PR | Category | Description>
+## 5. PR Index & Contributors
 
-## 6. PR Links
-<Bullet list of PRs with GitHub links>
+A single combined section with one table:
 
-## 7. Contributors
-<HTML table: PR | GitHub ID | Role>
-<HTML table: GitHub ID | PRs | Contribution Area>
+<table>
+<tr><td><b>PR</b></td><td><b>Category</b></td><td><b>Description</b></td><td><b>Contributors</b></td></tr>
+<tr><td><a href="https://github.com/...">#1234</a></td><td>Perf</td><td>Summary of the change</td><td>@github_id</td></tr>
+...
+</table>
 
-## 8. References
+- PR numbers link directly to GitHub PR URLs
+- Contributors column lists GitHub @ handles
+- Rows sorted by category (Perf → Feature → Bugfix → Quant → Enhancement)
+
+## 6. References
 <Bullet list: original article, repos, models>
 ```
 
