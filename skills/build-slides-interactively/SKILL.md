@@ -1,6 +1,6 @@
 ---
 name: build-slides-interactively
-description: "Plan and create PowerPoint, PPTX, Google Slides, Keynote, or other slide decks through explicit user-feedback gates. Use when Codex should collaborate on a presentation in stages: validate the topic and visual direction with a two-slide cover-and-TOC checkpoint; deepen and approve the table of contents; design each chapter's slide-by-slide content skeleton and references; then build and revise the draft without changing approved slides silently."
+description: "Plan and create PowerPoint, PPTX, Google Slides, Keynote, or other slide decks through explicit user-feedback gates. Use when Codex should collaborate on a presentation in stages: validate the topic and visual direction with a two-slide cover-and-TOC checkpoint; approve the chapter narrative and every slide's title, draft content, evidence, and layout arrangement; then build and revise the draft without changing approved slides silently."
 ---
 
 # Build Slides Interactively
@@ -67,7 +67,12 @@ deck identity, the two-slide count, and both slides visually before sharing the 
 Stop for feedback on the topic, chapter direction, visual template, logo placement,
 and branding. Stage 1 is approved only when the user explicitly accepts both slides.
 
-## Stage 2: Table of Contents Deepening and Approval
+## Stage 2: Narrative and Slide Blueprint Approval
+
+Complete Stage 2 through two separate approval gates. Do not create detailed slides
+until both gates are approved.
+
+### Gate 2A: Deepen and Approve the Table of Contents
 
 Treat the Stage 1 table-of-contents slide as provisional. Deepen the narrative
 structure from the approved brief. For each proposed chapter, show:
@@ -75,6 +80,7 @@ structure from the approved brief. For each proposed chapter, show:
 | Field | Required content |
 | --- | --- |
 | Chapter | Working title |
+| Motivation | The audience problem or question that makes the chapter necessary |
 | Purpose | Why the chapter exists |
 | Core message | What the audience should remember |
 | Evidence | Main claims or proof expected |
@@ -86,33 +92,42 @@ excluded topics. Check that the ordering answers the audience's questions in a
 natural sequence.
 
 Stop for feedback. Reorder, merge, split, or remove chapters until the user approves
-the table of contents. Update the second slide to reflect the approved structure, but
-do not create detailed content slides yet.
+the table of contents. Update the second slide to reflect the approved structure.
+Keep the chapter motivation visible as a concise `Why` statement when the layout
+allows it.
 
-## Stage 3: Chapter and Slide Blueprints
+### Gate 2B: Define Every Slide
 
-Work chapter by chapter. Define every slide before drafting it:
+After the table of contents is approved, define every intended slide before drafting
+it. Include the approved cover and table of contents as locked entries so the full
+slide count and numbering remain explicit.
 
 | Field | Required content |
 | --- | --- |
 | Slide number and title | Stable working identity |
-| Purpose | Why this slide is necessary |
+| Motivation or purpose | The audience question, problem, or narrative job that makes this slide necessary |
 | Key takeaway | One sentence the audience should retain |
-| Content skeleton | Headline, supporting points, evidence, and conclusion |
-| Layout and visual | Diagram, chart, table, comparison, timeline, or other form |
+| Draft content list | Proposed headline, labels, supporting points, evidence, and conclusion; use real draft wording rather than placeholders |
+| Layout arrangement | Reading order, spatial zones, relative emphasis, and visual form; describe where content sits, not only the archetype name |
 | References | Source deck, document, paper, benchmark, dataset, or URL |
 | Asset needs | Logos, figures, screenshots, data, or illustrations still needed |
 | Dependencies | Open decisions or claims requiring confirmation |
+| Transition | How this slide sets up the next slide |
 
 Prefer visuals that explain relationships over decorative graphics. Keep one primary
 message per slide. Flag unsupported claims rather than filling gaps with plausible
-content.
+content. Check that the draft content fits the proposed layout at presentation-readable
+sizes. If it does not, shorten, split, or change the layout during planning instead of
+deferring the problem to drafting.
 
 After presenting a chapter's blueprints, stop for feedback. Do not blueprint the next
 chapter or build slides until the user approves the current chapter, unless the user
 explicitly asks to review a larger batch.
 
-## Stage 4: Draft, Review, and Revision
+Stage 2 is complete only when the chapter structure and the complete slide inventory
+are explicitly approved.
+
+## Stage 3: Draft, Review, and Revision
 
 Build only approved blueprints using the approved template and layouts. Draft in
 reviewable batches, normally one chapter at a time.
@@ -127,6 +142,13 @@ After each batch:
 Apply revision feedback surgically. Change only the requested slides and elements.
 Treat approved chapters as read-only. If a requested deck-wide change affects approved
 slides, explain its scope and obtain permission first.
+
+## Stage 4: Final Assembly
+
+After all draft batches are approved, review the complete deck as one presentation.
+Resolve only cross-slide issues such as terminology, transitions, numbering, citations,
+and template consistency. Do not add new substantive claims or redesign approved
+slides without permission.
 
 ## Final Verification
 
