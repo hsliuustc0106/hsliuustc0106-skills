@@ -1,6 +1,6 @@
 ---
 name: build-slides-interactively
-description: "Plan and create PowerPoint, PPTX, Google Slides, Keynote, or other slide decks through explicit user-feedback gates. Use when Codex should collaborate on a presentation in stages: define topics, templates, and layouts; approve the table of contents; design each chapter's slide-by-slide content skeleton and references; then build and revise the draft without changing approved slides silently."
+description: "Plan and create PowerPoint, PPTX, Google Slides, Keynote, or other slide decks through explicit user-feedback gates. Use when Codex should collaborate on a presentation in stages: validate the topic and visual direction with a two-slide cover-and-TOC checkpoint; deepen and approve the table of contents; design each chapter's slide-by-slide content skeleton and references; then build and revise the draft without changing approved slides silently."
 ---
 
 # Build Slides Interactively
@@ -28,7 +28,7 @@ If the user already provides an outline, template, or slide plan, map it to the
 stages below, identify what is already approved, and confirm the proposed starting
 stage before creating slide content.
 
-## Stage 1: Topics, Template, and Layouts
+## Stage 1: Topic, Template, and Two-Slide Checkpoint
 
 Clarify and propose:
 
@@ -40,16 +40,37 @@ Clarify and propose:
 - a minimal layout library, such as title, section, architecture, process,
   comparison, benchmark, evidence, and summary slides
 
-Inspect supplied decks and assets read-only at this stage unless the user explicitly
-requests a visual prototype.
+Inspect supplied decks and assets read-only while agreeing on the brief. Define the
+intended detailed-slide layout library, but do not render detailed-slide examples at
+this stage.
 
-Deliver a short creative brief plus a template/layout proposal. Surface assumptions
-and meaningful alternatives. Stop for feedback and obtain Stage 1 approval.
+First deliver a short creative brief plus a template/layout proposal. Surface
+assumptions and meaningful alternatives, then obtain explicit agreement before
+writing the checkpoint deck.
 
-## Stage 2: Table of Contents
+After agreement, create or update the working presentation and output exactly two
+slides:
 
-Build the narrative structure from the approved brief. For each proposed chapter,
-show:
+1. **Cover** — approved topic, subtitle, duration, language, template direction,
+   branding, footer, and page number.
+2. **Provisional table of contents** — chapter names, order, narrative arc, and rough
+   time allocation, presented in the approved visual system.
+
+The second slide is a narrative hypothesis for Stage 2, not an approved detailed
+outline. Do not add chapter openers, sample architecture diagrams, detailed content
+slides, or a layout gallery. Keep the Stage 1 deck at exactly two slides.
+
+When Google Drive is the chosen destination, create a dedicated folder, preserve any
+source deck, and save an editable native Google Slides working copy there. Verify the
+deck identity, the two-slide count, and both slides visually before sharing the link.
+
+Stop for feedback on the topic, chapter direction, visual template, logo placement,
+and branding. Stage 1 is approved only when the user explicitly accepts both slides.
+
+## Stage 2: Table of Contents Deepening and Approval
+
+Treat the Stage 1 table-of-contents slide as provisional. Deepen the narrative
+structure from the approved brief. For each proposed chapter, show:
 
 | Field | Required content |
 | --- | --- |
@@ -65,7 +86,8 @@ excluded topics. Check that the ordering answers the audience's questions in a
 natural sequence.
 
 Stop for feedback. Reorder, merge, split, or remove chapters until the user approves
-the table of contents.
+the table of contents. Update the second slide to reflect the approved structure, but
+do not create detailed content slides yet.
 
 ## Stage 3: Chapter and Slide Blueprints
 
