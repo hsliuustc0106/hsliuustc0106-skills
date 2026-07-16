@@ -25,6 +25,21 @@ request to a finished deck.
   footers, captions, labels, annotations, legends, and page numbers. If content
   does not fit, shorten, split, reflow, or enlarge its text box; never shrink it
   below 10 pt.
+- For every slide, inspect user-supplied and researched sources before drawing a
+  new figure. Trace researched figures to the primary source and verify their
+  caption and context; do not reuse search previews or third-party reposts.
+  Prefer direct reuse when the figure supports the approved message, is legible
+  at presentation scale, and its usage and modification rights are verified. If
+  rights are unclear, do not reuse it; list them as a dependency and request
+  authorization evidence or select a rights-safe alternative. Make only minimal
+  presentation-focused edits: crop, scale, clean the background,
+  translate or restyle labels, or add callouts and highlights. Do not remove
+  credits, watermarks, required notices, or essential legends, axes, units,
+  qualifiers, uncertainty, or semantic color encodings. Preserve quantitative
+  and semantic meaning; cite unmodified figures as `Source` and modified figures
+  as `Adapted from`. Create or redraw only when no suitable rights-safe figure
+  exists or direct reuse would reduce clarity, accessibility, legibility, or
+  accuracy.
 - Use other presentation-format skills or tools only inside the currently approved
   stage.
 
@@ -114,7 +129,7 @@ slide count and numbering remain explicit.
 | Draft content list | Proposed headline, labels, supporting points, evidence, and conclusion; use real draft wording rather than placeholders |
 | Layout arrangement | Reading order, spatial zones, relative emphasis, and visual form; describe where content sits, not only the archetype name |
 | References | Source deck, document, paper, benchmark, dataset, or URL |
-| Asset needs | Logos, figures, screenshots, data, or illustrations still needed |
+| Asset needs | Selected reusable figure or candidates; primary source, rights status, planned edits, attribution text, and any missing logos, screenshots, data, or illustrations |
 | Dependencies | Open decisions or claims requiring confirmation |
 | Transition | How this slide sets up the next slide |
 
@@ -140,8 +155,10 @@ After each batch:
 
 1. Render or preview every created or changed slide.
 2. Report the exact slides and elements changed.
-3. Note unresolved content, missing assets, and reference gaps.
-4. Ask for feedback and stop before continuing.
+3. For each reused or adapted figure, report its primary source, rights status,
+   edits, and on-slide attribution; compare it against the original context.
+4. Note unresolved content, missing assets, and reference gaps.
+5. Ask for feedback and stop before continuing.
 
 Apply revision feedback surgically. Change only the requested slides and elements.
 Treat approved chapters as read-only. If a requested deck-wide change affects approved
@@ -161,6 +178,8 @@ After all chapters are approved, perform a final pass for:
 - narrative continuity and chapter transitions
 - terminology, numbers, and claim consistency
 - citations and source provenance
+- reused-figure fidelity to its original context, presentation-scale legibility,
+  attribution, required notices, and modification scope
 - template, logo, typography (including the 10 pt minimum), color, alignment, and
   spacing consistency
 - image quality, legibility, clipping, overlap, and page-number integrity
