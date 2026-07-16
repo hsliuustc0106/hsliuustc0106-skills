@@ -21,6 +21,10 @@ request to a finished deck.
   return to the affected stage.
 - Do not modify an approved stage, chapter, slide, template, or layout without
   permission.
+- Use 10 pt as the hard minimum for every visible text run, including sources,
+  footers, captions, labels, annotations, legends, and page numbers. If content
+  does not fit, shorten, split, reflow, or enlarge its text box; never shrink it
+  below 10 pt.
 - Use other presentation-format skills or tools only inside the currently approved
   stage.
 
@@ -157,7 +161,8 @@ After all chapters are approved, perform a final pass for:
 - narrative continuity and chapter transitions
 - terminology, numbers, and claim consistency
 - citations and source provenance
-- template, logo, typography, color, alignment, and spacing consistency
+- template, logo, typography (including the 10 pt minimum), color, alignment, and
+  spacing consistency
 - image quality, legibility, clipping, overlap, and page-number integrity
 - unintended changes outside the authorized slide regions
 
