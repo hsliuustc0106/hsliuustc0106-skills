@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Slides Interactively"
+  short_description: "Build reviewed slide decks through gated feedback"
+  default_prompt: "Use $build-slides-interactively to plan and draft this presentation with feedback gates at every stage."
