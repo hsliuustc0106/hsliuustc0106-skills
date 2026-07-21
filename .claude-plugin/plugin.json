@@ -12,6 +12,7 @@
     "./skills/vllm-guidelines",
     "./skills/vllm-omni-guidelines",
     "./skills/afd-plugin-guidelines",
-    "./skills/vllm-omni-cookbook-guidelines"
+    "./skills/vllm-omni-cookbook-guidelines",
+    "./skills/huawei-deck"
   ]
 }
