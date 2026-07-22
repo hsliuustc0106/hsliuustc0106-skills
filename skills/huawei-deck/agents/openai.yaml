@@ -1,0 +1,7 @@
+interface:
+  display_name: "Huawei Deck"
+  short_description: "Create Huawei-style HTML and PPTX decks"
+  default_prompt: "Use $huawei-deck to create a polished Huawei-style HTML presentation and export it to PPTX."
+
+policy:
+  allow_implicit_invocation: true

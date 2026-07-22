@@ -12,7 +12,7 @@
     {
       "name": "agentic-coding-skills",
       "source": "./",
-      "description": "Shared coding-agent behavior plus project guidance for vLLM, vLLM Omni, AFD Plugin, and vLLM Omni Cookbook",
+      "description": "Shared coding-agent behavior, project guidance for vLLM-family repositories, and a Huawei-style HTML/PPTX presentation skill",
       "version": "1.0.0",
       "author": {
         "name": "repo-owner"
@@ -29,4 +29,3 @@
     }
   ]
 }
-
