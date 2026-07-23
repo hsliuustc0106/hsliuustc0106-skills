@@ -12,7 +12,7 @@
     {
       "name": "agentic-coding-skills",
       "source": "./",
-      "description": "Shared coding-agent behavior, project guidance for vLLM-family repositories, and a Huawei-style HTML/PPTX presentation skill",
+      "description": "Shared coding-agent behavior, project guidance for vLLM-family repositories, and Huawei and vLLM-Omni presentation skills",
       "version": "1.0.0",
       "author": {
         "name": "repo-owner"

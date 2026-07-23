@@ -1,0 +1,4 @@
+interface:
+  display_name: "vLLM-Omni Deck"
+  short_description: "Build branded, editable vLLM-Omni presentations"
+  default_prompt: "Use $vllm-omni-deck to create a cited editable deck from my papers, blogs, or PRs, preserve supplied figures intact, or provide the blank branded template."
