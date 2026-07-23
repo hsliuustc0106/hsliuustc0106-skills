@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with a bundled seven-layout example template and an eight-page blank template that includes a minimally structured branded white canvas. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template that includes a minimally structured branded white canvas and a references layout. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -14,18 +14,20 @@ Read both references before creating or restyling slides:
 
 - `references/design-system.md` defines the canvas, brand tokens, typography,
   footer, and component rules.
-- `references/layout-catalog.md` defines the seven structured layouts, the
-  eighth minimally structured white canvas, required inputs, selection rules,
-  and safe content density.
+- `references/layout-catalog.md` defines layouts 1–9: seven established
+  structured layouts, layout 8 as the minimally structured white canvas, and
+  layout 9 for references, plus required inputs, selection rules, and safe
+  content density.
 
 Treat these files and the template generators as the source of truth:
 
 - Use `assets/vllm-omni-template.pptx` when layout examples and an editable
-  demonstration chart help Codex author the deck.
+  demonstration chart or reference list help Codex author the deck.
 - Use `assets/vllm-omni-blank-template.pptx` when the user requests a blank
   template or the source already supplies figures that should be placed
   directly. Use its eighth slide as the default for most body slides, especially
-  original source figures and custom compositions.
+  original source figures and custom compositions. Use its ninth slide for
+  paper, blog, and pull-request references.
 
 Never modify either asset in place; copy the selected asset to a task-specific
 output path.
@@ -59,13 +61,13 @@ Treat every user-provided or source-provided figure as immutable:
 - Create a separate explanatory visual only when the user explicitly requests
   one. Do not present that visual as the source figure or as a modified version.
 
-## Build from Blog or Article Links
+## Build from Papers, Blogs, or Pull Requests
 
 Treat provided links and source documents as evidence, not as an approved slide
 plan. Accept a minimal request such as:
 
 ```text
-Use $vllm-omni-deck with these blog links: <URLs>.
+Use $vllm-omni-deck with these paper, blog, or PR links: <URLs>.
 Audience: <audience>. Goal: <goal>.
 ```
 
@@ -92,6 +94,9 @@ Then:
    Prefer a relevant original source figure when its provenance and usage rights
    are verified. Preserve it intact even when another composition would look
    cleaner.
+8. Use layout 9 when the approved blueprint includes a dedicated references
+   slide. Keep per-slide citations; the references slide supplements rather than
+   replaces them.
 
 ## Build or Regenerate the Template
 
@@ -130,6 +135,10 @@ inventory, placeholders, and source-figure frames.
    slide. Never present them as measured results.
 10. Preserve every source notice and keep all added explanation outside the
     figure boundary.
+11. For layout 9, preserve canonical identifiers and links: authors, venue,
+    year, DOI or arXiv ID for papers; publisher and publication or update date
+    for blogs; repository, PR number, status, merge or close date, and commit
+    when relevant for pull requests.
 
 Do not add animations, transitions, decorative gradients, glass effects, or
 heavy shadows. Do not rasterize editable narrative content. Optimize for
@@ -144,6 +153,8 @@ PowerPoint and keep Google Slides compatibility best-effort.
 - Confirm page numbers appear on every slide except the cover.
 - Confirm blank-template slide 8 retains its template label, editable title,
   source/footer line, logo, and page number while its body remains empty.
+- Confirm blank-template slide 9 contains editable paper, blog, and pull-request
+  entries with canonical-link placeholders, logo, footer, and page number.
 - Confirm layout 8 is normally the most-used body layout in a mixed deck; do not
   impose a quota when the approved content clearly benefits from other layouts.
 - Confirm white content slides reserve the source/footer line.
@@ -153,8 +164,8 @@ PowerPoint and keep Google Slides compatibility best-effort.
   has no crop or overlay, preserves its full aspect ratio and structure, and
   carries `Source` attribution.
 - Render the complete deck to PDF with LibreOffice and inspect every slide.
-- Treat the generators' count checks as canonical-template validation: seven
-  slides for the example template and eight for the blank template. For a
+- Treat the generators' count checks as canonical-template validation: eight
+  slides for the example template and nine for the blank template. For a
   derived deck, validate against the user's approved slide inventory while
   preserving the same canvas, typography, branding, and editability checks.
 - Treat PowerPoint as authoritative; report that Google Slides fidelity is

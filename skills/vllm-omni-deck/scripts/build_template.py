@@ -280,6 +280,57 @@ def add_card(
     )
 
 
+def add_reference_card(
+    slide: Slide,
+    box: Box,
+    source_type: str,
+    title: str,
+    metadata: str,
+    locator: str,
+    accent: RGBColor,
+    *,
+    url: str | None = None,
+) -> None:
+    """Add one editable paper, blog, or pull-request reference."""
+
+    add_panel(slide, box, COLORS.panel, line_color=COLORS.rule)
+    add_rule(slide, Box(box.x, box.y, 0.07, box.height), accent)
+    add_text(
+        slide,
+        Box(box.x + 0.18, box.y + 0.40, 1.16, 0.18),
+        source_type,
+        12,
+        accent,
+        bold=True,
+        alignment=PP_ALIGN.CENTER,
+    )
+    add_text(
+        slide,
+        Box(box.x + 1.46, box.y + 0.13, box.width - 1.71, 0.34),
+        title,
+        18,
+        COLORS.ink,
+        bold=True,
+    )
+    add_text(
+        slide,
+        Box(box.x + 1.46, box.y + 0.62, 4.62, 0.20),
+        metadata,
+        12,
+        COLORS.muted,
+    )
+    link_shape = add_text(
+        slide,
+        Box(box.x + box.width - 2.55, box.y + 0.62, 2.30, 0.20),
+        locator,
+        12,
+        COLORS.blue,
+        alignment=PP_ALIGN.RIGHT,
+    )
+    if url is not None:
+        link_shape.text_frame.paragraphs[0].runs[0].hyperlink.address = url
+
+
 def add_cover(
     presentation: PresentationType,
     logo_path: Path,
@@ -944,8 +995,76 @@ def add_roadmap(
     )
 
 
+def add_references(
+    presentation: PresentationType,
+    logo_path: Path,
+) -> None:
+    """Build layout 9: papers, blogs, and pull-request references."""
+
+    slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+    set_background(slide, COLORS.white)
+    add_content_header(
+        slide,
+        "LAYOUT 09  ·  REFERENCES",
+        "Make every source easy to verify",
+    )
+    add_text(
+        slide,
+        Box(0.55, 1.12, 8.90, 0.22),
+        "Use primary sources, preserve version or status, and link the canonical item.",
+        12,
+        COLORS.muted,
+    )
+    references = (
+        (
+            Box(0.55, 1.49, 8.90, 1.00),
+            "PAPER",
+            "PagedAttention for efficient LLM serving",
+            "Kwon et al.  ·  SOSP 2023  ·  arXiv:2309.06180",
+            "Open paper",
+            COLORS.blue,
+            "https://arxiv.org/abs/2309.06180",
+        ),
+        (
+            Box(0.55, 2.65, 8.90, 1.00),
+            "BLOG",
+            "Serving multi-stage Qwen3-Omni",
+            "vLLM-Omni Team  ·  vLLM Blog  ·  2026-07-01",
+            "Open blog",
+            COLORS.orange,
+            "https://vllm.ai/blog/2026-07-01-qwen3-omni-optimization",
+        ),
+        (
+            Box(0.55, 3.81, 8.90, 1.00),
+            "PR",
+            "Add or optimize the referenced serving path",
+            "Repository  ·  PR #NNNN  ·  merged  ·  YYYY-MM-DD",
+            "Canonical PR URL",
+            COLORS.purple,
+            None,
+        ),
+    )
+    for box, source_type, title, metadata, locator, accent, url in references:
+        add_reference_card(
+            slide,
+            box,
+            source_type,
+            title,
+            metadata,
+            locator,
+            accent,
+            url=url,
+        )
+    add_content_footer(
+        slide,
+        logo_path,
+        8,
+        "Template guidance  ·  Cite only sources used in the deck",
+    )
+
+
 def build_presentation(logo_path: Path) -> PresentationType:
-    """Build the complete seven-slide presentation in memory."""
+    """Build the complete eight-slide presentation in memory."""
 
     if not logo_path.is_file():
         raise FileNotFoundError(f"Missing vLLM-Omni logo: {logo_path}")
@@ -953,7 +1072,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     presentation.slide_width = Inches(SLIDE_WIDTH_IN)
     presentation.slide_height = Inches(SLIDE_HEIGHT_IN)
     presentation.core_properties.title = "vLLM-Omni editable presentation template"
-    presentation.core_properties.subject = "Seven reusable vLLM-Omni slide layouts"
+    presentation.core_properties.subject = "Eight reusable vLLM-Omni slide layouts"
     presentation.core_properties.author = "vLLM-Omni"
     add_cover(presentation, logo_path)
     add_section(presentation, logo_path)
@@ -962,6 +1081,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     add_architecture(presentation, logo_path)
     add_evidence(presentation, logo_path)
     add_roadmap(presentation, logo_path)
+    add_references(presentation, logo_path)
     return presentation
 
 
@@ -980,8 +1100,8 @@ def validate_template(output_path: Path) -> None:
 
     presentation = Presentation(str(output_path))
     failures: list[str] = []
-    if len(presentation.slides) != 7:
-        failures.append(f"expected 7 slides, found {len(presentation.slides)}")
+    if len(presentation.slides) != 8:
+        failures.append(f"expected 8 slides, found {len(presentation.slides)}")
     if presentation.slide_width != Inches(SLIDE_WIDTH_IN):
         failures.append("slide width is not 10 inches")
     if presentation.slide_height != Inches(SLIDE_HEIGHT_IN):
@@ -1022,6 +1142,31 @@ def validate_template(output_path: Path) -> None:
         failures.append("slide 6 is missing its native editable chart")
     if "Illustrative data" not in slide_text(evidence_slide):
         failures.append("slide 6 is missing the illustrative-data notice")
+
+    references_slide_text = slide_text(presentation.slides[7])
+    for source_type in ("PAPER", "BLOG", "PR"):
+        if source_type not in references_slide_text:
+            failures.append(f"references slide is missing {source_type}")
+    if "LAYOUT 09  ·  REFERENCES" not in references_slide_text:
+        failures.append("slide 8 is missing the references layout label")
+    reference_links = {
+        run.hyperlink.address
+        for shape in presentation.slides[7].shapes
+        if shape.has_text_frame
+        for paragraph in shape.text_frame.paragraphs
+        for run in paragraph.runs
+        if run.hyperlink.address is not None
+    }
+    expected_reference_links = {
+        "https://arxiv.org/abs/2309.06180",
+        "https://vllm.ai/blog/2026-07-01-qwen3-omni-optimization",
+    }
+    missing_reference_links = expected_reference_links - reference_links
+    if missing_reference_links:
+        failures.append(
+            "references slide is missing hyperlinks: "
+            f"{sorted(missing_reference_links)}"
+        )
 
     if failures:
         details = "\n".join(f"- {failure}" for failure in failures)

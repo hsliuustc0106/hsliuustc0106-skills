@@ -17,6 +17,7 @@ more clearly.
 | Explain components, flow, ownership, or interfaces | 5. Architecture / diagram |
 | Show a source figure or prove a comparison | 6. Evidence / source figure |
 | Show dependency, timing, status, or ownership | 7. Roadmap / status |
+| Index cited papers, blogs, and pull requests | 9. References |
 
 Prefer layout 8 when more than one layout would work. Do not choose a specialized
 layout merely because it resembles the source. If the approved content exceeds
@@ -132,6 +133,24 @@ page number `08`.
 **Safe density:** determine from the authored content while preserving the open
 body, design-system typography, and safe margins.
 
+## 9. References: papers / blogs / pull requests
+
+**Use for:** a deck-level index of cited papers, blog posts, pull requests, or
+other primary technical sources.
+
+**Required inputs:** source type; title; canonical URL; and the metadata required
+to identify the exact source. For papers, provide authors, venue, year, and DOI
+or arXiv ID. For blogs, provide publisher or team and publication or update
+date. For pull requests, provide repository, PR number, status, merge or close
+date, and commit when relevant.
+
+**Arrangement:** stack one editable reference row per source. Keep a compact type
+label on the left, title and provenance metadata in the center, and a clickable
+canonical locator on the right. Keep the normal source/footer line.
+
+**Safe density:** three to five references per slide. Split a longer list across
+additional layout 9 slides. Never shrink below 12 pt.
+
 ## Reuse rules
 
 - Copy the example template when layout demonstrations are useful. Copy the blank
@@ -139,6 +158,8 @@ body, design-system typography, and safe margins.
   figures.
 - Prefer blank layout 8 for most body slides and direct source-figure reuse. In a
   mixed deck, it should normally be the most common layout.
+- Use layout 9 for a dedicated reference index when the approved blueprint needs
+  one. Keep claim-level citations on their original slides.
 - Use layouts 3–7 when their structure materially improves orientation,
   explanation, comparison, or sequencing.
 - Preserve the layout geometry and approved visual hierarchy.

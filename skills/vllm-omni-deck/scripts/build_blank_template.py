@@ -20,6 +20,7 @@ from build_template import (
     add_content_header,
     add_dark_page_number,
     add_panel,
+    add_reference_card,
     add_roadmap_card,
     add_rule,
     add_text,
@@ -617,8 +618,72 @@ def add_white_canvas(
     )
 
 
+def add_references(
+    presentation: PresentationType,
+    logo_path: Path,
+) -> None:
+    """Build blank layout 9: papers, blogs, and pull-request references."""
+
+    slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+    set_background(slide, COLORS.white)
+    add_content_header(
+        slide,
+        "BLANK 09  ·  REFERENCES",
+        "[References and further reading]",
+    )
+    add_text(
+        slide,
+        Box(0.55, 1.12, 8.90, 0.22),
+        "[Use primary sources and retain version, date, identifier, and status]",
+        12,
+        COLORS.muted,
+    )
+    references = (
+        (
+            Box(0.55, 1.49, 8.90, 1.00),
+            "[PAPER]",
+            "[Paper title]",
+            "[Authors  ·  venue  ·  year  ·  DOI or arXiv ID]",
+            "[Canonical URL]",
+            COLORS.blue,
+        ),
+        (
+            Box(0.55, 2.65, 8.90, 1.00),
+            "[BLOG]",
+            "[Blog post title]",
+            "[Publisher or team  ·  published or updated YYYY-MM-DD]",
+            "[Canonical URL]",
+            COLORS.orange,
+        ),
+        (
+            Box(0.55, 3.81, 8.90, 1.00),
+            "[PR]",
+            "[Pull-request title]",
+            "[org/repo  ·  PR #  ·  status  ·  date  ·  commit]",
+            "[Canonical URL]",
+            COLORS.purple,
+        ),
+    )
+    for box, source_type, title, metadata, locator, accent in references:
+        add_reference_card(
+            slide,
+            box,
+            source_type,
+            title,
+            metadata,
+            locator,
+            accent,
+        )
+    add_content_footer(
+        slide,
+        logo_path,
+        9,
+        "[Deck-wide source notes if required]",
+    )
+
+
 def build_presentation(logo_path: Path) -> PresentationType:
-    """Build the complete blank eight-slide presentation."""
+    """Build the complete blank nine-slide presentation."""
 
     if not logo_path.is_file():
         raise FileNotFoundError(f"Missing vLLM-Omni logo: {logo_path}")
@@ -626,7 +691,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     presentation.slide_width = Inches(SLIDE_WIDTH_IN)
     presentation.slide_height = Inches(SLIDE_HEIGHT_IN)
     presentation.core_properties.title = "vLLM-Omni blank presentation template"
-    presentation.core_properties.subject = "Eight reusable vLLM-Omni layouts"
+    presentation.core_properties.subject = "Nine reusable vLLM-Omni layouts"
     presentation.core_properties.author = "vLLM-Omni"
     add_cover(presentation, logo_path)
     add_section(presentation, logo_path)
@@ -636,6 +701,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     add_evidence(presentation, logo_path)
     add_roadmap(presentation, logo_path)
     add_white_canvas(presentation, logo_path)
+    add_references(presentation, logo_path)
     return presentation
 
 
@@ -644,8 +710,8 @@ def validate_blank_template(output_path: Path) -> None:
 
     presentation = Presentation(str(output_path))
     failures: list[str] = []
-    if len(presentation.slides) != 8:
-        failures.append(f"expected 8 slides, found {len(presentation.slides)}")
+    if len(presentation.slides) != 9:
+        failures.append(f"expected 9 slides, found {len(presentation.slides)}")
     if presentation.slide_width != Inches(SLIDE_WIDTH_IN):
         failures.append("slide width is not 10 inches")
     if presentation.slide_height != Inches(SLIDE_HEIGHT_IN):
@@ -715,6 +781,24 @@ def validate_blank_template(output_path: Path) -> None:
         failures.append("slide 8 body contains unexpected objects")
     if white_canvas.background.fill.fore_color.rgb != COLORS.white:
         failures.append("slide 8 background is not white")
+
+    references_slide = presentation.slides[8]
+    references_text = slide_text(references_slide)
+    required_references_text = (
+        "BLANK 09  ·  REFERENCES",
+        "[References and further reading]",
+        "[PAPER]",
+        "[BLOG]",
+        "[PR]",
+        "[Canonical URL]",
+    )
+    for required_text in required_references_text:
+        if required_text not in references_text:
+            failures.append(f"slide 9 is missing {required_text!r}")
+    if references_text.count("09") < 2:
+        failures.append("slide 9 is missing its page number")
+    if references_slide.background.fill.fore_color.rgb != COLORS.white:
+        failures.append("slide 9 background is not white")
 
     if failures:
         details = "\n".join(f"- {failure}" for failure in failures)

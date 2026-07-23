@@ -59,6 +59,9 @@ permission, or split with permission. Never introduce another font size.
 - Keep blank-template layout 8 white and empty between its shared content header
   and footer. Retain its template label, editable title, wordmark, source line,
   and page number.
+- Keep blank-template layout 9 white with editable paper, blog, and pull-request
+  rows. Retain its template label, editable title, wordmark, footer, and page
+  number.
 
 ## Components
 
@@ -103,6 +106,20 @@ permission, or split with permission. Never introduce another font size.
   explains another baseline.
 - Include units and a source or `Illustrative data` notice.
 - Do not encode unrelated units on one axis.
+
+### References
+
+- Use one editable row per paper, blog post, or pull request.
+- Show the source type, title, provenance metadata, and canonical locator.
+- For papers, retain authors, venue, year, and DOI or arXiv ID.
+- For blogs, retain publisher or team plus publication or update date.
+- For pull requests, retain repository, PR number, status, merge or close date,
+  and commit when it matters to the cited behavior.
+- Use blue link text and make the title or locator clickable in authored decks.
+- Keep three to five entries per slide. Split longer lists instead of shrinking
+  below 12 pt.
+- Keep claim-level citations on the evidence slides. A references slide is an
+  index, not a substitute for local attribution.
 
 ### Roadmaps and status
 
