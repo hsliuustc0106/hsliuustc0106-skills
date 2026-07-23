@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create and restyle editable, English-first vLLM-Omni PowerPoint decks with the bundled seven-layout branded template and typed python-pptx generator. Use when Codex needs to build a new vLLM-Omni .pptx, migrate or restyle existing vLLM-Omni slides, select layouts for an approved slide blueprint, or regenerate and validate the vLLM-Omni deck template.
+description: Create and restyle editable, English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with the bundled seven-layout branded template and typed python-pptx generator. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck template.
 ---
 
 # vLLM-Omni Deck
@@ -32,6 +32,36 @@ modify that asset in place; copy it to a task-specific output path.
 Require the user to provide or approve each slide's purpose, key takeaway,
 substantive content, and evidence. Select the best layout from the catalog. When
 two layouts are plausible, recommend one and explain the tradeoff.
+
+## Build from Blog or Article Links
+
+Treat provided links and source documents as evidence, not as an approved slide
+plan. Accept a minimal request such as:
+
+```text
+Use $vllm-omni-deck with these blog links: <URLs>.
+Audience: <audience>. Goal: <goal>.
+```
+
+Then:
+
+1. Read each complete source. If a link is inaccessible, request the article text
+   or an export instead of inferring missing content.
+2. Create a compact source-and-claim map covering the thesis, supported technical
+   claims, evidence, reusable figures, caveats, and source URL.
+3. Preserve the model, hardware, software version, workload, metric definition,
+   units, baseline, and test conditions for quantitative claims. Do not use an
+   isolated benchmark value.
+4. Distinguish source-backed claims from Codex synthesis. Label inferences and
+   flag conflicting, outdated, or unsupported claims.
+5. Propose a complete deck blueprint within the user's slide limit, or seven
+   slides by default. For every slide, provide its title, purpose, key takeaway,
+   draft content, recommended layout, evidence and citation, asset needs, and
+   open dependencies.
+6. Stop for explicit blueprint approval before authoring slides.
+7. After approval, build the editable deck. Use 12 pt on-slide citations, label
+   fabricated values as `Illustrative data`, and preserve source qualifications.
+   Reuse source figures only when provenance and usage rights are verified.
 
 ## Build or Regenerate the Template
 
