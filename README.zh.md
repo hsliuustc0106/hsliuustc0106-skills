@@ -11,6 +11,7 @@
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
 - `skills/huawei-deck/`：包含模板、参考文档和验证工具的华为风格 HTML/PPTX 演示技能。
+- `skills/vllm-omni-deck/`：包含七种可复用版式、可编辑 PowerPoint 模板和类型化生成器的 vLLM-Omni 演示技能。
 - `external/vllm-omni-review.md`：外部 vLLM Omni review skill 的说明，不硬编码个人账号。
 
 ## 安装

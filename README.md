@@ -11,6 +11,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
 - `skills/huawei-deck/`: a bundled Huawei-style HTML/PPTX presentation skill with templates, references, and verification tools.
+- `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint template skill with seven reusable layouts and a typed generator.
 - `external/vllm-omni-review.md`: pointer to the external vLLM Omni review skill without hard-coding a personal account.
 
 ## Core Principles
@@ -38,6 +39,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 ├── skills/
 │   ├── agentic-coding-guidelines/
 │   ├── huawei-deck/
+│   ├── vllm-omni-deck/
 │   ├── vllm-guidelines/
 │   ├── vllm-omni-guidelines/
 │   ├── afd-plugin-guidelines/
