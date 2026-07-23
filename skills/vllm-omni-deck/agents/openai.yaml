@@ -1,4 +1,4 @@
 interface:
   display_name: "vLLM-Omni Deck"
   short_description: "Build branded, editable vLLM-Omni presentations"
-  default_prompt: "Use $vllm-omni-deck to turn my vLLM blog links or approved slide blueprint into a cited, editable presentation."
+  default_prompt: "Use $vllm-omni-deck to create a cited editable deck from my sources, reuse suitable original figures, or provide the blank branded template."

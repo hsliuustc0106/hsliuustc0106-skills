@@ -12,7 +12,7 @@ content, and evidence; Codex owns layout selection.
 | Orient the audience or summarize a sequence | 3. Agenda / summary |
 | Explain one idea with supporting structure | 4. General content |
 | Explain components, flow, ownership, or interfaces | 5. Architecture / diagram |
-| Prove a comparison with data | 6. Evidence |
+| Show a source figure or prove a comparison | 6. Evidence / source figure |
 | Show dependency, timing, status, or ownership | 7. Roadmap / status |
 
 Do not choose a visually similar layout when its narrative role is wrong. If the
@@ -83,18 +83,23 @@ supporting annotation band. Keep arrows and nodes native and editable.
 **Safe density:** five primary nodes, two-line 12 pt node labels, and one 18 pt
 takeaway. Split deeper subflows onto another slide.
 
-## 6. Evidence: chart / table / benchmark / comparison
+## 6. Evidence: source figure / chart / table / benchmark / comparison
 
-**Use for:** quantitative proof, tradeoff comparison, benchmark, or decision table.
+**Use for:** a relevant original source figure, quantitative proof, tradeoff
+comparison, benchmark, or decision table.
 
-**Required inputs:** claim, metric definitions, units, values, comparison baseline,
-and source. Mark fabricated examples as `Illustrative data`.
+**Required inputs:** claim; selected figure, chart, or table; primary source URL;
+provenance and usage-rights status; caption; and one or two conclusions. For
+quantitative evidence, also provide metric definitions, units, values, and
+comparison baseline. Mark fabricated examples as `Illustrative data`.
 
-**Arrangement:** primary chart or table in the left two-thirds; concise conclusion
-or comparison cards on the right. Use native PowerPoint data objects.
+**Arrangement:** fit the complete source figure, chart, or table in the left
+two-thirds without distortion or loss of meaning; place concise conclusion cards
+on the right. Preserve a suitable original figure as an image. Use native
+PowerPoint data objects for newly authored charts and tables.
 
-**Safe density:** one chart or table, at most four categories, at most three series,
-and two concise conclusions.
+**Safe density:** one source figure, chart, or table and two concise conclusions.
+For newly authored charts, use at most four categories and three series.
 
 ## 7. Roadmap / status
 
@@ -111,10 +116,17 @@ risk or decision strip below.
 
 ## Reuse rules
 
-- Copy the canonical PPTX before editing it.
+- Copy the example template when layout demonstrations are useful. Copy the blank
+  template when the user wants empty layouts or the source already supplies
+  figures.
 - Preserve the layout geometry and approved visual hierarchy.
 - Replace the lightweight examples with approved content; do not leave sample
   claims or illustrative values in a delivered deck.
+- Prefer direct reuse of a relevant, rights-verified, presentation-legible source
+  figure. Do not redraw it solely to match the brand.
+- Preserve aspect ratio and all meaning-bearing labels, legends, units,
+  qualifiers, and notices. Use `Source` for unchanged figures and `Adapted from`
+  for minimally edited figures.
 - Keep repeated narrative roles on the same layout family.
 - Preserve native editability and source notices.
 - Render and inspect every changed slide before delivery.

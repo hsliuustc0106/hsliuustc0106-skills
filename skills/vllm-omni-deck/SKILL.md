@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create and restyle editable, English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with the bundled seven-layout branded template and typed python-pptx generator. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck template.
+description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with bundled example and blank seven-layout templates. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve suitable original source figures, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -17,9 +17,15 @@ Read both references before creating or restyling slides:
 - `references/layout-catalog.md` defines the seven layouts, required inputs,
   selection rules, and safe content density.
 
-Treat these files and `scripts/build_template.py` as the source of truth. Use
-`assets/vllm-omni-template.pptx` as the canonical editable slide library. Never
-modify that asset in place; copy it to a task-specific output path.
+Treat these files and the template generators as the source of truth:
+
+- Use `assets/vllm-omni-template.pptx` when layout examples and an editable
+  demonstration chart help Codex author the deck.
+- Use `assets/vllm-omni-blank-template.pptx` when the user requests a blank
+  template or the source already supplies figures that should be placed directly.
+
+Never modify either asset in place; copy the selected asset to a task-specific
+output path.
 
 ## Choose the Workflow
 
@@ -48,7 +54,8 @@ Then:
 1. Read each complete source. If a link is inaccessible, request the article text
    or an export instead of inferring missing content.
 2. Create a compact source-and-claim map covering the thesis, supported technical
-   claims, evidence, reusable figures, caveats, and source URL.
+   claims, evidence, reusable figures, caveats, and source URL. Map each candidate
+   figure as use unchanged, adapt minimally, redraw, or omit.
 3. Preserve the model, hardware, software version, workload, metric definition,
    units, baseline, and test conditions for quantitative claims. Do not use an
    isolated benchmark value.
@@ -61,7 +68,9 @@ Then:
 6. Stop for explicit blueprint approval before authoring slides.
 7. After approval, build the editable deck. Use 12 pt on-slide citations, label
    fabricated values as `Illustrative data`, and preserve source qualifications.
-   Reuse source figures only when provenance and usage rights are verified.
+   Prefer a relevant original source figure when its provenance and usage rights
+   are verified and it remains legible at presentation scale. Do not redraw it
+   merely to match the brand.
 
 ## Build or Regenerate the Template
 
@@ -72,25 +81,32 @@ uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python python-pptx
 .venv/bin/python scripts/build_template.py \
   --output assets/vllm-omni-template.pptx
+.venv/bin/python scripts/build_blank_template.py \
+  --output assets/vllm-omni-blank-template.pptx
 ```
 
-Run the command from this skill directory. The generator refuses to overwrite an
-existing file unless `--force` is passed. It validates the slide count, canvas,
-font family, allowed sizes, example labels, and required native chart before it
-returns successfully.
+Run the commands from this skill directory. Each generator refuses to overwrite
+an existing file unless `--force` is passed. The example generator validates the
+native chart and illustrative labels; the blank generator validates the layout
+inventory, placeholders, and source-figure frames.
 
 ## Author Slides
 
 1. Confirm the slide blueprint and references.
 2. Choose a catalog layout by narrative role, not by superficial object count.
 3. Preserve the approved 36/28/18/12 pt Arial hierarchy.
-4. Keep text, shapes, diagrams, tables, and charts native and editable.
-5. Reflow within the chosen layout when content is slightly long.
-6. If content still does not fit, recommend shortening it or splitting the slide
+4. Keep narrative text, shapes, diagrams, tables, and charts native and editable.
+5. Preserve suitable source figures directly. Keep their aspect ratio, labels,
+   legends, axes, units, qualifiers, watermarks, and semantic colors. Cite an
+   unmodified figure as `Source` and a minimally changed figure as `Adapted from`.
+6. Redraw only when direct reuse is not permitted, is illegible, or would reduce
+   accuracy or clarity. Never redraw solely for visual uniformity.
+7. Reflow within the chosen layout when content is slightly long.
+8. If content still does not fit, recommend shortening it or splitting the slide
    and wait for approval. Never shrink, omit, or split silently.
-7. Mark fabricated demonstration values as `Illustrative data` directly on the
+9. Mark fabricated demonstration values as `Illustrative data` directly on the
    slide. Never present them as measured results.
-8. Preserve source notices and quantitative meaning when adapting figures.
+10. Preserve source notices and quantitative meaning when adapting figures.
 
 Do not add animations, transitions, decorative gradients, glass effects, or
 heavy shadows. Do not rasterize editable narrative content. Optimize for
@@ -104,6 +120,10 @@ PowerPoint and keep Google Slides compatibility best-effort.
 - Confirm the vLLM-Omni logo appears on every slide.
 - Confirm page numbers appear on every slide except the cover.
 - Confirm white content slides reserve the source/footer line.
+- Keep bracketed placeholders only when delivering the blank template itself.
+  Confirm no blank-template placeholders remain in an authored deck.
+- Confirm every reused figure remains faithful to its source context, is legible,
+  and carries `Source` or `Adapted from` attribution.
 - Render the complete deck to PDF with LibreOffice and inspect every slide.
 - Treat the generator's seven-slide count check as canonical-template validation.
   For a derived deck, validate against the user's approved slide inventory while

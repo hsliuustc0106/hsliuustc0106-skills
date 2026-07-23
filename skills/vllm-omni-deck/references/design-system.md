@@ -65,6 +65,20 @@ permission, or split with permission. Never introduce another font size.
 - Use one-pixel-equivalent rules in `Rule`; avoid heavy outlines.
 - Do not use drop shadows, glass effects, bevels, or decorative gradients.
 
+### Source figures
+
+- Prefer a relevant original source figure when its provenance and usage rights
+  are verified and it is legible at presentation scale.
+- Fit the complete meaning-bearing figure within its frame and preserve its
+  intrinsic aspect ratio. Never stretch it or crop essential labels, legends,
+  axes, units, qualifiers, watermarks, or uncertainty.
+- Preserve the figure's semantic colors and quantitative meaning. Do not redraw,
+  recolor, or restyle it solely to match the deck palette.
+- Cite an unchanged figure as `Source` and a minimally edited figure as
+  `Adapted from`. Keep required notices visible.
+- Redraw only when direct reuse is not permitted, the original is illegible, or
+  a new editable explanation materially improves accuracy or clarity.
+
 ### Architecture diagrams
 
 - Show one reading direction, normally left to right.
@@ -91,7 +105,9 @@ permission, or split with permission. Never introduce another font size.
 
 ## Editability and compatibility
 
-Build narrative text, panels, diagrams, tables, and charts as native PowerPoint
-objects. Use raster images only for logos, screenshots, or source figures that are
-intrinsically images. Target PowerPoint behavior first. Avoid fragile effects,
-unsupported fonts, and unnecessary grouping to improve Google Slides import.
+Build narrative text, panels, newly authored diagrams, tables, and charts as
+native PowerPoint objects. Preserve suitable original source figures in their
+native image format instead of rebuilding them. Use raster images only for logos,
+screenshots, or source figures that are intrinsically raster. Target PowerPoint
+behavior first. Avoid fragile effects, unsupported fonts, and unnecessary
+grouping to improve Google Slides import.
