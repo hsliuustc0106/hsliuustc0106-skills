@@ -12,7 +12,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
 - `skills/huawei-deck/`: a bundled Huawei-style HTML/PPTX presentation skill with templates, references, and verification tools.
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
-  a seven-layout example template, an eight-page blank template with a pure
+  a seven-layout example template, an eight-page blank template with a branded
   white canvas, source-figure reuse, and typed generators.
 - `external/vllm-omni-review.md`: pointer to the external vLLM Omni review skill without hard-coding a personal account.
 

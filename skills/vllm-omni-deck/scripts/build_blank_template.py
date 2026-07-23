@@ -596,11 +596,25 @@ def add_roadmap(
     )
 
 
-def add_white_canvas(presentation: PresentationType) -> None:
-    """Build blank layout 8: a completely empty white canvas."""
+def add_white_canvas(
+    presentation: PresentationType,
+    logo_path: Path,
+) -> None:
+    """Build blank layout 8: a minimally structured white canvas."""
 
     slide = presentation.slides.add_slide(presentation.slide_layouts[6])
     set_background(slide, COLORS.white)
+    add_content_header(
+        slide,
+        "BLANK 08  ·  WHITE CANVAS",
+        "[Slide title]",
+    )
+    add_content_footer(
+        slide,
+        logo_path,
+        8,
+        "[Source / context if required]",
+    )
 
 
 def build_presentation(logo_path: Path) -> PresentationType:
@@ -612,9 +626,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     presentation.slide_width = Inches(SLIDE_WIDTH_IN)
     presentation.slide_height = Inches(SLIDE_HEIGHT_IN)
     presentation.core_properties.title = "vLLM-Omni blank presentation template"
-    presentation.core_properties.subject = (
-        "Seven structured vLLM-Omni layouts and one blank white canvas"
-    )
+    presentation.core_properties.subject = "Eight reusable vLLM-Omni layouts"
     presentation.core_properties.author = "vLLM-Omni"
     add_cover(presentation, logo_path)
     add_section(presentation, logo_path)
@@ -623,7 +635,7 @@ def build_presentation(logo_path: Path) -> PresentationType:
     add_architecture(presentation, logo_path)
     add_evidence(presentation, logo_path)
     add_roadmap(presentation, logo_path)
-    add_white_canvas(presentation)
+    add_white_canvas(presentation, logo_path)
     return presentation
 
 
@@ -641,14 +653,6 @@ def validate_blank_template(output_path: Path) -> None:
 
     for slide_index, slide in enumerate(presentation.slides, start=1):
         text = slide_text(slide)
-        if slide_index == 8:
-            if text:
-                failures.append("slide 8 contains text")
-            if len(slide.shapes) != 0:
-                failures.append("slide 8 contains objects")
-            if slide.background.fill.fore_color.rgb != COLORS.white:
-                failures.append("slide 8 background is not white")
-            continue
         picture_count = sum(
             shape.shape_type == MSO_SHAPE_TYPE.PICTURE for shape in slide.shapes
         )
@@ -691,6 +695,22 @@ def validate_blank_template(output_path: Path) -> None:
         failures.append("slide 4 is missing its source-figure slot")
     if "Insert original figure" not in slide_text(presentation.slides[5]):
         failures.append("slide 6 is missing its evidence-figure slot")
+    white_canvas = presentation.slides[7]
+    white_canvas_text = slide_text(white_canvas)
+    required_white_canvas_text = (
+        "BLANK 08  ·  WHITE CANVAS",
+        "[Slide title]",
+        "[Source / context if required]",
+    )
+    for required_text in required_white_canvas_text:
+        if required_text not in white_canvas_text:
+            failures.append(f"slide 8 is missing {required_text!r}")
+    if white_canvas_text.count("08") < 2:
+        failures.append("slide 8 is missing its page number")
+    if len(white_canvas.shapes) != 7:
+        failures.append("slide 8 body contains unexpected objects")
+    if white_canvas.background.fill.fore_color.rgb != COLORS.white:
+        failures.append("slide 8 background is not white")
 
     if failures:
         details = "\n".join(f"- {failure}" for failure in failures)

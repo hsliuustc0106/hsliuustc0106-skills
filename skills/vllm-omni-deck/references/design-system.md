@@ -48,7 +48,7 @@ permission, or split with permission. Never introduce another font size.
 
 - Use navy for the cover and section-divider layouts.
 - Use white for all content layouts.
-- Place the supplied vLLM-Omni wordmark on every structured layout.
+- Place the supplied vLLM-Omni wordmark on every slide.
 - Treat `assets/vllm-omni-logo.png` as the unmodified wordmark extracted from the
   user-supplied public reference deck, `vLLM-Omni Slides (Public) 2026-04
   latest.pptx`.
@@ -56,8 +56,9 @@ permission, or split with permission. Never introduce another font size.
 - Omit the page number on the cover. Use two-digit page numbers elsewhere.
 - On white slides, use a thin rule above a 12 pt source/footer line.
 - Keep section dividers free of source lines and taglines.
-- Keep blank-template layout 8 completely white and empty: no wordmark, title,
-  footer, page number, placeholder, or decorative object.
+- Keep blank-template layout 8 white and empty between its shared content header
+  and footer. Retain its template label, editable title, wordmark, source line,
+  and page number.
 
 ## Components
 

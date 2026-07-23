@@ -14,7 +14,7 @@ content, and evidence; Codex owns layout selection.
 | Explain components, flow, ownership, or interfaces | 5. Architecture / diagram |
 | Show a source figure or prove a comparison | 6. Evidence / source figure |
 | Show dependency, timing, status, or ownership | 7. Roadmap / status |
-| Start from an unrestricted white canvas | 8. Blank white canvas |
+| Start from a minimally constrained white canvas | 8. Blank white canvas |
 
 Do not choose a visually similar layout when its narrative role is wrong. If the
 approved content exceeds the safe density below, recommend shortening or splitting
@@ -120,14 +120,14 @@ risk or decision strip below.
 **Use for:** content that does not fit a structured layout or must retain its
 original composition.
 
-**Required inputs:** none.
+**Required inputs:** slide title and source or context line when applicable.
 
-**Arrangement:** a completely empty white 16:9 canvas. Do not add a wordmark,
-title, footer, page number, placeholder, or decorative object until authoring
-the derived slide.
+**Arrangement:** shared content header with `BLANK 08 · WHITE CANVAS` and an
+editable title; empty white body; standard source/footer line, wordmark, and
+page number `08`.
 
-**Safe density:** determine from the authored content while preserving the
-design-system typography and margins where applicable.
+**Safe density:** determine from the authored content while preserving the open
+body, design-system typography, and safe margins.
 
 ## Reuse rules
 
