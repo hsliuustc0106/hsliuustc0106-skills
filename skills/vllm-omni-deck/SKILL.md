@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with bundled example and blank seven-layout templates. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve suitable original source figures, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with a bundled seven-layout example template and an eight-page blank template that includes a pure white canvas. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve suitable original source figures, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -14,15 +14,17 @@ Read both references before creating or restyling slides:
 
 - `references/design-system.md` defines the canvas, brand tokens, typography,
   footer, and component rules.
-- `references/layout-catalog.md` defines the seven layouts, required inputs,
-  selection rules, and safe content density.
+- `references/layout-catalog.md` defines the seven structured layouts, the
+  eighth pure-white canvas, required inputs, selection rules, and safe content
+  density.
 
 Treat these files and the template generators as the source of truth:
 
 - Use `assets/vllm-omni-template.pptx` when layout examples and an editable
   demonstration chart help Codex author the deck.
 - Use `assets/vllm-omni-blank-template.pptx` when the user requests a blank
-  template or the source already supplies figures that should be placed directly.
+  template or the source already supplies figures that should be placed
+  directly. Use its eighth slide when an unrestricted white canvas is needed.
 
 Never modify either asset in place; copy the selected asset to a task-specific
 output path.
@@ -117,16 +119,19 @@ PowerPoint and keep Google Slides compatibility best-effort.
 - Confirm that every delivered slide has one primary message.
 - Confirm Arial and the allowed sizes only: 36, 28, 18, and 12 pt.
 - Confirm no text is clipped, overlapped, or smaller than 12 pt.
-- Confirm the vLLM-Omni logo appears on every slide.
-- Confirm page numbers appear on every slide except the cover.
+- Confirm the vLLM-Omni logo appears on every structured slide.
+- Confirm page numbers appear on every structured slide except the cover.
+- Exempt blank-template slide 8 from logo, page-number, footer, and placeholder
+  checks; it must remain a completely empty white canvas.
 - Confirm white content slides reserve the source/footer line.
 - Keep bracketed placeholders only when delivering the blank template itself.
   Confirm no blank-template placeholders remain in an authored deck.
 - Confirm every reused figure remains faithful to its source context, is legible,
   and carries `Source` or `Adapted from` attribution.
 - Render the complete deck to PDF with LibreOffice and inspect every slide.
-- Treat the generator's seven-slide count check as canonical-template validation.
-  For a derived deck, validate against the user's approved slide inventory while
+- Treat the generators' count checks as canonical-template validation: seven
+  slides for the example template and eight for the blank template. For a
+  derived deck, validate against the user's approved slide inventory while
   preserving the same canvas, typography, branding, and editability checks.
 - Treat PowerPoint as authoritative; report that Google Slides fidelity is
   best-effort when handing off the file.

@@ -14,6 +14,7 @@ content, and evidence; Codex owns layout selection.
 | Explain components, flow, ownership, or interfaces | 5. Architecture / diagram |
 | Show a source figure or prove a comparison | 6. Evidence / source figure |
 | Show dependency, timing, status, or ownership | 7. Roadmap / status |
+| Start from an unrestricted white canvas | 8. Blank white canvas |
 
 Do not choose a visually similar layout when its narrative role is wrong. If the
 approved content exceeds the safe density below, recommend shortening or splitting
@@ -114,11 +115,27 @@ risk or decision strip below.
 
 **Safe density:** three phases, two items per phase, and one risk statement.
 
+## 8. Blank white canvas
+
+**Use for:** content that does not fit a structured layout or must retain its
+original composition.
+
+**Required inputs:** none.
+
+**Arrangement:** a completely empty white 16:9 canvas. Do not add a wordmark,
+title, footer, page number, placeholder, or decorative object until authoring
+the derived slide.
+
+**Safe density:** determine from the authored content while preserving the
+design-system typography and margins where applicable.
+
 ## Reuse rules
 
 - Copy the example template when layout demonstrations are useful. Copy the blank
   template when the user wants empty layouts or the source already supplies
   figures.
+- Use blank layout 8 only when the seven structured layouts would constrain the
+  approved content or original figure unnecessarily.
 - Preserve the layout geometry and approved visual hierarchy.
 - Replace the lightweight examples with approved content; do not leave sample
   claims or illustrative values in a delivered deck.
