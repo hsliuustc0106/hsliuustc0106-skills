@@ -1,12 +1,15 @@
 # vLLM-Omni layout catalog
 
 Select layouts by narrative role and evidence type. The user owns slide logic,
-content, and evidence; Codex owns layout selection.
+content, and evidence; Codex owns layout selection. Start with layout 8 for body
+slides and switch only when a specialized layout communicates the approved logic
+more clearly.
 
 ## Selection guide
 
 | Need | Layout |
 | --- | --- |
+| Default body slide, original figure, or custom composition | 8. Blank white canvas |
 | Open or close a presentation | 1. Cover / closing |
 | Mark a narrative transition or state one major idea | 2. Section / key message |
 | Orient the audience or summarize a sequence | 3. Agenda / summary |
@@ -14,11 +17,10 @@ content, and evidence; Codex owns layout selection.
 | Explain components, flow, ownership, or interfaces | 5. Architecture / diagram |
 | Show a source figure or prove a comparison | 6. Evidence / source figure |
 | Show dependency, timing, status, or ownership | 7. Roadmap / status |
-| Start from a minimally constrained white canvas | 8. Blank white canvas |
 
-Do not choose a visually similar layout when its narrative role is wrong. If the
-approved content exceeds the safe density below, recommend shortening or splitting
-and wait for approval.
+Prefer layout 8 when more than one layout would work. Do not choose a specialized
+layout merely because it resembles the source. If the approved content exceeds
+the safe density below, recommend shortening or splitting and wait for approval.
 
 ## 1. Cover / closing
 
@@ -117,8 +119,8 @@ risk or decision strip below.
 
 ## 8. Blank white canvas
 
-**Use for:** content that does not fit a structured layout or must retain its
-original composition.
+**Use for:** the default body slide, original source figures, custom
+compositions, or content that should retain its original composition.
 
 **Required inputs:** slide title and source or context line when applicable.
 
@@ -134,8 +136,10 @@ body, design-system typography, and safe margins.
 - Copy the example template when layout demonstrations are useful. Copy the blank
   template when the user wants empty layouts or the source already supplies
   figures.
-- Use blank layout 8 only when the seven structured layouts would constrain the
-  approved content or original figure unnecessarily.
+- Prefer blank layout 8 for most body slides and direct source-figure reuse. In a
+  mixed deck, it should normally be the most common layout.
+- Use layouts 3–7 when their structure materially improves orientation,
+  explanation, comparison, or sequencing.
 - Preserve the layout geometry and approved visual hierarchy.
 - Replace the lightweight examples with approved content; do not leave sample
   claims or illustrative values in a delivered deck.

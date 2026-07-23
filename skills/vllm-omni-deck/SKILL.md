@@ -24,7 +24,8 @@ Treat these files and the template generators as the source of truth:
   demonstration chart help Codex author the deck.
 - Use `assets/vllm-omni-blank-template.pptx` when the user requests a blank
   template or the source already supplies figures that should be placed
-  directly. Use its eighth slide when an open branded white canvas is needed.
+  directly. Use its eighth slide as the default for most body slides, especially
+  original source figures and custom compositions.
 
 Never modify either asset in place; copy the selected asset to a task-specific
 output path.
@@ -38,8 +39,10 @@ output path.
   unless the user authorizes changes.
 
 Require the user to provide or approve each slide's purpose, key takeaway,
-substantive content, and evidence. Select the best layout from the catalog. When
-two layouts are plausible, recommend one and explain the tradeoff.
+substantive content, and evidence. Start body-slide selection with layout 8.
+Switch to layouts 3–7 only when their structure materially improves reading
+order, comparison, or comprehension. When two layouts are plausible, recommend
+one and explain the tradeoff.
 
 ## Build from Blog or Article Links
 
@@ -66,7 +69,8 @@ Then:
 5. Propose a complete deck blueprint within the user's slide limit, or seven
    slides by default. For every slide, provide its title, purpose, key takeaway,
    draft content, recommended layout, evidence and citation, asset needs, and
-   open dependencies.
+   open dependencies. Prefer layout 8 for body slides unless a specialized
+   layout communicates the approved logic more clearly.
 6. Stop for explicit blueprint approval before authoring slides.
 7. After approval, build the editable deck. Use 12 pt on-slide citations, label
    fabricated values as `Illustrative data`, and preserve source qualifications.
@@ -95,7 +99,8 @@ inventory, placeholders, and source-figure frames.
 ## Author Slides
 
 1. Confirm the slide blueprint and references.
-2. Choose a catalog layout by narrative role, not by superficial object count.
+2. Use layout 8 for most body slides. Choose a specialized catalog layout only
+   when its narrative structure adds clarity.
 3. Preserve the approved 36/28/18/12 pt Arial hierarchy.
 4. Keep narrative text, shapes, diagrams, tables, and charts native and editable.
 5. Preserve suitable source figures directly. Keep their aspect ratio, labels,
@@ -123,6 +128,8 @@ PowerPoint and keep Google Slides compatibility best-effort.
 - Confirm page numbers appear on every slide except the cover.
 - Confirm blank-template slide 8 retains its template label, editable title,
   source/footer line, logo, and page number while its body remains empty.
+- Confirm layout 8 is normally the most-used body layout in a mixed deck; do not
+  impose a quota when the approved content clearly benefits from other layouts.
 - Confirm white content slides reserve the source/footer line.
 - Keep bracketed placeholders only when delivering the blank template itself.
   Confirm no blank-template placeholders remain in an authored deck.
