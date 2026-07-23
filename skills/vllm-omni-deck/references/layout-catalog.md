@@ -97,9 +97,10 @@ quantitative evidence, also provide metric definitions, units, values, and
 comparison baseline. Mark fabricated examples as `Illustrative data`.
 
 **Arrangement:** fit the complete source figure, chart, or table in the left
-two-thirds without distortion or loss of meaning; place concise conclusion cards
-on the right. Preserve a suitable original figure as an image. Use native
-PowerPoint data objects for newly authored charts and tables.
+two-thirds as one intact image; place concise conclusion cards outside its
+boundary on the right. Do not crop or alter the figure. If the cards make the
+intact figure too small, use layout 8 instead. Use native PowerPoint data objects
+for newly authored charts and tables.
 
 **Safe density:** one source figure, chart, or table and two concise conclusions.
 For newly authored charts, use at most four categories and three series.
@@ -144,10 +145,14 @@ body, design-system typography, and safe margins.
 - Replace the lightweight examples with approved content; do not leave sample
   claims or illustrative values in a delivered deck.
 - Prefer direct reuse of a relevant, rights-verified, presentation-legible source
-  figure. Do not redraw it solely to match the brand.
-- Preserve aspect ratio and all meaning-bearing labels, legends, units,
-  qualifiers, and notices. Use `Source` for unchanged figures and `Adapted from`
-  for minimally edited figures.
+  figure as one intact image.
+- Permit only proportional scaling and positioning. Never crop, split, redraw,
+  trace, rearrange, relabel, recolor, restyle, simplify, replace, enhance, or
+  overlay any part of a provided figure.
+- Preserve the complete original canvas and use `Source` attribution.
+- If fit or legibility blocks intact reuse, use a dedicated layout 8 slide. If
+  permission or resolution blocks reuse, request permission or a better source.
+  If unresolved, omit the figure with an explicit note.
 - Keep repeated narrative roles on the same layout family.
 - Preserve native editability and source notices.
 - Render and inspect every changed slide before delivery.

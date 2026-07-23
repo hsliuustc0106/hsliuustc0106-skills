@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with a bundled seven-layout example template and an eight-page blank template that includes a minimally structured branded white canvas. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve suitable original source figures, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from blog or article links, approved slide blueprints, or existing slides with a bundled seven-layout example template and an eight-page blank template that includes a minimally structured branded white canvas. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -44,6 +44,21 @@ Switch to layouts 3–7 only when their structure materially improves reading
 order, comparison, or comprehension. When two layouts are plausible, recommend
 one and explain the tradeoff.
 
+## Preserve Provided Figures Intact
+
+Treat every user-provided or source-provided figure as immutable:
+
+- Insert it as one unedited image. Only move it and scale it proportionally.
+- Never crop, split, redraw, trace, rearrange, relabel, recolor, restyle,
+  simplify, replace, or overlay any part of it.
+- Keep captions and explanatory annotations outside the figure boundary.
+- If fit or legibility prevents intact reuse, place it alone on layout 8. If
+  permission or resolution blocks reuse, request permission or a better source.
+  If the issue remains unresolved, omit the figure and state why. Never
+  reconstruct it as a workaround.
+- Create a separate explanatory visual only when the user explicitly requests
+  one. Do not present that visual as the source figure or as a modified version.
+
 ## Build from Blog or Article Links
 
 Treat provided links and source documents as evidence, not as an approved slide
@@ -60,7 +75,7 @@ Then:
    or an export instead of inferring missing content.
 2. Create a compact source-and-claim map covering the thesis, supported technical
    claims, evidence, reusable figures, caveats, and source URL. Map each candidate
-   figure as use unchanged, adapt minimally, redraw, or omit.
+   figure as reuse intact on layout 8, reuse intact on a dedicated slide, or omit.
 3. Preserve the model, hardware, software version, workload, metric definition,
    units, baseline, and test conditions for quantitative claims. Do not use an
    isolated benchmark value.
@@ -75,8 +90,8 @@ Then:
 7. After approval, build the editable deck. Use 12 pt on-slide citations, label
    fabricated values as `Illustrative data`, and preserve source qualifications.
    Prefer a relevant original source figure when its provenance and usage rights
-   are verified and it remains legible at presentation scale. Do not redraw it
-   merely to match the brand.
+   are verified. Preserve it intact even when another composition would look
+   cleaner.
 
 ## Build or Regenerate the Template
 
@@ -103,17 +118,18 @@ inventory, placeholders, and source-figure frames.
    when its narrative structure adds clarity.
 3. Preserve the approved 36/28/18/12 pt Arial hierarchy.
 4. Keep narrative text, shapes, diagrams, tables, and charts native and editable.
-5. Preserve suitable source figures directly. Keep their aspect ratio, labels,
-   legends, axes, units, qualifiers, watermarks, and semantic colors. Cite an
-   unmodified figure as `Source` and a minimally changed figure as `Adapted from`.
-6. Redraw only when direct reuse is not permitted, is illegible, or would reduce
-   accuracy or clarity. Never redraw solely for visual uniformity.
+5. Place each provided figure as one intact image. Permit only proportional
+   scaling and positioning. Cite it as `Source`.
+6. Use layout 8 or a dedicated slide when intact placement needs more space.
+   Request a better source or omit the figure when it remains unusable; never
+   rebuild it.
 7. Reflow within the chosen layout when content is slightly long.
 8. If content still does not fit, recommend shortening it or splitting the slide
    and wait for approval. Never shrink, omit, or split silently.
 9. Mark fabricated demonstration values as `Illustrative data` directly on the
    slide. Never present them as measured results.
-10. Preserve source notices and quantitative meaning when adapting figures.
+10. Preserve every source notice and keep all added explanation outside the
+    figure boundary.
 
 Do not add animations, transitions, decorative gradients, glass effects, or
 heavy shadows. Do not rasterize editable narrative content. Optimize for
@@ -133,8 +149,9 @@ PowerPoint and keep Google Slides compatibility best-effort.
 - Confirm white content slides reserve the source/footer line.
 - Keep bracketed placeholders only when delivering the blank template itself.
   Confirm no blank-template placeholders remain in an authored deck.
-- Confirm every reused figure remains faithful to its source context, is legible,
-  and carries `Source` or `Adapted from` attribution.
+- Compare every reused figure with its source. Confirm it is one intact image,
+  has no crop or overlay, preserves its full aspect ratio and structure, and
+  carries `Source` attribution.
 - Render the complete deck to PDF with LibreOffice and inspect every slide.
 - Treat the generators' count checks as canonical-template validation: seven
   slides for the example template and eight for the blank template. For a

@@ -171,7 +171,7 @@ def add_cover(
     add_text(
         slide,
         Box(6.72, 2.16, 2.38, 0.78),
-        "[Insert source figure or editable motif]",
+        "[Insert source figure unchanged or editable motif]",
         18,
         COLORS.white,
         bold=True,
@@ -239,7 +239,7 @@ def add_section(
     add_text(
         slide,
         Box(6.54, 2.39, 2.37, 0.72),
-        "[Insert source figure or semantic visual]",
+        "[Insert source figure unchanged or semantic visual]",
         18,
         COLORS.white,
         bold=True,
@@ -338,7 +338,7 @@ def add_general_content(
         slide,
         Box(3.98, 1.23, 5.47, 3.58),
         "FIGURE / DIAGRAM / CONTENT",
-        "[Insert original source figure or editable visual]",
+        "[Insert original source figure unchanged]",
     )
     add_text(
         slide,
@@ -352,7 +352,7 @@ def add_general_content(
         slide,
         logo_path,
         4,
-        "[Source / adapted from URL]",
+        "[Source URL]",
     )
 
 
@@ -447,7 +447,7 @@ def add_architecture(
         slide,
         logo_path,
         5,
-        "[Source / adapted from URL]",
+        "[Source URL]",
     )
 
 
@@ -476,13 +476,13 @@ def add_evidence(
         slide,
         Box(0.55, 1.55, 5.88, 2.94),
         "SOURCE FIGURE / CHART / TABLE",
-        "[Insert original figure — fit and preserve aspect ratio]",
+        "[Insert original figure unchanged — scale proportionally]",
     )
     add_panel(slide, Box(0.55, 4.66, 5.88, 0.28), COLORS.orange)
     add_text(
         slide,
         Box(0.67, 4.72, 5.64, 0.18),
-        "[Caption  ·  Source or Adapted from URL]",
+        "[Caption  ·  Source URL]",
         12,
         COLORS.white,
         bold=True,
@@ -522,7 +522,7 @@ def add_evidence(
         slide,
         logo_path,
         6,
-        "[Source / adapted from URL]",
+        "[Source URL]",
     )
 
 
@@ -662,6 +662,8 @@ def validate_blank_template(output_path: Path) -> None:
             failures.append(f"slide {slide_index} is missing editable placeholders")
         if slide_index > 1 and f"{slide_index:02d}" not in text:
             failures.append(f"slide {slide_index} is missing its page number")
+        if "adapted from" in text.lower():
+            failures.append(f"slide {slide_index} permits source-figure adaptation")
         for shape in slide.shapes:
             if shape.has_chart:
                 failures.append(
@@ -691,10 +693,12 @@ def validate_blank_template(output_path: Path) -> None:
                             f"{run.text!r}"
                         )
 
-    if "Insert original source figure" not in slide_text(presentation.slides[3]):
-        failures.append("slide 4 is missing its source-figure slot")
-    if "Insert original figure" not in slide_text(presentation.slides[5]):
-        failures.append("slide 6 is missing its evidence-figure slot")
+    if "Insert original source figure unchanged" not in slide_text(
+        presentation.slides[3]
+    ):
+        failures.append("slide 4 is missing its intact source-figure slot")
+    if "Insert original figure unchanged" not in slide_text(presentation.slides[5]):
+        failures.append("slide 6 is missing its intact evidence-figure slot")
     white_canvas = presentation.slides[7]
     white_canvas_text = slide_text(white_canvas)
     required_white_canvas_text = (

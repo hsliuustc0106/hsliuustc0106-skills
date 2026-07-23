@@ -70,17 +70,21 @@ permission, or split with permission. Never introduce another font size.
 
 ### Source figures
 
-- Prefer a relevant original source figure when its provenance and usage rights
-  are verified and it is legible at presentation scale.
-- Fit the complete meaning-bearing figure within its frame and preserve its
-  intrinsic aspect ratio. Never stretch it or crop essential labels, legends,
-  axes, units, qualifiers, watermarks, or uncertainty.
-- Preserve the figure's semantic colors and quantitative meaning. Do not redraw,
-  recolor, or restyle it solely to match the deck palette.
-- Cite an unchanged figure as `Source` and a minimally edited figure as
-  `Adapted from`. Keep required notices visible.
-- Redraw only when direct reuse is not permitted, the original is illegible, or
-  a new editable explanation materially improves accuracy or clarity.
+- Treat every user-provided or source-provided figure as immutable.
+- Insert the figure as one unedited image. Permit only proportional scaling and
+  positioning.
+- Never crop, split, redraw, trace, rearrange, relabel, recolor, restyle,
+  simplify, replace, clean up, enhance, or overlay any part of the figure.
+- Preserve the complete original canvas, including labels, legends, axes, units,
+  qualifiers, watermarks, uncertainty, whitespace, and semantic colors.
+- Cite the intact figure as `Source`. Place captions and explanatory annotations
+  outside its boundary.
+- If fit or legibility blocks intact reuse, dedicate layout 8 to the figure. If
+  permission or resolution blocks reuse, request permission or a better source.
+  If the issue remains unresolved, omit the figure with an explicit note. Never
+  redraw it as a workaround.
+- Keep any separately requested explanatory diagram distinct from the source
+  figure and label it as newly authored content.
 
 ### Architecture diagrams
 
@@ -110,7 +114,7 @@ permission, or split with permission. Never introduce another font size.
 
 Build narrative text, panels, newly authored diagrams, tables, and charts as
 native PowerPoint objects. Preserve suitable original source figures in their
-native image format instead of rebuilding them. Use raster images only for logos,
+native image format as one intact object. Use raster images only for logos,
 screenshots, or source figures that are intrinsically raster. Target PowerPoint
 behavior first. Avoid fragile effects, unsupported fonts, and unnecessary
 grouping to improve Google Slides import.
