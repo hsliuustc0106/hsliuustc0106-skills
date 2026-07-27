@@ -43,21 +43,25 @@ Inspired by common PR-review skill patterns (e.g. explicit modes + tool choice);
 - **Focus on what automation doesn’t prove** — Design, API contracts, stage/connector invariants, test adequacy for omni paths, breaking behavior. Do not re-argue formatting or issues **pre-commit / CI already failed** (point at the gate instead).
 - **Structured notes** — If you produce a multi-section writeup for the **user**, **omit sections with no findings** (no “No issues” padding).
 
-**Parallel investigation:** Large diffs or multiple subsystems (e.g. `entrypoints/` + `engine/` + `diffusion/`) → split by directory or concern and investigate **in parallel** when subagents exist.
+**Reviewer backends:** Delegation is optional. Support direct review, Codex `review-agent`, and Claude through one read-only handoff contract. Honor an explicit backend choice; otherwise use one available backend and fall back to direct review without blocking. For large or high-risk diffs, use at most two reviewers with distinct scopes or independent passes. See [references/reviewer-backends.md](references/reviewer-backends.md).
 
-**Subagent context compression:** Never fetch a 500-line source file into your main context. Instead, delegate to a subagent with a specific question (e.g. "What does `_resolve_ref_audio` return?") and get back a compact summary. This is the single biggest token saver — a subagent burns its own context, you get back a paragraph.
+**Parallel investigation:** Large diffs or multiple subsystems (e.g. `entrypoints/` + `engine/` + `diffusion/`) → split by directory or concern and investigate **in parallel** when reviewers exist.
 
-**When to use subagents vs direct fetch:**
-- Reading surrounding code to verify a pattern → subagent (returns summary)
+**Context compression:** Use a general investigation agent, not a defect-review backend, for narrow questions such as function signatures or class hierarchies. Reserve Codex `review-agent` or Claude review passes for a complete change or an explicitly bounded diff partition.
+
+**When to delegate vs direct fetch:**
+- Reviewing a complete change or bounded path partition → reviewer backend
+- Reading surrounding code to verify one pattern → general investigation agent
 - Reading a reference file you need for the blocker scan → direct (you need the full patterns)
 - Fetching PR metadata / diff → direct (small, needed in main context)
-- Verifying function signatures, return types, class hierarchies → subagent
+- Verifying one function signature, return type, or class hierarchy → general investigation agent
 
 ## Which reference to load (do not load everything)
 
 | Situation | Open |
 |-----------|------|
-| Every review | [references/review-execution.md](references/review-execution.md) — gates, `gh` commands, comment budget, tone, **incremental posting**, batch/CI triage, Python style flags |
+| Every review | [references/review-execution.md](references/review-execution.md) — gates, `gh` commands, comment budget, tone, optional posting, batch/CI triage, Python style flags |
+| Codex, Claude, or multi-reviewer delegation | [references/reviewer-backends.md](references/reviewer-backends.md) — backend selection, read-only handoff, result aggregation, stale-head protection |
 | Verification (hardware) | [references/verification.md](references/verification.md) — checkout, test run, E2E smoke, claim verification |
 | Prefix / multi-skill / hardware guess | [references/review-routing.md](references/review-routing.md) |
 | Blocker scan details + merge-blocking patterns | [references/blocker-patterns.md](references/blocker-patterns.md) — Part 1 patterns; **Part 2** = former “pitfalls” (footguns, MRO, connectors, async, etc.) |
@@ -79,7 +83,7 @@ Always run the blocker scan. Under context pressure, do a shallow scan of the mo
 
 Check whether this PR is still a draft or WIP in the PR title, if so, end the review process.
 
-**Token budget principle:** Post inline comments as you find them. Use subagents for codebase investigation. Load references only after skimming the diff. If you're past ~60% context and haven't posted comments, wrap up and post what you have — partial review posted is better than a perfect review lost.
+**Token budget principle:** Record findings as you find them. Reviewer backends return findings locally and never post. Load references only after skimming the diff. Only the parent reviewer may post user-authorized comments after validating and prioritizing the collected findings.
 
 ### Step 0: Verify Review Gates First
 
@@ -158,7 +162,7 @@ When hardware access (SSH/server/GPU) is available, **verify the PR works** — 
 2. **Unit tests** — run affected tests at minimum (e.g. `pytest -m "core_model"` for the changed area)
 3. **E2E smoke** — for bench/tool/metric PRs, start a server and run a quick smoke test (10 prompts, low concurrency) to verify new outputs appear and the tool doesn't crash
 4. **Compare claims** — check PR claims (metrics appear, values sensible, no crashes) against actual output
-5. **Report** — post findings as a PR comment; bugs found are blocking
+5. **Report** — return findings locally; bugs found are blocking, and any authorized posting follows Step 9
 
 If no hardware access, skip to Step 4.
 
@@ -242,15 +246,18 @@ Be explicit in review comments. Treat "manual verification only" as insufficient
 
 **Delivery:** Local assessment first, ask user before posting. Convert worst 1-2 findings to inline comments (counts against comment budget). If D-grade dimension or code bug found, escalate to REQUEST_CHANGES via Step 9.
 
-### Step 9: Incremental Posting + Final Verdict
+### Step 9: Aggregate Findings + Optional Posting + Final Verdict
 
-**Post inline comments directly to GitHub as you find them.** Do not accumulate comments for a batch post at the end. Each `gh api` call posts one or more comments immediately. If context runs out mid-review, the comments already posted are safe on GitHub.
+Collect reviewer-backend findings locally. Verify each finding against the captured head SHA, deduplicate by root cause, classify blockers independently from reviewer priority, and apply the comment budget. See [references/reviewer-backends.md](references/reviewer-backends.md).
 
-Posting strategy:
-- After completing the blocker scan, post any blocking-issue comments immediately
-- As domain review surfaces issues, post each comment right away
+Only the parent reviewer may post comments, and only when the user authorized GitHub posting. When authorized:
+- Confirm the PR head SHA is unchanged before the first post
+- Post validated blocking-issue comments first
+- Post each remaining selected comment after validation
 - Minor style nits can be batched (up to 3) in a single review call if they're on the same file
-- If you find yourself past ~60% context, stop investigating and post whatever you have
+
+Without posting authorization, present all selected findings locally.
+
 ### Final self-check before posting
 
 Before posting comments, ask:

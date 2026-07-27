@@ -175,7 +175,9 @@ Keep replies to 1 sentence. Never a paragraph.
 
 ## Review Submission
 
-**Post inline comments as you find them — prefer individual posts over batching.** Each comment should go to GitHub immediately via gh api to prevent losing work if context runs out. Small batches (2-3) for related nits on the same file are acceptable.
+Reviewer backends are read-only and return findings locally. Only the parent reviewer may post, and only when the user authorized GitHub comments. Before posting, aggregate results using [reviewer-backends.md](reviewer-backends.md) and confirm the PR head SHA is unchanged.
+
+When posting is authorized, prefer individual posts over batching. Small batches (2-3) for related nits on the same file are acceptable.
 
 For individual comments (preferred):
 ```bash
