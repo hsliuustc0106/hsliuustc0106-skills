@@ -54,10 +54,11 @@ Review concerns:
 
 ## Delegation Triggers
 
-Treat specialized reviewers as optional integrations. If the runtime has no `Agent(...)` or subagent tool, do the same checks manually and do not block on delegation.
+Treat reviewer backends and specialized reviewers as optional integrations. Use the provider-neutral contract in [reviewer-backends.md](reviewer-backends.md). If no reviewer backend exists, do the same checks manually and do not block on delegation.
 
 | Trigger | Optional reviewer if available | Manual review focus |
 |---------|--------------------------------|---------------------|
+| ordinary code change needing a defect sweep | Codex `review-agent` or Claude | complete diff, surrounding code, tests, and call sites |
 | new or changed `try/except` blocks | `pr-review-toolkit:silent-failure-hunter` | swallowed exceptions, empty fallbacks, missing logs, bad retry behavior |
 | new `@dataclass` or `TypedDict` | `pr-review-toolkit:type-design-analyzer` | invariants, missing validation, unsafe defaults, optional-vs-required fields |
 | test files changed | `pr-review-toolkit:pr-test-analyzer` | coverage gaps, unrealistic mocks, missing regression cases, weak assertions |
@@ -67,9 +68,11 @@ Treat specialized reviewers as optional integrations. If the runtime has no `Age
 Delegation limits:
 
 - Max 2 delegated reviewers per PR
+- Honor the user's explicit backend choice; otherwise prefer one available backend
+- Give each reviewer an immutable base SHA, head SHA, merge-base SHA, and bounded scope
 - Skip delegation for docs-only PRs
 - Skip delegation for small PRs unless the risk is unusually high
-- Delegated findings still count against the total comment budget
+- Collect exhaustive qualified findings locally, then apply the total comment budget during aggregation
 
 If no delegation tool exists:
 
