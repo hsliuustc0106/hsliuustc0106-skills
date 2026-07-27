@@ -65,8 +65,8 @@ Use the matching skill when working in these repositories:
 
 - `vllm`: `skills/vllm-guidelines/SKILL.md`
 - `vllm-omni`: `skills/vllm-omni-guidelines/SKILL.md`
+- vLLM Omni reviews: `skills/vllm-omni-review/SKILL.md`
 - `afd-plugin`: `skills/afd-plugin-guidelines/SKILL.md`
 - `vllm-omni-cookbook`: `skills/vllm-omni-cookbook-guidelines/SKILL.md`
 
-For vLLM Omni review workflows, use the external `vllm-omni-review` skill repository as the source of truth. Keep its concrete URL in local setup docs or personal configuration rather than hard-coding an account name here.
-
+For vLLM Omni review workflows, use the local `vllm-omni-review` skill as the source of truth.
