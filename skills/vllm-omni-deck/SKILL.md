@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled five-slide source-derived template, an eight-layout example template, and a nine-page blank template. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, or provide editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a named shared Drive template reference, a bundled five-slide source-derived template, an eight-layout example template, and a nine-page blank template. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -20,9 +20,16 @@ Read both references before creating or restyling slides:
   content density.
 - Read `references/extracted-template.md` when using or regenerating the compact
   source-derived template.
+- Read `../build-slides-interactively/references/template-references.md` when the
+  user requests the current shared vLLM or vLLM-Omni template.
 
 Treat these files and the template generators as the source of truth:
 
+- Use the named vLLM / vLLM-Omni Drive reference as the first choice when the
+  user asks for the current shared template or its styling. Treat the source as
+  read-only and create a copy or authorized export before editing. If it is
+  inaccessible, request access or an authorized export instead of inferring its
+  design; use a bundled asset only when the user accepts that fallback.
 - Use `assets/vllm-omni-extracted-template.pptx` when the user wants a compact,
   source-faithful template organized as cover, contents, standard body, chart
   color guidance, and closing slides.

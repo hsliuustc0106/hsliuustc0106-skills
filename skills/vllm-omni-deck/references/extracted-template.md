@@ -8,6 +8,12 @@
 The structural reference is access-controlled. The extracted asset follows its
 five-slide form without copying Huawei branding or embedded media.
 
+## Current Shared Template Reference
+
+The current named vLLM / vLLM-Omni template is maintained separately in the
+[organizational template catalog](../../build-slides-interactively/references/template-references.md).
+It is not the provenance source for the bundled extracted asset described here.
+
 ## Slide Mapping
 
 | Output slide | Role | Public source exemplar |
