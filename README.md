@@ -10,7 +10,6 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
-- `skills/huawei-deck/`: a bundled Huawei-style HTML/PPTX presentation skill with templates, references, and verification tools.
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
@@ -40,7 +39,6 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 │       └── vllm-omni-cookbook.mdc
 ├── skills/
 │   ├── agentic-coding-guidelines/
-│   ├── huawei-deck/
 │   ├── vllm-omni-deck/
 │   ├── vllm-guidelines/
 │   ├── vllm-omni-guidelines/
