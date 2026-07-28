@@ -49,6 +49,11 @@ stage before creating slide content.
 
 ## Stage 1: Topic, Template, and Two-Slide Checkpoint
 
+When the user requests a named organizational template, check
+[references/template-references.md](references/template-references.md) for a
+matching source. Verify current access, file format, and authorization before
+using it.
+
 Clarify and propose:
 
 - audience, goal, presentation context, language, duration, and expected depth
