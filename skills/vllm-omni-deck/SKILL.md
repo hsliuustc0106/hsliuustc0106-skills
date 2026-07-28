@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template that includes a minimally structured branded white canvas and a references layout. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, or provide editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled five-slide source-derived template, an eight-layout example template, and a nine-page blank template. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -18,9 +18,14 @@ Read both references before creating or restyling slides:
   structured layouts, layout 8 as the minimally structured white canvas, and
   layout 9 for references, plus required inputs, selection rules, and safe
   content density.
+- Read `references/extracted-template.md` when using or regenerating the compact
+  source-derived template.
 
 Treat these files and the template generators as the source of truth:
 
+- Use `assets/vllm-omni-extracted-template.pptx` when the user wants a compact,
+  source-faithful template organized as cover, contents, standard body, chart
+  color guidance, and closing slides.
 - Use `assets/vllm-omni-template.pptx` when layout examples and an editable
   demonstration chart or reference list help Codex author the deck.
 - Use `assets/vllm-omni-blank-template.pptx` when the user requests a blank
@@ -109,12 +114,17 @@ uv pip install --python .venv/bin/python python-pptx
   --output assets/vllm-omni-template.pptx
 .venv/bin/python scripts/build_blank_template.py \
   --output assets/vllm-omni-blank-template.pptx
+.venv/bin/python scripts/extract_source_template.py \
+  --source /path/to/vllm-omni-public.pptx \
+  --output assets/vllm-omni-extracted-template.pptx
 ```
 
 Run the commands from this skill directory. Each generator refuses to overwrite
 an existing file unless `--force` is passed. The example generator validates the
 native chart and illustrative labels; the blank generator validates the layout
-inventory, placeholders, and source-figure frames.
+inventory, placeholders, and source-figure frames. The extraction generator
+validates the expected public-deck signatures, five-slide form, editable chart
+and table, minimum text size, and removal of stale source content.
 
 ## Author Slides
 
@@ -165,8 +175,9 @@ PowerPoint and keep Google Slides compatibility best-effort.
   carries `Source` attribution.
 - Render the complete deck to PDF with LibreOffice and inspect every slide.
 - Treat the generators' count checks as canonical-template validation: eight
-  slides for the example template and nine for the blank template. For a
-  derived deck, validate against the user's approved slide inventory while
-  preserving the same canvas, typography, branding, and editability checks.
+  slides for the example template, nine for the blank template, and five for
+  the source-derived template. For a derived deck, validate against the user's
+  approved slide inventory while preserving the same canvas, typography,
+  branding, and editability checks.
 - Treat PowerPoint as authoritative; report that Google Slides fidelity is
   best-effort when handing off the file.
