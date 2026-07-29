@@ -97,12 +97,17 @@ referencing slides. It also conservatively treats deck, profile, narrative, and
 QA changes as deck-wide. Add every reported locked slide to the change set's
 `review` acknowledgements and rerun impact.
 
-Record `projected_release_fingerprint` as `target_fingerprint` and
-`projected_manifest_fingerprint` as `target_manifest_fingerprint` when the exact
-proposal is approved. Then set the change-set status to `approved`, apply exactly
-the candidate target, and emit the new manifest with `--baseline` and
-`--change-set`. The compiler rebuilds the candidate from the immutable baseline
-and compares it with the active target.
+Use early impact runs as previews. After the human approval decision, keep the
+change set `proposed`, add and freeze any optional approval metadata, and rerun
+impact over the complete history-bound record. Record that final run's
+`projected_release_fingerprint` as `target_fingerprint` and
+`projected_manifest_fingerprint` as `target_manifest_fingerprint`. Then apply
+exactly the candidate target and set the change-set status to `approved` in one
+spec update before emitting the new manifest with `--baseline` and
+`--change-set`. Do not add or edit approval metadata after the final impact run.
+The compiler rebuilds the candidate from the immutable baseline and compares it
+with the active target. If approval metadata was added after projection, it emits
+`approval-metadata-not-finalized` and requires another final impact run.
 
 Delete removed slides from active `slides.items` and `slides.order`. The new
 manifest records an immutable applied-change summary and accumulates

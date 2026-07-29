@@ -37,10 +37,12 @@ template, and output renderer.
    inside a proposed change set. Run `impact` against the previous release
    manifest before editing approved content. Report changed slides,
    dependent reviews, preserved slides requiring review, and locked slides that
-   still require authorization. Record the projected release fingerprint when
-   the exact proposal is approved, along with the projected manifest fingerprint
-   that binds release content to revision history.
-7. After approval, apply exactly the approved blueprints and target order.
+   still require authorization. Treat early impact results as previews.
+7. After the human approval decision, keep the change set `proposed`, freeze its
+   complete history-bound record including any optional approval metadata, and
+   rerun `impact`. Record that final run's projected release and manifest
+   fingerprints, then apply exactly the approved target and set the status to
+   `approved` in one spec update. Do not add or edit approval metadata afterward.
 8. Emit a deterministic release `manifest`. For revisions, compare against the
    previous manifest and selected approved change set. Pass the new manifest to
    the selected renderer.

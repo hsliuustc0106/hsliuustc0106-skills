@@ -55,18 +55,83 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def canonical_json(value: Any) -> str:
-    return json.dumps(
+def assert_canonical_json_value(
+    value: Any,
+    *,
+    path: str = "$",
+    active_containers: set[int] | None = None,
+) -> None:
+    """Reject Python/YAML values without a one-to-one UTF-8 JSON encoding."""
+    active = active_containers if active_containers is not None else set()
+    if type(value) is dict:
+        container_id = id(value)
+        if container_id in active:
+            raise ValueError(f"{path} contains a circular object reference")
+        active.add(container_id)
+        try:
+            for key, item in value.items():
+                if type(key) is not str:
+                    raise TypeError(f"{path} contains non-string object key {key!r}")
+                try:
+                    key.encode("utf-8")
+                except UnicodeEncodeError as exc:
+                    raise ValueError(
+                        f"{path} contains an object key that is not valid UTF-8"
+                    ) from exc
+                assert_canonical_json_value(
+                    item,
+                    path=f"{path}.{key}",
+                    active_containers=active,
+                )
+        finally:
+            active.remove(container_id)
+        return
+    if type(value) is list:
+        container_id = id(value)
+        if container_id in active:
+            raise ValueError(f"{path} contains a circular array reference")
+        active.add(container_id)
+        try:
+            for index, item in enumerate(value):
+                assert_canonical_json_value(
+                    item,
+                    path=f"{path}[{index}]",
+                    active_containers=active,
+                )
+        finally:
+            active.remove(container_id)
+        return
+    if type(value) is str:
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise ValueError(
+                f"{path} contains a string that is not valid UTF-8"
+            ) from exc
+        return
+    if value is None or type(value) in {bool, int, float}:
+        return
+    raise TypeError(f"{path} contains unsupported value type {type(value).__name__}")
+
+
+def canonical_json_bytes(value: Any) -> bytes:
+    assert_canonical_json_value(value)
+    text = json.dumps(
         value,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
         allow_nan=False,
     )
+    return text.encode("utf-8")
+
+
+def canonical_json(value: Any) -> str:
+    return canonical_json_bytes(value).decode("utf-8")
 
 
 def fingerprint(value: Any) -> str:
-    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+    return hashlib.sha256(canonical_json_bytes(value)).hexdigest()
 
 
 def release_deck(deck: dict[str, Any]) -> dict[str, Any]:
@@ -148,14 +213,15 @@ def schema_diagnostics(
 
 def serialization_diagnostics(spec: dict[str, Any]) -> list[Diagnostic]:
     try:
-        canonical_json(spec)
+        canonical_json_bytes(spec)
     except (TypeError, ValueError) as exc:
         return [
             Diagnostic(
                 "error",
                 "non-json-value",
                 "$",
-                f"Deck specification must contain only finite JSON-compatible values: {exc}",
+                "Deck specification must contain only finite, UTF-8 "
+                f"JSON-compatible values with string object keys: {exc}",
             )
         ]
     return []
@@ -1346,6 +1412,7 @@ def impact_report(
             ),
             "global_sections": sorted(semantic["global_sections"]),
         },
+        "approval_metadata_bound": change_set.get("approval") is not None,
         "projected_release_fingerprint": projected_release_fingerprint,
         "projected_manifest_fingerprint": projected_manifest_fingerprint(
             baseline,
@@ -1474,6 +1541,203 @@ def build_manifest(
         ],
         **history,
     }
+
+
+STABLE_ID_PATTERN = r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+SHA256_PATTERN = r"^[a-f0-9]{64}$"
+APPLIED_CHANGE_RECORD_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": False,
+    "required": [
+        "id",
+        "status",
+        "rationale",
+        "baseline_fingerprint",
+        "target_fingerprint",
+        "target_order",
+        "modify",
+        "insert",
+        "remove",
+        "preserve",
+        "review",
+        "reorder",
+    ],
+    "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "status": {"const": "applied"},
+        "rationale": {"type": "string", "minLength": 1},
+        "baseline_fingerprint": {"$ref": "#/$defs/fingerprint"},
+        "target_fingerprint": {"$ref": "#/$defs/fingerprint"},
+        "target_order": {
+            "$ref": "#/$defs/stableIdArray",
+            "minItems": 1,
+        },
+        "modify": {"$ref": "#/$defs/blueprintActions"},
+        "insert": {"$ref": "#/$defs/blueprintActions"},
+        "remove": {"$ref": "#/$defs/stableIdArray"},
+        "preserve": {"$ref": "#/$defs/stableIdArray"},
+        "review": {"$ref": "#/$defs/stableIdArray"},
+        "reorder": {"type": "boolean"},
+        "target_semantics_fingerprint": {"$ref": "#/$defs/fingerprint"},
+        "approval": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "revision": {"type": "integer", "minimum": 1},
+                "approved_by": {"type": "string", "minLength": 1},
+                "approved_at": {"type": "string", "format": "date-time"},
+            },
+        },
+    },
+    "$defs": {
+        "stableId": {"type": "string", "pattern": STABLE_ID_PATTERN},
+        "fingerprint": {"type": "string", "pattern": SHA256_PATTERN},
+        "stableIdArray": {
+            "type": "array",
+            "uniqueItems": True,
+            "items": {"$ref": "#/$defs/stableId"},
+        },
+        "blueprintActions": {
+            "type": "array",
+            "uniqueItems": True,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["slide", "blueprint_fingerprint"],
+                "properties": {
+                    "slide": {"$ref": "#/$defs/stableId"},
+                    "blueprint_fingerprint": {"$ref": "#/$defs/fingerprint"},
+                },
+            },
+        },
+    },
+}
+
+
+def applied_change_history_diagnostics(
+    applied_changes: list[dict[str, Any]],
+) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    validator = Draft202012Validator(
+        APPLIED_CHANGE_RECORD_SCHEMA,
+        format_checker=FormatChecker(),
+    )
+    seen_ids: set[str] = set()
+
+    for index, record in enumerate(applied_changes):
+        base_path = f"$.applied_changes[{index}]"
+        record_errors = sorted(
+            validator.iter_errors(record),
+            key=lambda item: (format_path(item.absolute_path), item.message),
+        )
+        for error in record_errors:
+            relative_path = format_path(error.absolute_path)[1:]
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "invalid-baseline",
+                    f"{base_path}{relative_path}",
+                    f"Invalid applied change record: {error.message}",
+                )
+            )
+
+        change_id = record.get("id")
+        if isinstance(change_id, str) and re.fullmatch(
+            STABLE_ID_PATTERN,
+            change_id,
+        ):
+            if change_id in seen_ids:
+                diagnostics.append(
+                    Diagnostic(
+                        "error",
+                        "invalid-baseline",
+                        f"{base_path}.id",
+                        f"Duplicate applied change ID {change_id!r}.",
+                    )
+                )
+            seen_ids.add(change_id)
+        if record_errors:
+            continue
+
+        action_slides = {
+            action: (
+                {item["slide"] for item in record[action]}
+                if action in {"modify", "insert"}
+                else set(record[action])
+            )
+            for action in ("modify", "insert", "remove", "preserve", "review")
+        }
+        for action in ("modify", "insert"):
+            slide_ids = [item["slide"] for item in record[action]]
+            if len(slide_ids) != len(set(slide_ids)):
+                diagnostics.append(
+                    Diagnostic(
+                        "error",
+                        "invalid-baseline",
+                        f"{base_path}.{action}",
+                        f"Applied {action} slide IDs must be unique.",
+                    )
+                )
+        for left, right in (
+            ("modify", "insert"),
+            ("modify", "remove"),
+            ("modify", "preserve"),
+            ("insert", "remove"),
+            ("insert", "preserve"),
+            ("remove", "preserve"),
+        ):
+            overlap = action_slides[left] & action_slides[right]
+            if overlap:
+                diagnostics.append(
+                    Diagnostic(
+                        "error",
+                        "invalid-baseline",
+                        base_path,
+                        f"Applied change has conflicting {left}/{right} slides: "
+                        + ", ".join(sorted(overlap)),
+                    )
+                )
+
+        target_order = set(record["target_order"])
+        present_in_target = (
+            action_slides["modify"]
+            | action_slides["insert"]
+            | action_slides["preserve"]
+            | action_slides["review"]
+        )
+        if (
+            not present_in_target <= target_order
+            or action_slides["remove"] & target_order
+        ):
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "invalid-baseline",
+                    f"{base_path}.target_order",
+                    "Applied target order must contain retained action slides "
+                    "and exclude removed slides.",
+                )
+            )
+
+        material_actions = (
+            action_slides["modify"] | action_slides["insert"] | action_slides["remove"]
+        )
+        if (
+            not material_actions
+            and not record["reorder"]
+            and "target_semantics_fingerprint" not in record
+        ):
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "invalid-baseline",
+                    base_path,
+                    "Applied change must contain at least one material action.",
+                )
+            )
+
+    return diagnostics
 
 
 def baseline_manifest_diagnostics(baseline: dict[str, Any]) -> list[Diagnostic]:
@@ -1609,7 +1873,9 @@ def baseline_manifest_diagnostics(baseline: dict[str, Any]) -> list[Diagnostic]:
                 "Baseline applied_changes must be an object array.",
             )
         )
-    elif isinstance(retired_slide_ids, list):
+    else:
+        diagnostics.extend(applied_change_history_diagnostics(applied_changes))
+    if isinstance(applied_changes, list) and isinstance(retired_slide_ids, list):
         history = {
             "retired_slide_ids": retired_slide_ids,
             "applied_changes": applied_changes,
@@ -1887,15 +2153,38 @@ def revision_diagnostics(
             )
         )
     elif target_manifest != projected_manifest:
-        diagnostics.append(
-            Diagnostic(
-                "error",
-                "target-manifest-fingerprint-mismatch",
-                "$.change_sets",
-                "Approved target manifest fingerprint does not match the "
-                "projected release and history.",
-            )
+        without_approval = copy.deepcopy(change_set)
+        without_approval.pop("approval", None)
+        unbound_approval_projection = projected_manifest_fingerprint(
+            baseline,
+            without_approval,
+            projected_fingerprint,
         )
+        if (
+            change_set.get("approval") is not None
+            and target_manifest == unbound_approval_projection
+        ):
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "approval-metadata-not-finalized",
+                    "$.change_sets",
+                    "Approval metadata was added after the projected manifest "
+                    "fingerprint was recorded. Keep the change set proposed, "
+                    "freeze the complete history-bound record, rerun impact, "
+                    "and record the final fingerprints before approval.",
+                )
+            )
+        else:
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "target-manifest-fingerprint-mismatch",
+                    "$.change_sets",
+                    "Approved target manifest fingerprint does not match the "
+                    "projected release and history.",
+                )
+            )
     if release_fingerprint(spec) != projected_fingerprint:
         diagnostics.append(
             Diagnostic(

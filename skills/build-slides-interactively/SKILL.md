@@ -199,8 +199,12 @@ For every revision, record the requested scope, complete candidate blueprints,
 and any non-slide semantic target as a change set, then run deck impact analysis
 against the prior release manifest before editing. Approval of a dependent review
 is not permission to edit that slide; authorize each locked mutation explicitly.
-Apply approved targets only after approval, and compare the resulting spec with
-the prior release manifest before rendering.
+Treat early impact runs as previews. After the user approves, keep the change set
+proposed while freezing its complete history-bound record, including optional
+approval metadata, and rerun impact. Record the final projected release and
+manifest fingerprints, then apply the approved target and set the change set to
+approved in one spec update. Compare the resulting spec with the prior release
+manifest before rendering.
 
 ## Stage 4: Final Assembly
 

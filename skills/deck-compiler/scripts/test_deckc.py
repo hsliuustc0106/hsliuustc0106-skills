@@ -72,6 +72,19 @@ def set_target_fingerprints(
     )
 
 
+def rehash_manifest_history(manifest: dict) -> None:
+    history = {
+        "retired_slide_ids": manifest["retired_slide_ids"],
+        "applied_changes": manifest["applied_changes"],
+    }
+    manifest["history_fingerprint"] = deckc.fingerprint(history)
+    manifest["manifest_fingerprint"] = deckc.manifest_root_fingerprint(
+        manifest["schema_version"],
+        manifest["release_fingerprint"],
+        manifest["history_fingerprint"],
+    )
+
+
 class DeckCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -511,6 +524,107 @@ class DeckCompilerTests(unittest.TestCase):
         )
         self.assertIn("invalid-baseline", error_codes(diagnostics))
 
+    def test_approval_metadata_is_finalized_before_manifest_projection(self) -> None:
+        baseline_spec = load_fixture("valid-proposal.yaml")
+        baseline = deckc.build_manifest(baseline_spec)
+        proposed = copy.deepcopy(baseline_spec)
+        proposed["deck"]["operation"] = "revise"
+        blueprint = copy.deepcopy(proposed["slides"]["items"]["ask"])
+        blueprint["title"] = "Approve a finalized bounded workflow"
+        proposed["change_sets"] = [
+            {
+                "id": "finalize-approval",
+                "status": "proposed",
+                "rationale": "Exercise the two-phase approval commit.",
+                "baseline_fingerprint": baseline["manifest_fingerprint"],
+                "target_order": proposed["slides"]["order"],
+                "modify": [{"slide": "ask", "blueprint": blueprint}],
+            }
+        ]
+
+        diagnostics, _ = deckc.impact_diagnostics(
+            proposed,
+            baseline,
+            "finalize-approval",
+            self.schema,
+            self.profiles,
+        )
+        self.assertFalse(error_codes(diagnostics), diagnostics)
+        preview = deckc.impact_report(proposed, "finalize-approval", baseline)
+        self.assertFalse(preview["approval_metadata_bound"])
+
+        proposed["change_sets"][0]["approval"] = {
+            "revision": 1,
+            "approved_by": "deck-owner",
+            "approved_at": "2026-07-29T06:00:00Z",
+        }
+        diagnostics, projected = deckc.impact_diagnostics(
+            proposed,
+            baseline,
+            "finalize-approval",
+            self.schema,
+            self.profiles,
+        )
+        self.assertFalse(error_codes(diagnostics), diagnostics)
+        assert projected is not None
+        final = deckc.impact_report(proposed, "finalize-approval", baseline)
+        self.assertTrue(final["approval_metadata_bound"])
+        self.assertNotEqual(
+            preview["projected_manifest_fingerprint"],
+            final["projected_manifest_fingerprint"],
+        )
+
+        stale = copy.deepcopy(proposed)
+        stale["slides"] = copy.deepcopy(projected["slides"])
+        stale["change_sets"][0]["status"] = "approved"
+        stale["change_sets"][0]["target_fingerprint"] = final[
+            "projected_release_fingerprint"
+        ]
+        stale["change_sets"][0]["target_manifest_fingerprint"] = preview[
+            "projected_manifest_fingerprint"
+        ]
+        diagnostics = deckc.revision_diagnostics(
+            stale,
+            baseline,
+            "finalize-approval",
+        )
+        self.assertIn(
+            "approval-metadata-not-finalized",
+            error_codes(diagnostics),
+        )
+
+        approved = copy.deepcopy(stale)
+        approved["change_sets"][0]["target_manifest_fingerprint"] = final[
+            "projected_manifest_fingerprint"
+        ]
+        diagnostics = deckc.revision_diagnostics(
+            approved,
+            baseline,
+            "finalize-approval",
+        )
+        self.assertFalse(error_codes(diagnostics), diagnostics)
+        manifest = deckc.build_manifest(
+            approved,
+            baseline=baseline,
+            change_id="finalize-approval",
+        )
+        self.assertEqual(
+            manifest["manifest_fingerprint"],
+            final["projected_manifest_fingerprint"],
+        )
+
+        tampered = copy.deepcopy(approved)
+        tampered["change_sets"][0]["approval"]["approved_by"] = "other-owner"
+        diagnostics = deckc.revision_diagnostics(
+            tampered,
+            baseline,
+            "finalize-approval",
+        )
+        self.assertIn(
+            "target-manifest-fingerprint-mismatch",
+            error_codes(diagnostics),
+        )
+
     def test_proposed_insertion_is_not_preapplied(self) -> None:
         baseline_spec = load_fixture("valid-proposal.yaml")
         baseline = deckc.build_manifest(baseline_spec)
@@ -748,6 +862,100 @@ class DeckCompilerTests(unittest.TestCase):
             error_codes(deckc.baseline_manifest_diagnostics(second_manifest))
         )
 
+    def test_baseline_applied_history_records_are_fully_validated(self) -> None:
+        initial_spec = load_fixture("valid-proposal.yaml")
+        initial_manifest = deckc.build_manifest(initial_spec)
+        revised = copy.deepcopy(initial_spec)
+        revised["deck"]["operation"] = "revise"
+        blueprint = copy.deepcopy(revised["slides"]["items"]["ask"])
+        blueprint["title"] = "Approve a history validation workflow"
+        revised["slides"]["items"]["ask"] = copy.deepcopy(blueprint)
+        revised["change_sets"] = [
+            {
+                "id": "history-validation",
+                "status": "approved",
+                "rationale": "Create a valid applied history record.",
+                "baseline_fingerprint": initial_manifest["manifest_fingerprint"],
+                "target_order": revised["slides"]["order"],
+                "modify": [{"slide": "ask", "blueprint": blueprint}],
+            }
+        ]
+        set_target_fingerprints(revised, initial_manifest, "history-validation")
+        manifest = deckc.build_manifest(
+            revised,
+            baseline=initial_manifest,
+            change_id="history-validation",
+        )
+        self.assertFalse(error_codes(deckc.baseline_manifest_diagnostics(manifest)))
+
+        corruptions = {}
+        invalid_id = copy.deepcopy(manifest)
+        invalid_id["applied_changes"][0]["id"] = []
+        corruptions["unhashable-id"] = invalid_id
+
+        missing_field = copy.deepcopy(manifest)
+        del missing_field["applied_changes"][0]["rationale"]
+        corruptions["missing-field"] = missing_field
+
+        malformed_fingerprint = copy.deepcopy(manifest)
+        malformed_fingerprint["applied_changes"][0]["target_fingerprint"] = "bad"
+        corruptions["malformed-fingerprint"] = malformed_fingerprint
+
+        duplicate_id = copy.deepcopy(manifest)
+        duplicate_id["applied_changes"].append(
+            copy.deepcopy(duplicate_id["applied_changes"][0])
+        )
+        corruptions["duplicate-id"] = duplicate_id
+
+        invalid_action = copy.deepcopy(manifest)
+        invalid_action["applied_changes"][0]["modify"][0]["slide"] = []
+        corruptions["invalid-action"] = invalid_action
+
+        duplicate_action = copy.deepcopy(manifest)
+        duplicate_entry = copy.deepcopy(
+            duplicate_action["applied_changes"][0]["modify"][0]
+        )
+        duplicate_entry["blueprint_fingerprint"] = "0" * 64
+        duplicate_action["applied_changes"][0]["modify"].append(duplicate_entry)
+        corruptions["duplicate-action-slide"] = duplicate_action
+
+        conflicting_action = copy.deepcopy(manifest)
+        conflicting_action["applied_changes"][0]["preserve"] = ["ask"]
+        corruptions["conflicting-action"] = conflicting_action
+
+        invalid_target_order = copy.deepcopy(manifest)
+        invalid_target_order["applied_changes"][0]["remove"] = ["problem"]
+        corruptions["invalid-target-order"] = invalid_target_order
+
+        no_material_action = copy.deepcopy(manifest)
+        no_material_action["applied_changes"][0]["modify"] = []
+        corruptions["no-material-action"] = no_material_action
+
+        invalid_approval = copy.deepcopy(manifest)
+        invalid_approval["applied_changes"][0]["approval"] = {
+            "revision": 0,
+            "approved_at": "not-a-date",
+        }
+        corruptions["invalid-approval"] = invalid_approval
+
+        for name, corrupted in corruptions.items():
+            with self.subTest(corruption=name):
+                rehash_manifest_history(corrupted)
+                diagnostics = deckc.baseline_manifest_diagnostics(corrupted)
+                self.assertIn("invalid-baseline", error_codes(diagnostics))
+                impact_diagnostics, projected = deckc.impact_diagnostics(
+                    revised,
+                    corrupted,
+                    "history-validation",
+                    self.schema,
+                    self.profiles,
+                )
+                self.assertIn(
+                    "invalid-baseline",
+                    error_codes(impact_diagnostics),
+                )
+                self.assertIsNone(projected)
+
     def test_change_sets_reject_empty_conflicting_and_legacy_placement_fields(
         self,
     ) -> None:
@@ -840,6 +1048,54 @@ class DeckCompilerTests(unittest.TestCase):
         baseline = deckc.build_manifest(load_fixture("valid-proposal.yaml"))
         baseline["slides"][0]["blueprint"]["invalid"] = float("nan")
         diagnostics = deckc.baseline_manifest_diagnostics(baseline)
+        self.assertIn("non-json-value", error_codes(diagnostics))
+
+    def test_canonical_json_requires_string_keys_and_valid_utf8(self) -> None:
+        valid = load_fixture("valid-proposal.yaml")
+        valid["slides"]["items"]["value"]["content_blocks"] = [
+            {"type": "label", "content": {"emoji": "有效 ✅"}}
+        ]
+        self.assertFalse(error_codes(self.validate(valid)))
+        self.assertEqual(
+            deckc.fingerprint({"emoji": "有效 ✅"}),
+            deckc.fingerprint({"emoji": "有效 ✅"}),
+        )
+
+        invalid_values = [
+            {1: "one"},
+            {True: "true"},
+            {1.5: "float"},
+            {None: "null"},
+            {"nested": {"value": "\ud800"}},
+            {"nested": {"\ud800": "value"}},
+            ("tuple",),
+        ]
+        for index, invalid_value in enumerate(invalid_values):
+            with self.subTest(index=index, value_type=type(invalid_value).__name__):
+                spec = load_fixture("valid-proposal.yaml")
+                spec["slides"]["items"]["value"]["content_blocks"] = [
+                    {"type": "label", "content": invalid_value}
+                ]
+                diagnostics = self.validate(spec)
+                self.assertIn("non-json-value", error_codes(diagnostics))
+                with self.assertRaises((TypeError, ValueError)):
+                    deckc.fingerprint(invalid_value)
+
+        self.assertEqual(
+            deckc.canonical_json({"1": "one"}),
+            '{"1":"one"}',
+        )
+        with self.assertRaises(TypeError):
+            deckc.canonical_json({1: "one"})
+
+        baseline = deckc.build_manifest(load_fixture("valid-proposal.yaml"))
+        baseline["slides"][0]["blueprint"]["invalid"] = {1: "one"}
+        diagnostics = deckc.baseline_manifest_diagnostics(baseline)
+        self.assertIn("non-json-value", error_codes(diagnostics))
+
+        surrogate_baseline = deckc.build_manifest(load_fixture("valid-proposal.yaml"))
+        surrogate_baseline["slides"][0]["blueprint"]["invalid"] = "\ud800"
+        diagnostics = deckc.baseline_manifest_diagnostics(surrogate_baseline)
         self.assertIn("non-json-value", error_codes(diagnostics))
 
     def test_cli_exit_codes(self) -> None:
