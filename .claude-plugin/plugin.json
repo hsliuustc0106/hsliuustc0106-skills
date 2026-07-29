@@ -1,12 +1,12 @@
 {
   "name": "agentic-coding-skills",
-  "description": "Portable coding-agent guidelines, project workflows, and reusable presentation skills for Codex, Claude Code, and Cursor",
+  "description": "Portable coding-agent guidelines for Codex, Claude Code, Cursor, and project-specific workflows",
   "version": "1.1.0",
   "author": {
     "name": "repo-owner"
   },
   "license": "MIT",
-  "keywords": ["guidelines", "best-practices", "coding", "slides", "presentations", "codex", "claude-code", "cursor"],
+  "keywords": ["guidelines", "best-practices", "coding", "codex", "claude-code", "cursor"],
   "skills": [
     "./skills/agentic-coding-guidelines",
     "./skills/vllm-guidelines",

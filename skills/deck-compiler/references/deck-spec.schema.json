@@ -1,13 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:deck-compiler:deck-spec:v1",
-  "title": "General-purpose deck specification",
+  "title": "Minimal semantic deck specification",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "deck",
-    "profiles",
     "narrative",
     "slides"
   ],
@@ -18,44 +16,16 @@
     "deck": {
       "$ref": "#/$defs/deck"
     },
-    "profiles": {
-      "$ref": "#/$defs/profiles"
-    },
     "narrative": {
       "$ref": "#/$defs/narrative"
-    },
-    "sources": {
-      "type": "object",
-      "default": {},
-      "propertyNames": {
-        "$ref": "#/$defs/stableId"
-      },
-      "additionalProperties": {
-        "$ref": "#/$defs/source"
-      }
-    },
-    "claims": {
-      "type": "object",
-      "default": {},
-      "propertyNames": {
-        "$ref": "#/$defs/stableId"
-      },
-      "additionalProperties": {
-        "$ref": "#/$defs/claim"
-      }
     },
     "slides": {
       "$ref": "#/$defs/slides"
     },
-    "change_sets": {
-      "type": "array",
-      "default": [],
-      "items": {
-        "$ref": "#/$defs/changeSet"
-      }
-    },
-    "qa": {
-      "$ref": "#/$defs/qa"
+    "extensions": {
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
     }
   },
   "$defs": {
@@ -65,42 +35,17 @@
     },
     "stableIdArray": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/stableId"
-      },
-      "uniqueItems": true
+      }
     },
     "nonEmptyStableIdArray": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/stableId"
-      },
-      "uniqueItems": true
-    },
-    "nonEmptyStringArray": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "jsonValue": {
-      "type": [
-        "string",
-        "number",
-        "boolean",
-        "object",
-        "array",
-        "null"
-      ],
-      "items": {
-        "$ref": "#/$defs/jsonValue"
-      },
-      "additionalProperties": {
-        "$ref": "#/$defs/jsonValue"
       }
     },
     "deck": {
@@ -109,11 +54,9 @@
       "required": [
         "id",
         "title",
-        "operation",
         "audience",
         "objective",
-        "language",
-        "targets"
+        "language"
       ],
       "properties": {
         "id": {
@@ -122,14 +65,6 @@
         "title": {
           "type": "string",
           "minLength": 1
-        },
-        "operation": {
-          "enum": [
-            "create",
-            "revise",
-            "restyle",
-            "migrate"
-          ]
         },
         "audience": {
           "type": "string",
@@ -143,46 +78,13 @@
           "type": "string",
           "minLength": 2
         },
-        "duration_minutes": {
-          "type": "number",
-          "exclusiveMinimum": 0
-        },
-        "source_deck": {
-          "type": "string",
-          "minLength": 1
-        },
         "targets": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$"
+            "minLength": 1
           }
-        }
-      }
-    },
-    "profiles": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "narrative"
-      ],
-      "properties": {
-        "narrative": {
-          "$ref": "#/$defs/stableId"
-        },
-        "brand": {
-          "type": "string",
-          "minLength": 1
-        },
-        "language": {
-          "type": "string",
-          "minLength": 1
-        },
-        "template": {
-          "type": "string",
-          "minLength": 1
         }
       }
     },
@@ -190,197 +92,19 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "thesis",
-        "chapters"
+        "profile",
+        "thesis"
       ],
       "properties": {
+        "profile": {
+          "$ref": "#/$defs/stableId"
+        },
         "thesis": {
           "type": "string",
           "minLength": 1
         },
-        "chapters": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/chapter"
-          }
-        },
         "required_roles": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        },
-        "excluded_topics": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "uniqueItems": true
-        }
-      }
-    },
-    "chapter": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "title",
-        "purpose",
-        "core_message"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/stableId"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "purpose": {
-          "type": "string",
-          "minLength": 1
-        },
-        "core_message": {
-          "type": "string",
-          "minLength": 1
-        },
-        "slide_ids": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "transition": {
-          "type": "string"
-        }
-      }
-    },
-    "source": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "title",
-        "locator"
-      ],
-      "properties": {
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "locator": {
-          "type": "string",
-          "minLength": 1
-        },
-        "type": {
-          "type": "string",
-          "minLength": 1
-        },
-        "accessed_on": {
-          "type": "string",
-          "format": "date"
-        },
-        "notes": {
-          "type": "string"
-        }
-      }
-    },
-    "claimClass": {
-      "enum": [
-        "fact",
-        "inference",
-        "proposal",
-        "target",
-        "comparative",
-        "quantitative",
-        "illustrative"
-      ]
-    },
-    "claim": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "statement",
-        "classes"
-      ],
-      "properties": {
-        "statement": {
-          "type": "string",
-          "minLength": 1
-        },
-        "classes": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/claimClass"
-          }
-        },
-        "source_ids": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "supporting_claim_ids": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "confidence": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ]
-        },
-        "measurement": {
-          "$ref": "#/$defs/measurement"
-        },
-        "acceptance": {
-          "$ref": "#/$defs/acceptance"
-        },
-        "display_label": {
-          "type": "string",
-          "minLength": 1
-        },
-        "notes": {
-          "type": "string"
-        }
-      }
-    },
-    "measurement": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "metric": {
-          "type": "string",
-          "minLength": 1
-        },
-        "unit": {
-          "type": "string",
-          "minLength": 1
-        },
-        "conditions": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        },
-        "method": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
-    },
-    "acceptance": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "owner": {
-          "type": "string",
-          "minLength": 1
-        },
-        "timeline": {
-          "type": "string",
-          "minLength": 1
-        },
-        "baseline": {
-          "type": "string",
-          "minLength": 1
-        },
-        "conditions": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        },
-        "gates": {
-          "$ref": "#/$defs/nonEmptyStringArray"
+          "$ref": "#/$defs/nonEmptyStableIdArray"
         }
       }
     },
@@ -393,12 +117,7 @@
       ],
       "properties": {
         "order": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/stableId"
-          }
+          "$ref": "#/$defs/nonEmptyStableIdArray"
         },
         "items": {
           "type": "object",
@@ -414,20 +133,14 @@
     },
     "slide": {
       "type": "object",
-      "additionalProperties": false,
       "required": [
         "title",
         "purpose",
         "takeaway",
-        "status",
-        "locked"
+        "narrative_roles"
       ],
       "properties": {
         "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "section": {
           "type": "string",
           "minLength": 1
         },
@@ -440,100 +153,23 @@
           "minLength": 1
         },
         "narrative_roles": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        },
-        "content_blocks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/contentBlock"
-          }
-        },
-        "layout_intent": {
-          "type": "string",
-          "minLength": 1
-        },
-        "reading_order": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "claim_ids": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "source_ids": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "asset_needs": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
+          "$ref": "#/$defs/nonEmptyStableIdArray"
         },
         "dependencies": {
           "type": "array",
+          "default": [],
           "items": {
             "$ref": "#/$defs/dependency"
           }
-        },
-        "transition": {
-          "type": "string"
-        },
-        "speaker_notes": {
-          "type": "string"
-        },
-        "status": {
-          "enum": [
-            "proposed",
-            "draft",
-            "review",
-            "approved",
-            "superseded"
-          ]
-        },
-        "locked": {
-          "type": "boolean"
-        },
-        "approval": {
-          "$ref": "#/$defs/approval"
         }
-      }
-    },
-    "contentBlock": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "type",
-        "content"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/stableId"
-        },
-        "type": {
-          "type": "string",
-          "minLength": 1
-        },
-        "content": {
-          "$ref": "#/$defs/jsonValue"
-        },
-        "emphasis": {
-          "enum": [
-            "primary",
-            "secondary",
-            "supporting"
-          ]
-        }
-      }
+      },
+      "additionalProperties": true
     },
     "dependency": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "target",
-        "relation"
+        "target"
       ],
       "properties": {
         "target": {
@@ -546,296 +182,6 @@
         "propagates": {
           "type": "boolean",
           "default": true
-        }
-      }
-    },
-    "approval": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "revision": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "approved_by": {
-          "type": "string",
-          "minLength": 1
-        },
-        "approved_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "changeSet": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "status",
-        "rationale",
-        "baseline_fingerprint",
-        "target_order"
-      ],
-      "anyOf": [
-        {
-          "required": [
-            "modify"
-          ]
-        },
-        {
-          "required": [
-            "insert"
-          ]
-        },
-        {
-          "required": [
-            "remove"
-          ]
-        },
-        {
-          "required": [
-            "target_semantics"
-          ]
-        },
-        {
-          "required": [
-            "reorder"
-          ]
-        }
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/stableId"
-        },
-        "status": {
-          "enum": [
-            "proposed",
-            "approved",
-            "applied",
-            "superseded"
-          ]
-        },
-        "rationale": {
-          "type": "string",
-          "minLength": 1
-        },
-        "baseline_fingerprint": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "target_fingerprint": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "target_manifest_fingerprint": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "target_order": {
-          "$ref": "#/$defs/nonEmptyStableIdArray"
-        },
-        "target_semantics": {
-          "$ref": "#/$defs/semanticPayload"
-        },
-        "reorder": {
-          "const": true
-        },
-        "approval": {
-          "$ref": "#/$defs/approval"
-        },
-        "modify": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/modification"
-          }
-        },
-        "insert": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/insertion"
-          }
-        },
-        "remove": {
-          "$ref": "#/$defs/nonEmptyStableIdArray"
-        },
-        "preserve": {
-          "$ref": "#/$defs/stableIdArray"
-        },
-        "review": {
-          "$ref": "#/$defs/stableIdArray"
-        }
-      }
-    },
-    "modification": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "slide",
-        "blueprint"
-      ],
-      "properties": {
-        "slide": {
-          "$ref": "#/$defs/stableId"
-        },
-        "blueprint": {
-          "$ref": "#/$defs/slide"
-        }
-      }
-    },
-    "insertion": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "slide",
-        "blueprint"
-      ],
-      "properties": {
-        "slide": {
-          "$ref": "#/$defs/stableId"
-        },
-        "blueprint": {
-          "$ref": "#/$defs/slide"
-        }
-      }
-    },
-    "releaseDeck": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "title",
-        "audience",
-        "objective",
-        "language",
-        "targets"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/stableId"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "audience": {
-          "type": "string",
-          "minLength": 1
-        },
-        "objective": {
-          "type": "string",
-          "minLength": 1
-        },
-        "language": {
-          "type": "string",
-          "minLength": 2
-        },
-        "duration_minutes": {
-          "type": "number",
-          "exclusiveMinimum": 0
-        },
-        "source_deck": {
-          "type": "string",
-          "minLength": 1
-        },
-        "targets": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$"
-          }
-        }
-      }
-    },
-    "semanticPayload": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "deck",
-        "profiles",
-        "narrative",
-        "sources",
-        "claims",
-        "qa"
-      ],
-      "properties": {
-        "deck": {
-          "$ref": "#/$defs/releaseDeck"
-        },
-        "profiles": {
-          "$ref": "#/$defs/profiles"
-        },
-        "narrative": {
-          "$ref": "#/$defs/narrative"
-        },
-        "sources": {
-          "type": "object",
-          "propertyNames": {
-            "$ref": "#/$defs/stableId"
-          },
-          "additionalProperties": {
-            "$ref": "#/$defs/source"
-          }
-        },
-        "claims": {
-          "type": "object",
-          "propertyNames": {
-            "$ref": "#/$defs/stableId"
-          },
-          "additionalProperties": {
-            "$ref": "#/$defs/claim"
-          }
-        },
-        "qa": {
-          "$ref": "#/$defs/qa"
-        }
-      }
-    },
-    "qa": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "forbidden_terms": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "uniqueItems": true
-        },
-        "claim_term_rules": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/claimTermRule"
-          }
-        },
-        "minimum_font_points": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          }
-        }
-      }
-    },
-    "claimTermRule": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "pattern",
-        "required_class"
-      ],
-      "properties": {
-        "pattern": {
-          "type": "string",
-          "minLength": 1
-        },
-        "required_class": {
-          "$ref": "#/$defs/claimClass"
         }
       }
     }

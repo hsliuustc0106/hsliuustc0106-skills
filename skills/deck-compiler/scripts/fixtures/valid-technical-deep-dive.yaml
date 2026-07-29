@@ -1,62 +1,38 @@
 schema_version: 1
 deck:
-  id: cache-design-review
-  title: Cache design review
-  operation: create
-  audience: Systems engineers
-  objective: Review the proposed cache architecture and its trade-offs.
+  id: runtime-design
+  title: Runtime design review
+  audience: Infrastructure engineers
+  objective: Review the design and its limits
   language: en
-  targets: [pptx]
-profiles:
-  narrative: technical-deep-dive
 narrative:
-  thesis: A tiered cache reduces remote reads while preserving consistency.
-  chapters:
-    - id: design-review
-      title: Design review
-      purpose: Explain and evaluate the proposed design.
-      core_message: The design is viable when its consistency limits are explicit.
+  profile: technical-deep-dive
+  thesis: Explicit scheduling boundaries improve isolation and observability.
 slides:
   order: [problem, constraints, architecture, evaluation, limitations]
   items:
     problem:
-      title: Remote reads dominate the critical path
-      purpose: Define the technical problem.
-      takeaway: Data placement is the main latency bottleneck.
+      title: Shared queues hide interference
+      purpose: Define the problem.
+      takeaway: Unbounded sharing makes latency unpredictable.
       narrative_roles: [problem]
-      status: approved
-      locked: true
     constraints:
-      title: Consistency and capacity constrain placement
-      purpose: Define the design constraints.
-      takeaway: The cache must balance reuse, freshness, and bounded capacity.
+      title: Compatibility limits the design space
+      purpose: State the constraints.
+      takeaway: The runtime must preserve existing model interfaces.
       narrative_roles: [constraints]
-      status: approved
-      locked: true
     architecture:
-      title: A tiered cache separates hot and durable state
-      purpose: Explain the architecture.
-      takeaway: Local hot state absorbs repeated reads while durable state preserves recovery.
+      title: Separate admission from execution
+      purpose: Present the design.
+      takeaway: Explicit boundaries isolate scheduling decisions.
       narrative_roles: [architecture]
-      dependencies:
-        - target: constraints
-          relation: responds-to
-      status: approved
-      locked: true
     evaluation:
-      title: Representative workloads validate the critical path
-      purpose: Present evaluation evidence.
-      takeaway: The design removes the expected remote-read bottleneck.
+      title: Evaluate latency and utilization together
+      purpose: Define the evidence.
+      takeaway: Tail latency improves without sacrificing useful throughput.
       narrative_roles: [evaluation]
-      dependencies:
-        - target: architecture
-          relation: evaluates
-      status: approved
-      locked: true
     limitations:
-      title: Write-heavy workloads remain a limitation
-      purpose: State trade-offs and unresolved limits.
-      takeaway: The design is strongest for read-heavy reuse patterns.
+      title: Cross-stage feedback remains open
+      purpose: Bound the conclusion.
+      takeaway: Adaptive control needs additional validation.
       narrative_roles: [limitations]
-      status: approved
-      locked: true

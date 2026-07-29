@@ -1,4 +1,4 @@
 interface:
   display_name: "Deck Compiler"
-  short_description: "Validate deck specs, dependencies, and revisions"
-  default_prompt: "Use $deck-compiler to validate this approved deck spec, report narrative and dependency issues, and produce a deterministic manifest."
+  short_description: "Lint deck narratives and dependency impact"
+  default_prompt: "Use $deck-compiler to lint this approved deck spec, report dependency impact, and compile stable page order."

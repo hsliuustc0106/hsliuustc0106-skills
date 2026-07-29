@@ -10,10 +10,8 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
-- `skills/build-slides-interactively/`：通过反馈 Gate 规划和制作演示文稿，
-  并记录已批准的叙事与逐页蓝图。
-- `skills/deck-compiler/`：不绑定领域、品牌、语言和渲染器的 Deck Spec
-  校验器，提供叙事、Claim、依赖与变更影响检查。
+- `skills/build-slides-interactively/` 与 `skills/deck-compiler/`：通过反馈
+  Gate 规划演示文稿，并检查语义叙事与页面依赖。
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。

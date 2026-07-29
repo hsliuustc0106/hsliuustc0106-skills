@@ -1,56 +1,38 @@
 schema_version: 1
 deck:
-  id: product-quarterly-update
-  title: 产品季度进展
-  operation: create
-  audience: 产品与研发团队
-  objective: 对齐本季度结果、风险与下一步计划。
+  id: product-update
+  title: 产品进展
+  audience: 管理团队
+  objective: 对齐风险与下一步
   language: zh-CN
-  targets: [pptx, pdf]
-profiles:
-  narrative: product-update
 narrative:
-  thesis: 核心工作流采用率提升，但稳定性风险仍需优先解决。
-  chapters:
-    - id: quarterly-review
-      title: 季度复盘
-      purpose: 说明结果、进展、指标、风险和下一步。
-      core_message: 保持增长的前提是先解决稳定性风险。
+  profile: product-update
+  thesis: 核心能力已验证，下一阶段聚焦规模化采用。
 slides:
   order: [outcome, progress, metrics, risks, next]
   items:
     outcome:
-      title: 核心工作流采用率持续提升
-      purpose: 总结本季度结果。
-      takeaway: 用户开始将产品用于更多日常任务。
+      title: 阶段目标已完成
+      purpose: 先讲结论。
+      takeaway: 核心场景已经跑通。
       narrative_roles: [outcome]
-      status: approved
-      locked: true
     progress:
-      title: 三项关键能力按计划交付
-      purpose: 说明产品进展。
-      takeaway: 本季度交付覆盖了计划中的核心场景。
+      title: 三项能力按计划交付
+      purpose: 说明进展。
+      takeaway: 产品、工程与生态工作同步推进。
       narrative_roles: [progress]
-      status: approved
-      locked: true
     metrics:
-      title: 使用深度和留存同步改善
-      purpose: 展示关键指标。
-      takeaway: 活跃用户开始形成更稳定的使用习惯。
+      title: 关键指标达到门槛
+      purpose: 给出量化依据。
+      takeaway: 性能与稳定性满足下一阶段要求。
       narrative_roles: [metrics]
-      status: approved
-      locked: true
     risks:
-      title: 峰值稳定性仍是主要风险
-      purpose: 主动暴露当前风险。
-      takeaway: 峰值故障会限制进一步扩大采用。
+      title: 规模化仍有两个风险
+      purpose: 主动暴露缺口。
+      takeaway: 运维复杂度与开发者覆盖仍需投入。
       narrative_roles: [risks]
-      status: approved
-      locked: true
     next:
-      title: 下一季度优先解决稳定性并扩大试点
-      purpose: 明确下一步行动。
-      takeaway: 先完成稳定性门槛，再逐步扩大覆盖范围。
+      title: 下一步聚焦客户共建
+      purpose: 明确行动。
+      takeaway: 用真实负载验证规模化价值。
       narrative_roles: [next]
-      status: approved
-      locked: true
