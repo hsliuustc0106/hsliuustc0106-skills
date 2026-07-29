@@ -1,0 +1,132 @@
+schema_version: 1
+deck:
+  id: shared-platform-strategy
+  title: Shared platform strategy
+  operation: create
+  audience: Technology leadership
+  objective: Align on the platform direction and operating model.
+  language: en
+  duration_minutes: 20
+  targets: [pptx, google_slides]
+profiles:
+  narrative: executive-strategy
+narrative:
+  thesis: A shared platform can turn repeated delivery work into reusable capability.
+  chapters:
+    - id: case-for-change
+      title: Case for change
+      purpose: Establish why the current model must change.
+      core_message: Repeated integration work now limits delivery.
+      slide_ids: [context, thesis]
+    - id: response
+      title: Strategic response
+      purpose: Explain what to build and how to execute.
+      core_message: A staged platform and operating model create reusable leverage.
+      slide_ids: [program, operating-model, roadmap, decision]
+sources:
+  delivery-survey:
+    title: Delivery workflow survey
+    locator: https://example.com/delivery-survey
+    type: report
+claims:
+  repeated-work:
+    statement: Teams repeatedly implement the same integration patterns.
+    classes: [fact]
+    source_ids: [delivery-survey]
+  efficiency-comparison:
+    statement: The shared design reduces median integration time by 30 percent.
+    classes: [comparative, quantitative]
+    measurement:
+      metric: median integration time
+      unit: percent reduction
+      conditions:
+        - Same workflow definition and completion criteria
+        - Same team-size envelope
+    acceptance:
+      baseline: Current delivery workflow
+      conditions:
+        - Compare three representative integrations.
+  initial-launch:
+    statement: Complete the first production stage within two quarters.
+    classes: [target]
+    acceptance:
+      owner: Platform team
+      timeline: End of the second quarter
+      gates:
+        - Required workflows pass acceptance testing.
+        - Production readiness review is complete.
+slides:
+  order: [cover, context, thesis, program, operating-model, roadmap, decision]
+  items:
+    cover:
+      title: Shared platform strategy
+      purpose: Establish the topic and audience.
+      takeaway: Reusable platform capability can improve delivery economics.
+      status: approved
+      locked: true
+    context:
+      title: Repeated integration work is increasing
+      purpose: Explain why change is timely.
+      takeaway: Fragmentation now consumes material delivery capacity.
+      narrative_roles: [why-now]
+      claim_ids: [repeated-work]
+      status: approved
+      locked: true
+    thesis:
+      title: The delivery model must shift from projects to a platform
+      purpose: State what changes.
+      takeaway: Shared services replace repeated project-specific integration.
+      narrative_roles: [what-changes]
+      dependencies:
+        - target: context
+          relation: follows
+      status: approved
+      locked: true
+    program:
+      title: The shared design reduces repeated integration work
+      purpose: Define what to build.
+      takeaway: Common services become reusable delivery primitives.
+      narrative_roles: [what-to-build]
+      claim_ids: [efficiency-comparison]
+      dependencies:
+        - target: thesis
+          relation: elaborates
+      status: approved
+      locked: true
+    operating-model:
+      title: Combine product ownership, customer co-design, and staged delivery
+      purpose: Explain how to win.
+      takeaway: A shared operating cadence turns platform capability into adoption.
+      narrative_roles: [how-to-win]
+      dependencies:
+        - target: program
+          relation: feeds-into
+      status: approved
+      locked: true
+    roadmap:
+      title: Deliver capability through measurable stages
+      purpose: Explain when capabilities mature.
+      takeaway: Stage gates control risk while preserving momentum.
+      narrative_roles: [roadmap]
+      claim_ids: [initial-launch]
+      dependencies:
+        - target: operating-model
+          relation: feeds-into
+      status: approved
+      locked: true
+    decision:
+      title: Align on the first stage and its gates
+      purpose: State the management outcome.
+      takeaway: Approve the first stage and review progress against explicit gates.
+      narrative_roles: [decision]
+      dependencies:
+        - target: operating-model
+          relation: summarized-by
+        - target: roadmap
+          relation: summarized-by
+      status: approved
+      locked: true
+qa:
+  claim_term_rules:
+    - pattern: "(?i)reduces"
+      required_class: comparative

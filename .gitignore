@@ -1,0 +1,5 @@
+artifacts/
+deliverables/
+.venv-slides/
+**/__pycache__/
+*.pyc

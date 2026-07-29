@@ -14,7 +14,8 @@ request to a finished deck.
 - End each stage with a concrete review artifact and request explicit feedback.
 - Treat silence as no approval. Do not advance until the user approves or revises
   the artifact.
-- Keep a compact decision log with `approved`, `open`, and `superseded` items.
+- Keep a compact decision log with `approved`, `open`, and `superseded` items
+  until the approved narrative is recorded in a deck specification.
 - Ask only questions whose answers materially change the result. Recommend a
   default when presenting choices.
 - If feedback invalidates an earlier decision, explain the downstream impact and
@@ -46,6 +47,25 @@ request to a finished deck.
 If the user already provides an outline, template, or slide plan, map it to the
 stages below, identify what is already approved, and confirm the proposed starting
 stage before creating slide content.
+
+## Maintain the Deck Specification
+
+After Gate 2A is approved, use the sibling
+`../deck-compiler/SKILL.md` to create and maintain a task-local
+`deck-spec.yaml`.
+
+- Use stable semantic slide and claim IDs. Derive page numbers from slide order.
+- Keep narrative, claims, evidence, dependencies, approval state, and change
+  authorization in the specification.
+- Keep template coordinates, fonts, logos, and renderer-specific object IDs out
+  of the semantic specification.
+- Validate after Gate 2A, lint the complete slide inventory after Gate 2B, and
+  emit a deterministic manifest before final rendering.
+- Before changing an approved slide, add a named change set and run impact
+  analysis against the prior release manifest. Keep candidate blueprints and
+  non-slide semantic targets inside the proposed change set until the user
+  approves them. Report dependent reviews and obtain authorization for every
+  locked slide that will change.
 
 ## Stage 1: Topic, Template, and Two-Slide Checkpoint
 
@@ -120,6 +140,10 @@ the table of contents. Update the second slide to reflect the approved structure
 Keep the chapter motivation visible as a concise `Why` statement when the layout
 allows it.
 
+After approval, initialize `deck-spec.yaml` with the deck metadata, selected
+narrative profile, thesis, chapters, known claims, sources, and output targets.
+Validate it before proceeding to Gate 2B.
+
 ### Gate 2B: Define Every Slide
 
 After the table of contents is approved, define every intended slide before drafting
@@ -128,7 +152,7 @@ slide count and numbering remain explicit.
 
 | Field | Required content |
 | --- | --- |
-| Slide number and title | Stable working identity |
+| Semantic slide ID, provisional number, and title | Use the semantic ID as the stable identity; derive the number from the approved order |
 | Motivation or purpose | The audience question, problem, or narrative job that makes this slide necessary |
 | Key takeaway | One sentence the audience should retain |
 | Draft content list | Proposed headline, labels, supporting points, evidence, and conclusion; use real draft wording rather than placeholders |
@@ -137,6 +161,7 @@ slide count and numbering remain explicit.
 | Asset needs | Selected reusable figure or candidates; primary source, rights status, planned edits, attribution text, and any missing logos, screenshots, data, or illustrations |
 | Dependencies | Open decisions or claims requiring confirmation |
 | Transition | How this slide sets up the next slide |
+| Approval state | Proposed, review, approved, or superseded; lock approved slides |
 
 Prefer visuals that explain relationships over decorative graphics. Keep one primary
 message per slide. Flag unsupported claims rather than filling gaps with plausible
@@ -149,7 +174,8 @@ chapter or build slides until the user approves the current chapter, unless the 
 explicitly asks to review a larger batch.
 
 Stage 2 is complete only when the chapter structure and the complete slide inventory
-are explicitly approved.
+are explicitly approved. Record the complete inventory in `deck-spec.yaml` and run
+the deck compiler's narrative, claim, dependency, and approval lint before drafting.
 
 ## Stage 3: Draft, Review, and Revision
 
@@ -168,6 +194,13 @@ After each batch:
 Apply revision feedback surgically. Change only the requested slides and elements.
 Treat approved chapters as read-only. If a requested deck-wide change affects approved
 slides, explain its scope and obtain permission first.
+
+For every revision, record the requested scope, complete candidate blueprints,
+and any non-slide semantic target as a change set, then run deck impact analysis
+against the prior release manifest before editing. Approval of a dependent review
+is not permission to edit that slide; authorize each locked mutation explicitly.
+Apply approved targets only after approval, and compare the resulting spec with
+the prior release manifest before rendering.
 
 ## Stage 4: Final Assembly
 
@@ -192,3 +225,5 @@ After all chapters are approved, perform a final pass for:
 
 Use before-and-after renders or structural diffs when available. Deliver the final
 deck with a concise change summary and list any property that could not be verified.
+Regenerate the deterministic deck manifest and confirm that the delivered order,
+page count, approval state, and changed-slide scope match it.
