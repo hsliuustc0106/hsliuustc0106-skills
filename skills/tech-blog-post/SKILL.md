@@ -1,154 +1,133 @@
 ---
 name: tech-blog-post
-description: Generate a Zhihu-formatted technical blog post from a source article URL (WeChat MP, etc.) by analyzing PRs in the current repo for technical depth — code blocks, tables, contributor info, and performance data. Use when the user says "write a blog post", "post to Zhihu", "write a Zhihu article", or provides a source article URL and asks to organize it into a blog post.
-license: MIT
+description: Research, blueprint, write, and locally integrate evidence-backed technical blog posts. Use when the user asks to write, add, update, or organize a technical blog or article for a Next.js site, Markdown file, or Zhihu; provides source URLs, repositories, papers, issues, or PRs to turn into a post; or requests code-, architecture-, benchmark-, or contributor-grounded technical writing. Default to the repository-aware nextjs-site profile while preserving explicit markdown and backward-compatible zhihu profiles.
 ---
 
-# Tech Blog Post Generator
+# Technical Blog Post
 
-Generate a Zhihu-formatted technical blog post from a source article. Extracts key topics from the article, searches the repo for related PRs, pulls technical details (code diffs, commit messages), and outputs a ready-to-publish `.md` file with HTML tables and `<pre>` code blocks for Zhihu compatibility.
+Create technical posts through a required narrative-blueprint approval gate.
+Default to English and the `nextjs-site` profile. Keep source claims auditable,
+make minimal repository changes, validate locally, and never publish implicitly.
+
+## Non-negotiable rules
+
+- Ask for the user's important starting references unless they already supplied
+  them. Do not ask again when the references are clear.
+- Prefer primary sources: official repositories, code, documentation, papers,
+  issues, PRs, release notes, and reproducible benchmark records.
+- Use secondary sources for framing only. Mark inference, experimental results,
+  projections, and unverified claims explicitly.
+- Link or cite reference figures, tables, and code rather than copying them.
+  Copy an asset locally only when its reuse rights are clear.
+- Require approval of the narrative blueprint before drafting or editing output
+  files. After presenting it, stop and wait.
+- Do not commit, push, publish, create a PR, or send content externally unless
+  the user separately and explicitly requests that action.
+- Keep repository edits surgical. Do not introduce a CMS, refactor shared blog
+  architecture, or restyle unrelated pages without explicit authorization.
+
+## Select the output profile
+
+Use an explicitly requested profile when provided. Otherwise default to
+`nextjs-site`.
+
+- `nextjs-site`: Read [references/nextjs-site.md](references/nextjs-site.md)
+  before repository discovery or file edits.
+- `markdown`: Read [references/markdown.md](references/markdown.md) before
+  writing the standalone draft.
+- `zhihu`: Read [references/zhihu.md](references/zhihu.md) before composing.
+  Preserve the legacy Chinese/Zhihu formatting behavior.
+
+English is the default language. Honor an explicit language request. For an
+established target site, match its language only when doing so does not conflict
+with an explicit choice; surface a multilingual ambiguity in the blueprint.
 
 ## Workflow
 
-### Step 1: Fetch Source Article
+### 1. Establish scope and references
 
-Try multiple methods in order until content is retrieved:
+Identify the topic, intended audience, target repository or output file, and
+important starting references. Ask one concise question for missing important
+references before self-discovery. State any material assumptions.
 
-1. **curl with WeChat mobile UA** (for mp.weixin.qq.com):
-   ```bash
-   curl -sL -H "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.38" "<URL>" | python3 -c "
-   import sys, html, re
-   content = sys.stdin.read()
-   clean = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL)
-   clean = re.sub(r'<style[^>]*>.*?</style>', '', clean, flags=re.DOTALL)
-   clean = re.sub(r'<[^>]+>', '\n', clean)
-   clean = html.unescape(clean)
-   lines = [l.strip() for l in clean.split('\n') if l.strip() and len(l.strip()) > 10]
-   print('\n'.join(lines[:100]))
-   "
-   ```
+For `nextjs-site`, complete read-only repository discovery before proposing an
+integration plan. If the blog structure is not confidently identifiable, stop
+and ask rather than guessing paths or falling back silently.
 
-2. **curl with standard browser UA** for other sources.
-3. **WebFetch tool** for accessible URLs.
+### 2. Research only what the narrative needs
 
-Extract from the article:
-- Title / topic
-- Model names mentioned
-- Key technical claims (performance numbers, optimizations)
-- Framework / hardware references
+Read the supplied sources completely enough to understand their claims and
+limitations. Follow their primary references, then inspect only the additional
+code, PRs, issues, papers, or benchmarks needed to support the article. Do not
+target an arbitrary number of PRs or citations.
 
-### Step 2: Discover Related PRs
+For each material claim, record:
 
-Search the repo for PRs related to the models and topics found:
+- the primary source and stable link;
+- whether it is a fact, measured result, inference, projection, or opinion;
+- the exact environment or topology for performance claims;
+- relevant limitations, exclusions, or contradictory evidence.
 
-```bash
-# Search by model name
-git log --oneline --all --grep="<ModelName>" --since="<cutoff-date>" | head -30
+Code and architecture analysis are optional. Include them when they materially
+improve the thesis. Prefer concise pseudocode and links to pinned commits or
+exact source locations over long copied excerpts.
 
-# Search by optimization keywords (fused, perf, attention, parallel, quant, etc.)
-git log --oneline --all --grep="<keyword>" --since="<cutoff-date>" | head -20
-```
+### 3. Present the narrative blueprint and stop
 
-Filter PRs to those most relevant to the article's narrative. Aim for 10-15 key PRs.
+Before drafting prose or modifying files, present:
 
-### Step 3: Extract Technical Details
+1. Working title, target audience, and central thesis.
+2. Intended reader takeaway and explicit non-goals.
+3. Overall logical progression.
+4. One row per proposed section with:
+   - purpose;
+   - main content;
+   - key claims;
+   - primary-source links;
+   - proposed figures or code;
+   - caveats;
+   - transition to the next section.
+5. Planned Next.js files and validation commands for `nextjs-site`; otherwise,
+   the planned output file and format checks.
 
-For each selected PR, extract:
+Place unresolved evidence or judgment under the relevant section's caveats.
+Present materially different narrative interpretations when they would change
+the article. Recommend one rather than choosing silently.
 
-```bash
-# PR description and metadata
-git log --format="%H %s%n%b" <commit> -1
+Ask the user to approve or revise the blueprint. Do not draft, edit, commit, or
+publish until approval is explicit. If approval changes only part of the
+blueprint, update the affected logic and confirm that the remaining structure
+still holds.
 
-# Changed files and scope
-git diff <commit>^..<commit> --stat | tail -5
+### 4. Draft from the approved blueprint
 
-# Key code changes (focus on the most illustrative diffs)
-git show <commit> -- <relevant_file> | head -80
-```
+Follow the approved section order, claims, scope, and source plan. Do not add a
+new central claim or restructure the logic silently. If new evidence invalidates
+the approved narrative, stop, explain the conflict, and request a blueprint
+revision.
 
-Prioritize PRs that:
-- Show a clear before/after pattern (good for code blocks)
-- Have measurable performance impact
-- Demonstrate architectural decisions
+Write in an engineer's deep-dive voice: clear, evidence-led, accessible to the
+approved audience, and precise about experimental boundaries. Keep copied
+quotes short. Attach links near the claims or reused elements they support, and
+include a references section when the target format benefits from one.
 
-### Step 4: Gather Contributor Info
+### 5. Integrate minimally
 
-```bash
-for pr in <pr_numbers>; do
-  commit=$(git log --oneline --all --grep="#$pr" --format="%H" | head -1)
-  if [ -n "$commit" ]; then
-    echo "=== PR #$pr ==="
-    git log --format="Author: %an <%ae>" $commit -1
-    git log --format="%b" $commit -1 | grep -i "Signed-off-by:" | head -5
-    git log --format="%b" $commit -1 | grep -i "Co-authored-by:" | head -5
-    echo ""
-  fi
-done
-```
+Follow the selected profile reference. For `nextjs-site`, create or update only
+the approved post and the smallest required listing, metadata, or route files.
+Preserve existing style, components, author conventions, and unrelated work.
 
-Map email addresses to GitHub usernames:
-- `XXXXX+USERNAME@users.noreply.github.com` → `USERNAME`
-- For corporate emails, use the Signed-off-by name as the GitHub ID
+### 6. Validate and hand off
 
-### Step 5: Compose the Blog Post
+Run the approved focused checks. At minimum for `nextjs-site`:
 
-Structure the post following this template:
+- verify route, slug, date, read time, and listing metadata agree;
+- lint or format the changed files when supported;
+- run the production build when available;
+- check internal links and referenced local assets;
+- run a diff/whitespace check.
 
-```
-# <Title>：<Subtitle>
-
-## 1. Overview
-<2-3 paragraphs: background, what this covers, key result>
-
-## 2. Test Environment
-<HTML table: component | spec>
-
-## 3. Optimization Dimensions
-### 3.1 <Dimension Name>（#PR1, #PR2）
-<Explanation + code blocks + technical analysis>
-### 3.2 ...
-... (repeat for each optimization dimension)
-
-## 4. Performance Results
-<HTML table: configuration | metric | speedup>
-
-## 5. PR Index & Contributors
-
-A single combined section with one table:
-
-<table>
-<tr><td><b>PR</b></td><td><b>Category</b></td><td><b>Description</b></td><td><b>Contributors</b></td></tr>
-<tr><td><a href="https://github.com/...">#1234</a></td><td>Perf</td><td>Summary of the change</td><td>@github_id</td></tr>
-...
-</table>
-
-- PR numbers link directly to GitHub PR URLs
-- Contributors column lists GitHub @ handles
-- Rows sorted by category (Perf → Feature → Bugfix → Quant → Enhancement)
-
-## 6. References
-<Bullet list: original article, repos, models>
-```
-
-### Step 6: Format for Zhihu
-
-**Critical formatting rules for Zhihu compatibility:**
-
-- **Tables**: Use `<table>` HTML tags, NOT markdown pipe tables. Include `<tr>`, `<td>`, `<b>` tags.
-- **Code blocks**: Use `<pre><code>...</code></pre>` tags, NOT ``` fences.
-- **Inline code**: Use backticks as normal (Zhihu handles these).
-- **Bold**: Use `**text**` or `<b>text</b>`.
-- **Headings**: Use `##` and `###` as normal.
-
-### Step 7: Write Output File
-
-Write to `<model_or_topic>_blog.md` in the current working directory.
-
-## Important Notes
-
-- Default language: Chinese (unless the article is in English)
-- Tone: Technical but accessible — like an engineer's deep-dive, not a whitepaper
-- Code blocks: Keep them concise (~10-20 lines each), focus on the most illustrative parts
-- PR links: Use full GitHub URLs (not just #numbers)
-- Always include the original article URL in References
-- If source article can't be fetched, ask the user to paste the content
+Report unrelated pre-existing failures without fixing them. Summarize the
+article, changed files, source policy, validation results, and any remaining
+caveats. Stop with local changes unless the user separately requests a Git
+publication workflow.

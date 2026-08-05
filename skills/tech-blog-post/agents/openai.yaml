@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Blog Post"
+  short_description: "Write sourced technical posts with blueprint approval"
+  default_prompt: "Use $tech-blog-post to research and blueprint an evidence-backed technical article before writing it."
