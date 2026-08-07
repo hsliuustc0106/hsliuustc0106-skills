@@ -10,6 +10,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
+- `skills/gen-model-architecture-analysis/`: evidence-backed architecture,
+  hardware, vLLM-Omni support, and optimization analysis for generative models.
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
@@ -39,6 +41,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 │       └── vllm-omni-cookbook.mdc
 ├── skills/
 │   ├── agentic-coding-guidelines/
+│   ├── gen-model-architecture-analysis/
 │   ├── vllm-omni-deck/
 │   ├── vllm-guidelines/
 │   ├── vllm-omni-guidelines/

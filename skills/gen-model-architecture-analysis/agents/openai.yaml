@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Architecture Analysis"
+  short_description: "Architecture, hardware, and vLLM-Omni readiness"
+  default_prompt: "Use $gen-model-architecture-analysis for a comprehensive evidence-backed architecture and hardware report, adding the vLLM-Omni profile only when it is in scope."
