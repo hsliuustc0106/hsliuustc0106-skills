@@ -29,6 +29,8 @@ Do not make one evidence row support a broader claim than the source does. Cite 
 
 Cite multiple sources as individual IDs such as `[E1] [E2]`; do not use an ID range such as `[E1-E3]` because it obscures which ledger rows support the claim.
 
+Only citations rendered in the report's own prose or tables satisfy a claim. Citations inside inline, fenced, indented, or raw-HTML code, block quotations, HTML comments/blocks, image or link destinations, or link-reference definitions do not count; place the evidence ID after the claim outside those constructs. Raw HTML blocks cannot carry report claims or canonical structure and are rejected by the validator; use Markdown or permitted inline HTML instead. Permitted inline HTML containers must open and close within the same rendered inline block.
+
 ## Evidence classes
 
 - `Observed`: directly inspected code, configuration, checkpoint metadata, test definition, or another static artifact; it does not claim an execution result.
@@ -40,6 +42,8 @@ Cite multiple sources as individual IDs such as `[E1] [E2]`; do not use an ID ra
 - `Proposed`: future implementation or optimization direction.
 
 Do not label an issue checklist `Observed`; it is `Reported` planning state until current code or tests corroborate it.
+
+A local benchmark or profiler result is `Measured` only when the ledger records the executed command, pinned code/model/environment, workload, warmup and repetitions, metric definition, and artifact or raw log. FLOPs, bytes, forward counts, and collective payloads calculated from inspected inputs are `Derived`. A predicted bottleneck, latency, or benefit is `Estimated` until measured. An upstream benchmark that was not reproduced remains `Reported`, even when its numbers are precise. Split one source into separate ledger rows when a paragraph combines static facts, arithmetic, and measured or reported results with different evidence classes.
 
 For mutable runtime features, also record `effective_on_revision`, plus `superseded_by` or `reverted_by` when applicable. A merged change is not necessarily active on the target revision.
 

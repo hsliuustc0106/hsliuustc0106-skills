@@ -7,6 +7,7 @@ Use this profile only when vLLM-Omni is in scope. Pin the repository revision be
 - [Implementation inspection](#inspect-the-implementation-surface)
 - [Support matrix](#build-a-multi-axis-support-matrix)
 - [Roadmap evidence](#use-roadmap-issues-correctly)
+- [Local performance evidence](#use-the-runtime-profiling-surface)
 - [Optimization funnel](#optimization-funnel)
 - [Prioritization and records](#prioritization)
 - [Completion gates](#completion-gates-for-new-model-support)
@@ -53,12 +54,26 @@ Roadmap evidence should answer:
 - Is there code, a recipe, or recurring CI that independently corroborates it?
 - What remains after the narrow item is complete?
 
+## Use the runtime profiling surface
+
+Apply [performance-analysis.md](performance-analysis.md), then inspect the pinned runtime's current profiling documentation, model recipe, benchmark entrypoints, and profiler tests. In current layouts these may include `docs/contributing/profiling.md`, diffusion serving benchmarks, `profiler_config`, `start_profile()` / `stop_profile()`, online `/start_profile` and `/stop_profile` controls, PyTorch trace export, stage timers, and CUDA/Nsight capture. Locate them with `rg`; do not assume paths or flags are stable.
+
+For a vLLM-Omni performance profile:
+
+1. Run a model-specific contract or smoke test before a full-weight profile when one exists.
+2. Capture one warm representative request for attribution and separate repeated unprofiled requests for headline latency/variability.
+3. Record stage timings, actual denoiser/decode forward counts, rank-local peak allocation/reservation, host transfer/offload, collective activity, and the top kernels or graph breaks.
+4. Save trace paths and exact commands in the evidence ledger; profiling artifacts alone do not establish output quality.
+5. Repeat the baseline after changing attention backend, compile, quantization, offload, cache, or parallel dimensions, with only one mechanism changed at a time.
+
+On NVIDIA, select the runtime's supported torch-profiler or CUDA/Nsight path. On Ascend, inspect platform hooks and use the compatible CANN/`torch_npu` profiler; a CUDA trace cannot establish NPU bottlenecks. If the target runtime or hardware is unavailable, retain the analysis as static/source-reported and supply the exact target qualification run.
+
 ## Optimization funnel
 
 Do not begin with a generic technique list. Use this sequence:
 
-1. Establish reference parity and a representative end-to-end baseline.
-2. Attribute time and memory by stage and repeated operation.
+1. Establish reference parity and a representative end-to-end baseline, or state why it could not be run locally.
+2. Attribute time and memory by stage and repeated operation using local profile evidence when available.
 3. Identify the architecture-specific bottleneck and scaling limit.
 4. Check whether vLLM-Omni already exposes the needed abstraction or backend.
 5. Separate cross-platform logic from platform-specific kernels.
@@ -81,7 +96,7 @@ Consider a family only when architecture and profiling evidence make it relevant
 | Serving/scheduling | Queueing, single-request batches, or cancellation gaps dominate | Continuous batching, async scheduling, abort propagation, admission control | Mostly runtime-wide, with backend memory/recovery hooks |
 | CI/observability | Support exists but regressions are invisible | Accuracy/perf baselines, profiler spans, hardware matrices | Each claimed platform needs recurring coverage or explicit limits |
 
-Architecture-specific examples are hypotheses until profiled. A repeated diffusion loop makes invariant hoisting plausible; a long packed video/audio sequence makes attention and sequence-parallel work plausible; a multi-component pipeline makes lifecycle/offload or stage separation plausible. None proves an optimization is implemented or beneficial.
+Architecture-specific examples are hypotheses until profiled. A repeated diffusion loop makes invariant hoisting plausible; a long packed video/audio sequence makes attention and sequence-parallel work plausible; a multi-component pipeline makes lifecycle/offload or stage separation plausible. Verify the exact dependency before proposing a cache: conditioning may be invariant before a joint block while its in-block K/V remains coupled to changing media state. None of these examples proves an optimization is implemented or beneficial.
 
 ## Prioritization
 
@@ -89,7 +104,7 @@ Use these default tiers:
 
 - `P0 — correctness/blocker`: reference parity, load failure, wrong output, crash, or missing required task.
 - `P1 — support/qualification`: platform recipe, API completeness, accuracy gate, lifecycle behavior, or a severe memory blocker.
-- `P2 — measured performance`: a profiler-backed optimization with an A/B plan.
+- `P2 — measured performance`: a locally profiler-backed optimization with an A/B plan.
 - `P3 — exploration`: plausible research direction without target-run evidence.
 
 Score impact and effort only after assigning a tier. Do not allow speculative speedup to outrank a correctness gap.
@@ -102,13 +117,15 @@ Every optimization row must contain:
 |---|---|
 | Priority/status | P0-P3 and the current implementation state |
 | Current gap | Narrow task/platform/workload limitation with evidence |
-| Bottleneck | Measurement or explicitly labeled hypothesis |
+| Bottleneck | Prefix with `Observed`, `Measured`, `Reported`, `Community-reported`, `Derived`, `Estimated`, or `Hypothesis`, and cite its evidence |
 | Change | Mechanism and likely vLLM-Omni component/touchpoint |
 | NVIDIA impact | Applicable backend, dependency, and validation |
 | Ascend impact | Applicable backend, dependency, and validation |
 | Expected result | Directional goal unless measured; no invented percentage |
 | Risks/dependencies | Correctness, quality, memory, topology, upstream, or kernel constraints |
-| Verification | Exact A/B workload, metrics, repetitions, and quality gates |
+| Verification | Use `Workload: baseline=... vs candidate=...; metrics: performance=..., resource=...; repetitions: warmups=N, measured=N; quality gate: pass if ...`. For cold/deterministic checks, replace `warmups=N` with `mode=cold` or `mode=deterministic`. Arm descriptions must differ, and repetitions must follow that exact count grammar. The quality gate must name an output/tensor-to-baseline tolerance, a named quality metric plus threshold, or a concrete media-output contract; generic “succeeds,” “valid,” or performance-only gates are insufficient. |
+
+For every requested platform, include at least one substantive optimization or qualification direction. Use `N/A — <specific reason>` only for an individually inapplicable row; bare `N/A` is insufficient, and an all-`N/A` platform column does not satisfy platform coverage.
 
 ## Completion gates for new model support
 

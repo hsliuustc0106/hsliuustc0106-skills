@@ -11,7 +11,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
 - `skills/gen-model-architecture-analysis/`: evidence-backed architecture,
-  hardware, vLLM-Omni support, and optimization analysis for generative models.
+  inference performance, hardware, vLLM-Omni support, and optimization analysis
+  for generative models, with bounded local tests or profiling when useful.
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.

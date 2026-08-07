@@ -93,15 +93,15 @@ For requested but untested targets, write `Not validated` and provide a bounded 
 
 ## Benchmark and qualification protocol
 
-For performance claims:
+Use the evidence-depth and profiling workflow in [performance-analysis.md](performance-analysis.md). For performance claims:
 
 1. Pin hardware, software, model, and workload.
 2. Use identical inputs, seed, precision, and output contract for A/B comparisons.
-3. Exclude compile and cache warmup unless cold-start is the metric.
+3. Synchronize asynchronous accelerator work at measurement boundaries. Separate cold start, compilation, cache warmup, and steady state.
 4. Run enough repetitions to report variability; use mean plus a spread measure.
-5. Capture stage latency, end-to-end latency, throughput/concurrency, and peak memory.
+5. Capture stage and collective latency, end-to-end latency, throughput/concurrency, and allocated/reserved plus device-observed peak memory.
 6. Pair performance with task-appropriate accuracy or quality gates.
-7. Save commands/configuration and profiler artifacts.
+7. Save commands/configuration, profiler/tool versions, raw samples, and profiler artifacts.
 
 For generative media, successful file creation is only a smoke gate. Also validate decoding, dimensions/duration, modality presence, finiteness, and an appropriate semantic/perceptual quality baseline.
 
