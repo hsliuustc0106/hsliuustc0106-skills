@@ -176,4 +176,5 @@ additional layout 9 slides. Never shrink below 12 pt.
   If unresolved, omit the figure with an explicit note.
 - Keep repeated narrative roles on the same layout family.
 - Preserve native editability and source notices.
-- Render and inspect every changed slide before delivery.
+- Render every changed slide during repair, then render and inspect the complete
+  deck after the final repair as required by `layout-qa.md`.
