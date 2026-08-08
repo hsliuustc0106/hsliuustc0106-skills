@@ -50,6 +50,8 @@ Prefer current code and executed tests over summaries. When sources conflict, sh
 
 Start from entrypoints and configuration, then trace preprocessing, encoders, core network, scheduler or decode loop, and output decoders. Capture concrete tensor shapes and dtypes at major boundaries. Cover only mechanisms present in the inspected variant.
 
+Include one Mermaid component/data-flow diagram for the representative path. Put major components in execution order, label each major data edge with symbolic and—when available—canonical concrete I/O shape and dtype, and keep at least one connected source-to-output route of two or more shape-labeled data edges. Show important modality branches and repeated generation loops, and cite the diagram inputs in visible prose within `Model Architecture`. Keep exact formulas and variant details in the component/shape tables; do not put evidence IDs inside the Mermaid code block.
+
 Use the inspection map and calculation rules in [architecture-analysis.md](references/architecture-analysis.md). Never import or execute untrusted remote model code merely to discover its structure.
 
 ### 3. Choose performance evidence depth
@@ -112,6 +114,7 @@ Resolve errors before delivery. Review warnings rather than suppressing them mec
 ## Non-Negotiable Quality Gates
 
 - State the model, repository revisions, and evidence cutoff. State workload, precision, and topology for hardware or performance claims.
+- Include a Mermaid component/data-flow diagram with shape-bearing labels on the major interfaces; keep its shapes consistent with the component table and canonical workload.
 - State the selected performance evidence path and the local-test/profile decision. Do not silently omit measurement when an optimization conclusion depends on it.
 - Cite architecture and support claims at the point of use with evidence IDs.
 - Label calculations `Derived`, projections `Estimated`, and future work `Proposed`.

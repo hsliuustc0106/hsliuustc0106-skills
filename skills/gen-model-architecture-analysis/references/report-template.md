@@ -9,7 +9,7 @@ Use this structure for the final Markdown report. Remove instruction text and in
 
 ## Core report
 
-```markdown
+````markdown
 # <Model> Architecture Analysis
 
 ## Executive Summary
@@ -37,7 +37,17 @@ Use this structure for the final Markdown report. Remove instruction text and in
 
 ### Architecture Identity and Data Flow
 
-<Narrative and, only if useful, one architecture diagram.>
+<Brief architecture identity and variant boundaries.>
+
+```mermaid
+flowchart LR
+  I["Input / processor"] -->|"input [B,L] int64; canonical [1,256]"| E["Encoder / adapter"]
+  E -->|"context [B,L,D] bf16"| G["Core generator x N forwards"]
+  G -->|"latent [B,T,C,H',W'] fp32"| D["Decoder / postprocessor"]
+  D -->|"output [B,F,H,W,3] uint8"| O["Response"]
+```
+
+<Replace the example with the real major components and branches. Annotate each major data edge with symbolic and canonical concrete I/O shape/dtype. Cite the inspected inputs here, outside the code fence.>
 
 ### Components
 
@@ -151,7 +161,7 @@ Status vocabulary: `Supported`, `Partial`, `Unsupported`, `Unverified`, `N/A`.
 | ID | Claim/use | Source | Revision/date | Class | Confidence | Notes |
 |---|---|---|---|---|---|---|
 | E1 | <narrow claim> | <pinned permalink or local path> | <commit/version/date> | Observed/Measured/Reported/Community-reported/Derived/Estimated/Proposed | High/Medium/Low | <scope/limitation> |
-```
+````
 
 ## Presentation rules
 
@@ -159,8 +169,10 @@ Status vocabulary: `Supported`, `Partial`, `Unsupported`, `Unverified`, `N/A`.
 - Keep current support separate from proposed optimization work.
 - Record a local-test/profile decision even when only source measurements or static estimates are available.
 - Prefer tables for repeated comparisons and prose for reasoning.
-- Use at most one architecture diagram unless additional diagrams materially clarify different execution paths.
-- A Mermaid diagram is optional. Validate its syntax if one is included.
+- Include one Mermaid component/data-flow diagram for the representative path. Add another only when a materially different variant cannot be shown clearly as a branch.
+- Label every major data-bearing edge with its symbolic shape and add the canonical concrete shape/dtype when known. Keep detailed derivations in the tables.
+- Keep at least one source-to-output route of two or more shape-labeled data edges, with one solid data edge per Mermaid line.
+- Keep evidence IDs outside the Mermaid fence and validate the diagram syntax.
 - Link directly to primary sources and pin code links to a commit where possible.
 - Do not seed the report with hypothetical speedup numbers or universal hardware minima.
 - For a base report, retain the inference-performance section and omit only the two vLLM-Omni sections.

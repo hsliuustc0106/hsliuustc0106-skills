@@ -42,7 +42,21 @@ Start with a one-paragraph identity:
 
 Distinguish the vendor's complete product/system, the publicly released checkpoint components, and the subset implemented by the target runtime. Do not attribute hosted preprocessing, upscaling, postprocessing, or unreleased components to the open checkpoint.
 
-Then build a component table:
+Then draw one Mermaid flowchart for the representative path. The diagram is the orientation layer, not a replacement for exact tables:
+
+```mermaid
+flowchart LR
+  I["Input adapter"] -->|"IDs [B,L] int64"| E["Condition encoder"]
+  E -->|"context [B,L,D] bf16"| P["Connector / packer"]
+  Z["Initial latent"] -->|"latent [B,T,C,H',W'] fp32"| P
+  P -->|"packed state [S,D] bf16"| G["Core generator x N forwards"]
+  G -->|"final latent [B,T,C,H',W'] fp32"| D["Decoder"]
+  D -->|"output [B,F,H,W,3] uint8"| O["Response"]
+```
+
+Adapt the nodes and branches to the model. Label every major data-bearing edge with a symbolic shape; add the canonical concrete shape and dtype when known. Keep at least one connected source-to-output path with two or more shape-labeled edges. For validator compatibility, put one solid data edge on each line and use either `A -->|"tensor [B,L,D] bf16"| B` or `A -- "tensor [B,L,D] bf16" --> B`. Show modality-specific inputs, packing/connector boundaries, recurrent decode or denoise loops, and separate output heads when they materially affect execution. Use a short `control: ...` label for a control-only edge rather than inventing a tensor. Put evidence IDs in the surrounding visible architecture prose because citations inside a code fence do not count.
+
+Cross-check every diagram label against the representative workload and then build a component table:
 
 | Stage/component | Source class/file | Parameters or config | Input -> output | Dtype/device | Residency/frequency | Evidence |
 |---|---|---|---|---|---|---|

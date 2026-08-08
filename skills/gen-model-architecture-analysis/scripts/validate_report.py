@@ -240,6 +240,14 @@ class Finding:
 
 
 @dataclass(frozen=True)
+class MermaidEdge:
+    source: str
+    target: str
+    label: str
+    has_shape: bool
+
+
+@dataclass(frozen=True)
 class Heading:
     level: int
     title: str
@@ -673,6 +681,194 @@ def markdown_tables(section: str) -> list[tuple[list[str], list[list[str]]]]:
         if token.type in container_tokens:
             container_depth += 1
     return tables
+
+
+def top_level_mermaid_blocks(section: str) -> list[str]:
+    """Return Mermaid fences that are not nested in quotations or lists."""
+    blocks: list[str] = []
+    container_depth = 0
+    html_block_stack: list[tuple[str, bool]] = []
+    container_tokens = {
+        "blockquote_open",
+        "bullet_list_open",
+        "ordered_list_open",
+        "list_item_open",
+    }
+    container_closes = {token.replace("_open", "_close") for token in container_tokens}
+    for token in MARKDOWN.parse(section):
+        if token.type == "html_block":
+            update_html_block_visibility_stack(token.content, html_block_stack)
+            continue
+        if token.type in container_closes:
+            container_depth = max(0, container_depth - 1)
+        hidden_by_html = bool(html_block_stack and html_block_stack[-1][1])
+        if (
+            token.type == "fence"
+            and (token.info.strip().split(maxsplit=1) or [""])[0].casefold()
+            == "mermaid"
+            and container_depth == 0
+            and not hidden_by_html
+        ):
+            blocks.append(token.content)
+        if token.type in container_tokens:
+            container_depth += 1
+    return blocks
+
+
+def strip_mermaid_comment(line: str) -> str:
+    """Remove a Mermaid %% comment without treating quoted %% as a comment."""
+    quote: str | None = None
+    escaped = False
+    for index, character in enumerate(line):
+        if escaped:
+            escaped = False
+            continue
+        if character == "\\" and quote is not None:
+            escaped = True
+            continue
+        if quote is not None:
+            if character == quote:
+                quote = None
+            continue
+        if character in {'"', "'"}:
+            quote = character
+            continue
+        if line.startswith("%%", index):
+            return line[:index]
+    return line
+
+
+def top_level_arrow_index(line: str) -> int | None:
+    """Locate a solid Mermaid arrow outside quoted node labels and node shapes."""
+    quote: str | None = None
+    escaped = False
+    brackets: list[str] = []
+    closing = {"[": "]", "(": ")", "{": "}"}
+    for index, character in enumerate(line):
+        if escaped:
+            escaped = False
+            continue
+        if character == "\\" and quote is not None:
+            escaped = True
+            continue
+        if quote is not None:
+            if character == quote:
+                quote = None
+            continue
+        if character in {'"', "'"}:
+            quote = character
+            continue
+        if character in closing:
+            brackets.append(closing[character])
+            continue
+        if brackets and character == brackets[-1]:
+            brackets.pop()
+            continue
+        if not brackets and line.startswith("-->", index):
+            return index
+    return None
+
+
+def label_has_explicit_shape(label: str) -> bool:
+    """Recognize concrete or symbolic tensor/media shapes, including one dimension."""
+    placeholder = re.compile(
+        r"(?:\?|\bE\d+\b|\b(?:n/?a|tbd|todo|unknown|placeholder|symbolic\s+dims?|"
+        r"concrete\s+shape|symbolic|dims?|shape)\b)",
+        re.IGNORECASE,
+    )
+    dimension = re.compile(
+        r"(?:\d+(?:\.\d+)?|[A-Z][A-Za-z0-9_']*)"
+        r"(?:\s*[/+*\-]\s*(?:\d+(?:\.\d+)?|[A-Z][A-Za-z0-9_']*))*"
+    )
+    for match in re.finditer(r"\[([^\]\n]+)\]|\(([^\)\n]+)\)", label):
+        contents = (match.group(1) or match.group(2) or "").strip()
+        if not contents or placeholder.search(contents):
+            continue
+        parts = [part.strip() for part in re.split(r"\s*[,x×]\s*", contents)]
+        if parts and all(dimension.fullmatch(part) for part in parts):
+            return True
+    return bool(
+        re.search(
+            r"\b(?:\d+|[A-Z][A-Za-z0-9_']*)"
+            r"(?:\s*[x×]\s*(?:\d+|[A-Z][A-Za-z0-9_']*)){1,}\b",
+            label,
+        )
+        and not placeholder.search(label)
+    )
+
+
+def mermaid_edges(diagram: str) -> list[MermaidEdge]:
+    """Parse one canonical solid edge per line from a Mermaid flowchart."""
+    edges: list[MermaidEdge] = []
+    node_expression = re.compile(
+        r"^\s*([A-Za-z_][A-Za-z0-9_-]*)"
+        r"(?:\s*(?:\[.*\]|\(.*\)|\{.*\}))?"
+        r"\s*(?:::[A-Za-z_][A-Za-z0-9_-]*)?\s*;?\s*$"
+    )
+    for raw_line in diagram.splitlines():
+        line = strip_mermaid_comment(raw_line).strip()
+        arrow_index = top_level_arrow_index(line)
+        if arrow_index is None:
+            continue
+        source_expression = line[:arrow_index].rstrip()
+        target_expression = line[arrow_index + 3 :].lstrip()
+        label = ""
+
+        direct_label = re.match(r"^\|\s*(.*?)\s*\|\s*(.+)$", target_expression)
+        if direct_label:
+            label = direct_label.group(1).strip()
+            target_expression = direct_label.group(2)
+        else:
+            alternate_label = re.match(r"^(.*)\s+--\s+(.+?)\s*$", source_expression)
+            if alternate_label:
+                source_expression = alternate_label.group(1)
+                label = alternate_label.group(2).strip()
+
+        if label[:1] in {'"', "'"}:
+            if len(label) < 2 or label[-1] != label[0]:
+                continue
+            label = label[1:-1].strip()
+
+        source_match = node_expression.fullmatch(source_expression)
+        target_match = node_expression.fullmatch(target_expression)
+        if source_match is None or target_match is None:
+            continue
+        edges.append(
+            MermaidEdge(
+                source=source_match.group(1),
+                target=target_match.group(1),
+                label=label,
+                has_shape=label_has_explicit_shape(label),
+            )
+        )
+    return edges
+
+
+def has_complete_shape_path(edges: list[MermaidEdge]) -> bool:
+    """Return whether shaped edges connect a graph source to sink through a component."""
+    if not edges:
+        return False
+    nodes = {edge.source for edge in edges} | {edge.target for edge in edges}
+    incoming = {node: 0 for node in nodes}
+    outgoing = {node: 0 for node in nodes}
+    shaped_adjacency: dict[str, set[str]] = {node: set() for node in nodes}
+    for edge in edges:
+        incoming[edge.target] += 1
+        outgoing[edge.source] += 1
+        if edge.has_shape:
+            shaped_adjacency[edge.source].add(edge.target)
+    sources = {node for node in nodes if incoming[node] == 0}
+    sinks = {node for node in nodes if outgoing[node] == 0}
+
+    def reaches_sink(node: str, depth: int, visited: set[str]) -> bool:
+        if depth >= 2 and node in sinks:
+            return True
+        for target in shaped_adjacency[node]:
+            if target not in visited and reaches_sink(target, depth + 1, visited | {target}):
+                return True
+        return False
+
+    return any(reaches_sink(source, 0, {source}) for source in sources)
 
 
 def placeholder_tokens(text: str) -> list[str]:
@@ -1157,6 +1353,50 @@ def validate(text: str, profile: str, required_platforms: list[str]) -> list[Fin
         if len(visible_text(sections[section_name])) < 40:
             findings.append(
                 Finding("ERROR", f"Required section is empty or too thin: {section_name!r}")
+            )
+
+    architecture = sections.get("model architecture", "")
+    if architecture:
+        architecture_diagrams = top_level_mermaid_blocks(architecture)
+        if not architecture_diagrams:
+            findings.append(
+                Finding(
+                    "ERROR",
+                    "Model Architecture must include a top-level Mermaid component/data-flow "
+                    "diagram with shape-bearing I/O edges.",
+                )
+            )
+        qualifying_diagram = False
+        for diagram in architecture_diagrams:
+            meaningful_lines = [
+                strip_mermaid_comment(line).strip()
+                for line in diagram.splitlines()
+                if strip_mermaid_comment(line).strip()
+            ]
+            is_flowchart = bool(meaningful_lines) and re.fullmatch(
+                r"(?:flowchart|graph)\s+(?:TB|TD|BT|RL|LR)",
+                meaningful_lines[0],
+                re.IGNORECASE,
+            ) is not None
+            if is_flowchart and has_complete_shape_path(mermaid_edges(diagram)):
+                qualifying_diagram = True
+                break
+        if architecture_diagrams and not qualifying_diagram:
+            findings.append(
+                Finding(
+                    "ERROR",
+                    "Model Architecture must include at least one top-level Mermaid flowchart "
+                    "with a connected source-to-output path of at least two shape-labeled "
+                    "data edges.",
+                )
+            )
+        if architecture_diagrams and not evidence_ids(architecture):
+            findings.append(
+                Finding(
+                    "ERROR",
+                    "Model Architecture must cite the shape/data-flow evidence in visible "
+                    "architecture prose outside the Mermaid fence.",
+                )
             )
 
     for token in placeholder_tokens(text):

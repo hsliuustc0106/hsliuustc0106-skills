@@ -33,6 +33,13 @@ Model revision: commit 0123456789abcdef. Evidence cutoff: 2026-08-07. Workload a
 
 The representative path includes an input processor, a core network, and an output decoder with traced shapes [E1].
 
+```mermaid
+flowchart LR
+  I["Input processor"] -->|"tokens [1,32] int64"| E["Condition encoder"]
+  E -->|"context [1,32,64] bf16"| G["Core generator"]
+  G -->|"latent [1,4,8,8] fp32"| D["Output decoder"]
+```
+
 ## Inference Performance Analysis
 
 ### Evidence Level and Profiling Decision
@@ -116,6 +123,16 @@ def remove_section(report: str, title: str) -> str:
     return re.sub(pattern, "", report)
 
 
+def replace_first_mermaid(report: str, body: str) -> str:
+    return re.sub(
+        r"```mermaid\n.*?\n```",
+        f"```mermaid\n{body}\n```",
+        report,
+        count=1,
+        flags=re.DOTALL,
+    )
+
+
 class ValidateReportTests(unittest.TestCase):
     def test_valid_vllm_omni_report(self) -> None:
         findings = validate(VALID_REPORT, "vllm-omni", ["nvidia", "ascend"])
@@ -143,6 +160,178 @@ class ValidateReportTests(unittest.TestCase):
         report = VALID_REPORT.replace("## Model Architecture", "## Architecture Notes")
         findings = validate(report, "vllm-omni", [])
         self.assertTrue(any(item.level == "ERROR" and "model architecture" in item.message for item in findings))
+
+    def test_model_architecture_requires_shape_annotated_mermaid(self) -> None:
+        report = re.sub(r"\n```mermaid\n.*?\n```\n", "\n", VALID_REPORT, count=1, flags=re.DOTALL)
+        findings = validate(report, "base", [])
+        self.assertTrue(
+            any(
+                item.level == "ERROR" and "component/data-flow diagram" in item.message
+                for item in findings
+            )
+        )
+
+    def test_mermaid_outside_model_architecture_does_not_satisfy_requirement(self) -> None:
+        diagram = re.search(r"\n```mermaid\n.*?\n```\n", VALID_REPORT, flags=re.DOTALL)
+        self.assertIsNotNone(diagram)
+        report = VALID_REPORT.replace(diagram.group(0), "\n", 1) + diagram.group(0)
+        findings = validate(report, "base", [])
+        self.assertTrue(any("component/data-flow diagram" in item.message for item in findings))
+
+    def test_nested_mermaid_does_not_satisfy_architecture_requirement(self) -> None:
+        diagram = re.search(r"```mermaid\n.*?\n```", VALID_REPORT, flags=re.DOTALL)
+        self.assertIsNotNone(diagram)
+        quoted = "\n".join("> " + line for line in diagram.group(0).splitlines())
+        report = VALID_REPORT.replace(diagram.group(0), quoted, 1)
+        findings = validate(report, "base", [])
+        self.assertTrue(any("component/data-flow diagram" in item.message for item in findings))
+
+    def test_hidden_mermaid_does_not_satisfy_architecture_requirement(self) -> None:
+        report = VALID_REPORT.replace("```mermaid", "<div hidden>\n\n```mermaid", 1).replace(
+            "```\n\n## Inference Performance Analysis",
+            "```\n\n</div>\n\n## Inference Performance Analysis",
+            1,
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("component/data-flow diagram" in item.message for item in findings))
+
+    def test_architecture_mermaid_requires_multiple_shape_bearing_edges(self) -> None:
+        report = VALID_REPORT.replace("tokens [1,32] int64", "token stream").replace(
+            "context [1,32,64] bf16", "context stream"
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_requires_flowchart_directive(self) -> None:
+        report = VALID_REPORT.replace("flowchart LR", "sequenceDiagram", 1)
+        findings = validate(report, "base", [])
+        self.assertTrue(any("top-level Mermaid flowchart" in item.message for item in findings))
+
+    def test_architecture_mermaid_ignores_comment_only_edges(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  %% A -->|\"input [B,L]\"| B
+  %% B -->|\"output [B,L,D]\"| C""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_ignores_arrows_inside_node_labels(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A[\"fake -->|shape [B,L]| B\"]
+  C[\"fake -->|shape [B,L,D]| D\"]""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_rejects_malformed_edges(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"input [B,L]\"|
+  B -->|\"output [B,L,D]\"|""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_requires_connected_shape_path(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"input [B,L]\"| B
+  C -->|\"output [B,L,D]\"| D""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("connected source-to-output path" in item.message for item in findings))
+
+    def test_architecture_mermaid_rejects_duplicate_only_edges(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"input [B,L]\"| B
+  A -->|\"output [B,L,D]\"| B""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("connected source-to-output path" in item.message for item in findings))
+
+    def test_architecture_mermaid_requires_shaped_output_path(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"input [B,L]\"| B
+  B -->|\"hidden [B,L,D]\"| C
+  C --> D""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("connected source-to-output path" in item.message for item in findings))
+
+    def test_additional_architecture_mermaid_need_not_be_shape_flowchart(self) -> None:
+        report = VALID_REPORT.replace(
+            "\n## Inference Performance Analysis",
+            """
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Runtime
+  Client->>Runtime: control request
+```
+
+## Inference Performance Analysis""",
+            1,
+        )
+        self.assertEqual([], validate(report, "vllm-omni", ["nvidia", "ascend"]))
+
+    def test_architecture_mermaid_accepts_identical_one_dimensional_shapes(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"tokens [L] int64\"| B
+  B -->|\"hidden [L] bf16\"| C""",
+        )
+        self.assertEqual([], validate(report, "vllm-omni", ["nvidia", "ascend"]))
+
+    def test_architecture_mermaid_accepts_alternate_labeled_edge_form(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """graph TD
+  A -- \"tokens [B,L] int64\" --> B
+  B -- \"hidden [B,L,D] bf16\" --> C""",
+        )
+        self.assertEqual([], validate(report, "vllm-omni", ["nvidia", "ascend"]))
+
+    def test_architecture_mermaid_rejects_placeholder_shapes(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"tokens [TBD] int64\"| B
+  B -->|\"hidden [Unknown,N/A] bf16\"| C""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_rejects_dtype_and_evidence_as_shapes(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A -->|\"dtype [bf16]\"| B
+  B -->|\"evidence [E1]\"| C""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
+
+    def test_architecture_mermaid_rejects_invalid_node_expressions(self) -> None:
+        report = replace_first_mermaid(
+            VALID_REPORT,
+            """flowchart LR
+  A garbage -->|\"tokens [B,L]\"| B garbage
+  B garbage -->|\"hidden [B,L,D]\"| C garbage""",
+        )
+        findings = validate(report, "base", [])
+        self.assertTrue(any("two shape-labeled" in item.message for item in findings))
 
     def test_missing_performance_section_is_error_for_base_profile(self) -> None:
         report = remove_section(VALID_REPORT, "Inference Performance Analysis")
