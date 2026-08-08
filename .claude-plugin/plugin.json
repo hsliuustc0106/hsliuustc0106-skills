@@ -9,6 +9,7 @@
   "keywords": ["guidelines", "best-practices", "coding", "codex", "claude-code", "cursor"],
   "skills": [
     "./skills/agentic-coding-guidelines",
+    "./skills/gen-model-architecture-analysis",
     "./skills/vllm-guidelines",
     "./skills/vllm-omni-guidelines",
     "./skills/afd-plugin-guidelines",

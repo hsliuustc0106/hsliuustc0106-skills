@@ -10,6 +10,9 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
+- `skills/gen-model-architecture-analysis/`：面向生成模型的、基于证据的架构、
+  推理性能、硬件需求、vLLM-Omni 支持状态与优化方向分析技能；在有助于结论时
+  使用有边界的本地测试或 profile。
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。

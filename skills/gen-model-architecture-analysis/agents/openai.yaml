@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Architecture Analysis"
+  short_description: "Architecture, performance, hardware, and readiness"
+  default_prompt: "Use $gen-model-architecture-analysis for a comprehensive evidence-backed architecture and inference-performance report, using bounded local tests or profiling when they can change the conclusion."
