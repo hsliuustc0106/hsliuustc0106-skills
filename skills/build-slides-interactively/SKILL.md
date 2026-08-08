@@ -47,6 +47,14 @@ If the user already provides an outline, template, or slide plan, map it to the
 stages below, identify what is already approved, and confirm the proposed starting
 stage before creating slide content.
 
+## Maintain the Deck Specification
+
+After Gate 2A, use `../deck-compiler/SKILL.md` to maintain a task-local
+`deck-spec.yaml`. Use semantic slide IDs, derive page numbers from slide order,
+and keep renderer coordinates and target object IDs outside the spec. Lint the
+complete inventory after Gate 2B, run dependency impact before revisions, and
+compile stable page order before rendering.
+
 ## Stage 1: Topic, Template, and Two-Slide Checkpoint
 
 When the user requests a named organizational template, check
@@ -128,7 +136,7 @@ slide count and numbering remain explicit.
 
 | Field | Required content |
 | --- | --- |
-| Slide number and title | Stable working identity |
+| Semantic slide ID, provisional number, and title | Use the semantic ID as the stable identity; derive the number from the approved order |
 | Motivation or purpose | The audience question, problem, or narrative job that makes this slide necessary |
 | Key takeaway | One sentence the audience should retain |
 | Draft content list | Proposed headline, labels, supporting points, evidence, and conclusion; use real draft wording rather than placeholders |
@@ -149,7 +157,8 @@ chapter or build slides until the user approves the current chapter, unless the 
 explicitly asks to review a larger batch.
 
 Stage 2 is complete only when the chapter structure and the complete slide inventory
-are explicitly approved.
+are explicitly approved. Record the inventory in `deck-spec.yaml` and run its
+narrative and dependency lint before drafting.
 
 ## Stage 3: Draft, Review, and Revision
 
@@ -168,6 +177,10 @@ After each batch:
 Apply revision feedback surgically. Change only the requested slides and elements.
 Treat approved chapters as read-only. If a requested deck-wide change affects approved
 slides, explain its scope and obtain permission first.
+
+Before revising an approved slide, run the deck compiler's impact analysis for
+the directly changed semantic IDs. Report transitive dependents that need review.
+Impact is advisory: change only slides the user explicitly authorizes.
 
 ## Stage 4: Final Assembly
 
@@ -192,3 +205,4 @@ After all chapters are approved, perform a final pass for:
 
 Use before-and-after renders or structural diffs when available. Deliver the final
 deck with a concise change summary and list any property that could not be verified.
+Compile the final spec and confirm delivered page order and count match it.

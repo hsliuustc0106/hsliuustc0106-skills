@@ -1,0 +1,38 @@
+schema_version: 1
+deck:
+  id: product-update
+  title: 产品进展
+  audience: 管理团队
+  objective: 对齐风险与下一步
+  language: zh-CN
+narrative:
+  profile: product-update
+  thesis: 核心能力已验证，下一阶段聚焦规模化采用。
+slides:
+  order: [outcome, progress, metrics, risks, next]
+  items:
+    outcome:
+      title: 阶段目标已完成
+      purpose: 先讲结论。
+      takeaway: 核心场景已经跑通。
+      narrative_roles: [outcome]
+    progress:
+      title: 三项能力按计划交付
+      purpose: 说明进展。
+      takeaway: 产品、工程与生态工作同步推进。
+      narrative_roles: [progress]
+    metrics:
+      title: 关键指标达到门槛
+      purpose: 给出量化依据。
+      takeaway: 性能与稳定性满足下一阶段要求。
+      narrative_roles: [metrics]
+    risks:
+      title: 规模化仍有两个风险
+      purpose: 主动暴露缺口。
+      takeaway: 运维复杂度与开发者覆盖仍需投入。
+      narrative_roles: [risks]
+    next:
+      title: 下一步聚焦客户共建
+      purpose: 明确行动。
+      takeaway: 用真实负载验证规模化价值。
+      narrative_roles: [next]

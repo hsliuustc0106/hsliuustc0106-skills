@@ -36,7 +36,9 @@ output path.
 
 - For an ambiguous or net-new narrative, use the sibling
   `../build-slides-interactively/SKILL.md` workflow before drafting slides.
-- For an explicitly approved outline and per-slide blueprint, proceed directly.
+- For an explicitly approved outline and per-slide blueprint, use the sibling
+  `../deck-compiler/SKILL.md` to lint its narrative and compile stable page order
+  before authoring.
 - For restyling, preserve approved wording, evidence, citations, and slide order
   unless the user authorizes changes.
 

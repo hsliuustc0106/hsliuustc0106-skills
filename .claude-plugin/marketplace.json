@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Portable coding-agent guidelines for Codex, Claude Code, Cursor, and project-specific workflows",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "agentic-coding-skills",
       "source": "./",
-      "description": "Shared coding-agent behavior, project guidance for vLLM-family repositories, and Huawei and vLLM-Omni presentation skills",
-      "version": "1.0.0",
+      "description": "Shared coding-agent behavior, project guidance for vLLM-family repositories, and presentation workflows",
+      "version": "1.1.0",
       "author": {
         "name": "repo-owner"
       },

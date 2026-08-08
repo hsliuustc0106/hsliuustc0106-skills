@@ -1,0 +1,50 @@
+schema_version: 1
+deck:
+  id: platform-strategy
+  title: Platform strategy
+  audience: Leadership team
+  objective: Align on the investment direction
+  language: en
+narrative:
+  profile: executive-strategy
+  thesis: A shared platform turns technical change into durable adoption.
+slides:
+  order: [why-now, what-changes, what-to-build, how-to-win, roadmap, decision]
+  items:
+    why-now:
+      title: Demand is changing
+      purpose: Establish urgency.
+      takeaway: The workload now rewards a different platform shape.
+      narrative_roles: [why-now]
+    what-changes:
+      title: The architecture must change
+      purpose: Explain the consequence.
+      takeaway: Serving becomes a coordinated system rather than one engine.
+      narrative_roles: [what-changes]
+      dependencies: [{target: why-now, relation: follows}]
+    what-to-build:
+      title: Build the shared runtime
+      purpose: Define the technical program.
+      takeaway: Shared primitives compound across products.
+      narrative_roles: [what-to-build]
+      dependencies: [{target: what-changes, relation: follows}]
+    how-to-win:
+      title: Win through open collaboration
+      purpose: Explain the operating model.
+      takeaway: Customers and contributors accelerate adoption.
+      narrative_roles: [how-to-win]
+      dependencies: [{target: what-to-build, relation: follows}]
+    roadmap:
+      title: Sequence capability by maturity
+      purpose: Show timing.
+      takeaway: Each gate converts capability into measurable use.
+      narrative_roles: [roadmap]
+      dependencies: [{target: how-to-win, relation: follows}]
+    decision:
+      title: Align on the first program
+      purpose: Request a decision.
+      takeaway: Start with one bounded workflow and explicit gates.
+      narrative_roles: [decision]
+      dependencies: [{target: roadmap, relation: follows}]
+extensions:
+  evidence_policy: Attribute quantitative and comparative claims on-slide.

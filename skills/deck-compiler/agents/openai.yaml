@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deck Compiler"
+  short_description: "Lint deck narratives and dependency impact"
+  default_prompt: "Use $deck-compiler to lint this approved deck spec, report dependency impact, and compile stable page order."

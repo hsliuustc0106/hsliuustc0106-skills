@@ -1,7 +1,7 @@
 {
   "name": "agentic-coding-skills",
   "description": "Portable coding-agent guidelines for Codex, Claude Code, Cursor, and project-specific workflows",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "repo-owner"
   },
@@ -13,7 +13,8 @@
     "./skills/vllm-omni-guidelines",
     "./skills/afd-plugin-guidelines",
     "./skills/vllm-omni-cookbook-guidelines",
-    "./skills/huawei-deck",
+    "./skills/build-slides-interactively",
+    "./skills/deck-compiler",
     "./skills/vllm-omni-deck"
   ]
 }

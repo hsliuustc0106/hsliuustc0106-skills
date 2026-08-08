@@ -1,0 +1,38 @@
+schema_version: 1
+deck:
+  id: runtime-design
+  title: Runtime design review
+  audience: Infrastructure engineers
+  objective: Review the design and its limits
+  language: en
+narrative:
+  profile: technical-deep-dive
+  thesis: Explicit scheduling boundaries improve isolation and observability.
+slides:
+  order: [problem, constraints, architecture, evaluation, limitations]
+  items:
+    problem:
+      title: Shared queues hide interference
+      purpose: Define the problem.
+      takeaway: Unbounded sharing makes latency unpredictable.
+      narrative_roles: [problem]
+    constraints:
+      title: Compatibility limits the design space
+      purpose: State the constraints.
+      takeaway: The runtime must preserve existing model interfaces.
+      narrative_roles: [constraints]
+    architecture:
+      title: Separate admission from execution
+      purpose: Present the design.
+      takeaway: Explicit boundaries isolate scheduling decisions.
+      narrative_roles: [architecture]
+    evaluation:
+      title: Evaluate latency and utilization together
+      purpose: Define the evidence.
+      takeaway: Tail latency improves without sacrificing useful throughput.
+      narrative_roles: [evaluation]
+    limitations:
+      title: Cross-stage feedback remains open
+      purpose: Bound the conclusion.
+      takeaway: Adaptive control needs additional validation.
+      narrative_roles: [limitations]

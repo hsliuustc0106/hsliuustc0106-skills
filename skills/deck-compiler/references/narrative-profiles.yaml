@@ -1,0 +1,77 @@
+profiles:
+  executive-strategy:
+    description: Explain why change matters, what to do, how to win, and the desired decision or alignment.
+    ordered: true
+    required_role_groups:
+      - id: why-now
+        any_of: [why-now]
+      - id: what-changes
+        any_of: [what-changes]
+      - id: what-to-build
+        any_of: [what-to-build]
+      - id: how-to-win
+        any_of: [how-to-win]
+      - id: when
+        any_of: [when, roadmap]
+      - id: decision-or-outcome
+        any_of: [decision, ask, outcome]
+
+  technical-deep-dive:
+    description: Explain a technical problem, design, proof, and limitations.
+    ordered: true
+    required_role_groups:
+      - id: problem
+        any_of: [problem]
+      - id: constraints
+        any_of: [constraints]
+      - id: design
+        any_of: [design, architecture]
+      - id: evidence
+        any_of: [evidence, evaluation]
+      - id: tradeoffs-or-limitations
+        any_of: [tradeoffs, limitations]
+
+  research-summary:
+    description: Summarize a research question, method, findings, limits, and implications.
+    ordered: true
+    required_role_groups:
+      - id: question
+        any_of: [question]
+      - id: method
+        any_of: [method]
+      - id: results
+        any_of: [results]
+      - id: limitations
+        any_of: [limitations]
+      - id: implications
+        any_of: [implications]
+
+  product-update:
+    description: Report outcomes, progress, metrics, risks, and next actions.
+    ordered: true
+    required_role_groups:
+      - id: outcome
+        any_of: [outcome]
+      - id: progress
+        any_of: [progress]
+      - id: metrics
+        any_of: [metrics]
+      - id: risks
+        any_of: [risks]
+      - id: next
+        any_of: [next]
+
+  proposal:
+    description: Establish a problem, solution, value, implementation plan, and ask.
+    ordered: true
+    required_role_groups:
+      - id: problem
+        any_of: [problem]
+      - id: solution
+        any_of: [solution]
+      - id: value
+        any_of: [value]
+      - id: plan
+        any_of: [plan]
+      - id: ask
+        any_of: [ask, decision]
