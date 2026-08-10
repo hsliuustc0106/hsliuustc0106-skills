@@ -1,4 +1,4 @@
 interface:
   display_name: "vLLM-Omni Deck"
-  short_description: "Build, repair, and validate vLLM-Omni decks"
-  default_prompt: "Use $vllm-omni-deck to create or repair a cited editable PowerPoint or Google Slides deck, validate its rendered layout, or provide the blank branded template."
+  short_description: "Build and update evidence-backed vLLM-Omni decks"
+  default_prompt: "Use $vllm-omni-deck to update the community release deck from the latest stable tag, preserve approved slides, rank evidence-backed highlights, and validate the rendered layout."
