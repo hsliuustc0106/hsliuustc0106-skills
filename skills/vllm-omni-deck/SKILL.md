@@ -1,16 +1,17 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, or provide blank editable English-first vLLM-Omni PowerPoint decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template that includes a minimally structured branded white canvas and a references layout. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact without structural modification, build a new .pptx, migrate or restyle slides, select layouts, create paper/blog/PR references, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, restyle, repair, validate, or provide blank editable English-first vLLM-Omni PowerPoint or native Google Slides decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact, build a new .pptx, repair text reflow or object placement, migrate or restyle slides, select layouts, create paper/blog/PR references, perform rendered whole-deck QA, provide a branded blank template, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
 
-Create PowerPoint-first vLLM-Omni decks with native, editable objects and a
-fixed visual system.
+Create vLLM-Omni decks with native, editable objects and a fixed visual system.
+Use PowerPoint-native objects for `.pptx` deliverables and Google-native objects
+when the requested delivery surface is Google Slides.
 
 ## Load the Design Contract
 
-Read both references before creating or restyling slides:
+Read all three references before creating, restyling, or repairing slides:
 
 - `references/design-system.md` defines the canvas, brand tokens, typography,
   footer, and component rules.
@@ -18,6 +19,8 @@ Read both references before creating or restyling slides:
   structured layouts, layout 8 as the minimally structured white canvas, and
   layout 9 for references, plus required inputs, selection rules, and safe
   content density.
+- `references/layout-qa.md` defines text-flow, connector-gutter, target-renderer,
+  contact-sheet, and full-deck repair checks.
 
 Treat these files and the template generators as the source of truth:
 
@@ -37,14 +40,21 @@ output path.
 - For an ambiguous or net-new narrative, use the sibling
   `../build-slides-interactively/SKILL.md` workflow before drafting slides.
 - For an explicitly approved outline and per-slide blueprint, proceed directly.
-- For restyling, preserve approved wording, evidence, citations, and slide order
-  unless the user authorizes changes.
+- For restyling or repair, preserve approved wording, evidence, citations, source
+  figures, hyperlinks, and slide order unless the user authorizes changes.
+- For native Google Slides, use an available Google Slides editing skill or
+  connector for native reads, revision-guarded writes, and fresh thumbnails;
+  apply this skill's vLLM-Omni design and evidence contract. If native editing is
+  unavailable, offer a `.pptx` workflow and state the fidelity limitation.
 
-Require the user to provide or approve each slide's purpose, key takeaway,
-substantive content, and evidence. Start body-slide selection with layout 8.
-Switch to layouts 3–7 only when their structure materially improves reading
-order, comparison, or comprehension. When two layouts are plausible, recommend
-one and explain the tradeoff.
+For a net-new deck, require the user to provide or approve each slide's purpose,
+key takeaway, substantive content, and evidence. For an authorized layout repair,
+treat existing semantics as approved and proceed with native reflow. Tighten copy
+only when the claim and every qualifier remain unchanged; request approval for
+substantive wording changes or a slide split. Start body-slide selection with
+layout 8. Switch to layouts 3–7 only when their structure materially improves
+reading order, comparison, or comprehension. When two layouts are plausible,
+recommend one and explain the tradeoff.
 
 ## Preserve Provided Figures Intact
 
@@ -104,7 +114,7 @@ Create a fresh environment before running the generator:
 
 ```bash
 uv venv --python 3.12 .venv
-uv pip install --python .venv/bin/python python-pptx
+uv pip install --python .venv/bin/python python-pptx Pillow
 .venv/bin/python scripts/build_template.py \
   --output assets/vllm-omni-template.pptx
 .venv/bin/python scripts/build_blank_template.py \
@@ -121,34 +131,44 @@ inventory, placeholders, and source-figure frames.
 1. Confirm the slide blueprint and references.
 2. Use layout 8 for most body slides. Choose a specialized catalog layout only
    when its narrative structure adds clarity.
-3. Preserve the approved 36/28/18/12 pt Arial hierarchy.
-4. Keep narrative text, shapes, diagrams, tables, and charts native and editable.
-5. Place each provided figure as one intact image. Permit only proportional
+3. Reserve the story, body, connector, and footer regions from
+   `references/layout-qa.md` before placing content.
+4. Preserve the approved 36/28/18/12 pt Arial hierarchy. Treat each title,
+   subtitle, card, and annotation as rendered text flow rather than fixed boxes.
+5. Keep narrative text, shapes, diagrams, tables, and charts native and editable.
+6. Place each provided figure as one intact image. Permit only proportional
    scaling and positioning. Cite it as `Source`.
-6. Use layout 8 or a dedicated slide when intact placement needs more space.
+7. Use layout 8 or a dedicated slide when intact placement needs more space.
    Request a better source or omit the figure when it remains unusable; never
    rebuild it.
-7. Reflow within the chosen layout when content is slightly long.
-8. If content still does not fit, recommend shortening it or splitting the slide
-   and wait for approval. Never shrink, omit, or split silently.
-9. Mark fabricated demonstration values as `Illustrative data` directly on the
+8. After changing text, typography, or text-box width, rerender and reflow every
+   downstream item in that text stack. Never assume unchanged object bounds mean
+   unchanged line wrapping.
+9. If content still does not fit, recommend shortening it or splitting the slide
+   and wait for approval. Never shrink, omit, overlap, clip, or split silently.
+10. Mark fabricated demonstration values as `Illustrative data` directly on the
    slide. Never present them as measured results.
-10. Preserve every source notice and keep all added explanation outside the
+11. Preserve every source notice and keep all added explanation outside the
     figure boundary.
-11. For layout 9, preserve canonical identifiers and links: authors, venue,
+12. For layout 9, preserve canonical identifiers and links: authors, venue,
     year, DOI or arXiv ID for papers; publisher and publication or update date
     for blogs; repository, PR number, status, merge or close date, and commit
     when relevant for pull requests.
 
 Do not add animations, transitions, decorative gradients, glass effects, or
-heavy shadows. Do not rasterize editable narrative content. Optimize for
-PowerPoint and keep Google Slides compatibility best-effort.
+heavy shadows. Do not rasterize editable narrative content. Treat the requested
+delivery platform as authoritative and report any secondary-platform fidelity
+limits.
 
 ## Verify Every Output
 
 - Confirm that every delivered slide has one primary message.
 - Confirm Arial and the allowed sizes only: 36, 28, 18, and 12 pt.
 - Confirm no text is clipped, overlapped, or smaller than 12 pt.
+- Confirm title and card text stacks use rendered line counts and preserve clear
+  separation between headings, values, bodies, and the first body row.
+- Confirm arrows and handoff labels stay inside dedicated connector gutters and
+  outside node or card bounds.
 - Confirm the vLLM-Omni logo appears on every slide.
 - Confirm page numbers appear on every slide except the cover.
 - Confirm blank-template slide 8 retains its template label, editable title,
@@ -162,11 +182,18 @@ PowerPoint and keep Google Slides compatibility best-effort.
   Confirm no blank-template placeholders remain in an authored deck.
 - Compare every reused figure with its source. Confirm it is one intact image,
   has no crop or overlay, preserves its full aspect ratio and structure, and
-  carries `Source` attribution.
-- Render the complete deck to PDF with LibreOffice and inspect every slide.
+  carries `Source` attribution. Confirm claim-critical labels remain readable in
+  a full-slide presentation view.
+- Run the structural checks available for the target format, then follow the
+  rendered QA loop in `references/layout-qa.md`. A zero-result structural checker
+  does not prove that text fits.
+- Render the complete deck with the requested delivery platform. Build labeled
+  whole-deck contact sheets with `scripts/build_contact_sheets.py`, inspect every
+  changed or dense slide at full resolution, repair failures, and rerender the
+  complete deck after the final repair.
 - Treat the generators' count checks as canonical-template validation: eight
   slides for the example template and nine for the blank template. For a
   derived deck, validate against the user's approved slide inventory while
   preserving the same canvas, typography, branding, and editability checks.
-- Treat PowerPoint as authoritative; report that Google Slides fidelity is
-  best-effort when handing off the file.
+- Treat PowerPoint as authoritative for `.pptx` delivery and fresh Google Slides
+  thumbnails as authoritative for native Google Slides delivery.

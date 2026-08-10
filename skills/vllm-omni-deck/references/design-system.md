@@ -44,6 +44,22 @@ body text. Keep line spacing compact but readable: approximately 1.05 for titles
 and 1.15 for body copy. If approved content does not fit, reflow, shorten with
 permission, or split with permission. Never introduce another font size.
 
+Rendered line breaks, not text-box bounds, determine fit. Treat an eyebrow,
+heading, value, and body as one vertical flow and keep visible clearance between
+roles. After changing text, font properties, or text-box width, recompute the
+positions of all downstream items in that flow and render it again.
+
+## Layout occupancy and protected lanes
+
+- Keep the title and subtitle in a story band that ends before body content.
+- Keep body objects above the protected 0.42-inch footer band.
+- Keep the footer rule, source, page number, and logo in distinct non-overlapping
+  slots inside that footer band.
+- Reserve an empty connector gutter between diagram nodes. Keep arrows and
+  handoff labels inside it and outside node or card bounds.
+- Do not accept internal text-box geometry as proof of fit. Rendered text must
+  preserve panel padding and clearance from adjacent objects.
+
 ## Backgrounds and persistent elements
 
 - Use navy for the cover and section-divider layouts.
@@ -70,6 +86,8 @@ permission, or split with permission. Never introduce another font size.
 - Use flat fills and 0.08-inch corner radii.
 - Use one-pixel-equivalent rules in `Rule`; avoid heavy outlines.
 - Do not use drop shadows, glass effects, bevels, or decorative gradients.
+- Lay out eyebrow, heading, value, and body as an ordered text stack. If a
+  heading wraps, move the value and body rather than allowing a collision.
 
 ### Source figures
 
@@ -97,6 +115,8 @@ permission, or split with permission. Never introduce another font size.
 - Keep every node editable and use 12 pt labels.
 - Prefer four to five primary stages; move implementation detail into supporting
   labels or another slide.
+- Terminate connectors at node edges and keep connector labels inside a reserved
+  gutter rather than over nodes, cards, or footer elements.
 
 ### Charts and tables
 
@@ -130,8 +150,9 @@ permission, or split with permission. Never introduce another font size.
 ## Editability and compatibility
 
 Build narrative text, panels, newly authored diagrams, tables, and charts as
-native PowerPoint objects. Preserve suitable original source figures in their
-native image format as one intact object. Use raster images only for logos,
-screenshots, or source figures that are intrinsically raster. Target PowerPoint
-behavior first. Avoid fragile effects, unsupported fonts, and unnecessary
-grouping to improve Google Slides import.
+native objects on the requested delivery platform. Preserve suitable original
+source figures in their native image format as one intact object. Use raster
+images only for logos, screenshots, or source figures that are intrinsically
+raster. For `.pptx`, target PowerPoint behavior first. For native Google Slides,
+use Google-native objects and fresh rendered thumbnails. Avoid fragile effects,
+unsupported fonts, and unnecessary grouping in cross-platform deliverables.
