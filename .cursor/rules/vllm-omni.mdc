@@ -10,5 +10,4 @@ alwaysApply: false
 - Preserve compatibility with upstream vLLM conventions where possible.
 - Inspect both text-only and multimodal paths before changing model loading, processing, or input plumbing.
 - Be careful around processor config, prompt formatting, batching, caching, streaming, and examples.
-- For code review, use the external `vllm-omni-review` skill repository as the source of truth.
-
+- For code review, use `skills/vllm-omni-review/SKILL.md` as the source of truth.

@@ -59,15 +59,15 @@ for PR_NUM in $REVIEWED_PRS; do
   fi
 
   # 3. For each reply, check if reviewer replied after it
-  echo "$REPLIES" | jq -c '.[]' | while read -r reply; do
-    REPLY_ID=$(echo "$reply" | jq -r '.id')
+  while IFS= read -r reply; do
+    THREAD_ID=$(echo "$reply" | jq -r '.in_reply_to_id')
     REPLY_DATE=$(echo "$reply" | jq -r '.created_at')
     REPLY_USER=$(echo "$reply" | jq -r '.user')
     REPLY_URL=$(echo "$reply" | jq -r '.url')
 
     # Check if reviewer replied after this reply
-    FOLLOWUP=$(echo "$COMMENTS" | jq --arg r "$REVIEWER" --arg date "$REPLY_DATE" --argjson rid "$REPLY_ID" '
-      [.[] | select(.user == $r) | select(.in_reply_to_id == $rid) | select(.created_at > $date)] | length
+    FOLLOWUP=$(echo "$COMMENTS" | jq --arg r "$REVIEWER" --arg date "$REPLY_DATE" --argjson tid "$THREAD_ID" '
+      [.[] | select(.user == $r) | select(.in_reply_to_id == $tid) | select(.created_at > $date)] | length
     ')
 
     if [ "$FOLLOWUP" -eq 0 ]; then
@@ -77,7 +77,7 @@ for PR_NUM in $REVIEWED_PRS; do
       echo ""
       UNANSWERED=$((UNANSWERED + 1))
     fi
-  done
+  done < <(echo "$REPLIES" | jq -c '.[]')
 done
 
 if [ "$UNANSWERED" -eq 0 ]; then

@@ -18,7 +18,5 @@ Use this skill when working in `vllm-omni`.
 
 ## Review Workflow
 
-For vLLM Omni code review, use the external `vllm-omni-review` skill repository as the source of truth.
-
-Do not duplicate that review skill here. Keep its concrete URL in local setup docs or personal configuration so this repo remains portable.
-
+For vLLM Omni code review, use the bundled
+[vllm-omni-review skill](../vllm-omni-review/SKILL.md) as the source of truth.

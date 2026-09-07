@@ -45,7 +45,7 @@ FILTERED=$(echo "$ALL_PRS" | jq --arg reviewer "$REVIEWER" '
     # Skip drafts
     select(.isDraft == false) |
     # Skip WIP / Dont merge
-    select(.title | test("\[WIP\]|\[Draft\]|\[Don.t\]"; "i") | not)
+    select(.title | test("\\[WIP\\]|\\[Draft\\]|Don.t[ ]+merge|\\[Don.t\\]"; "i") | not)
   ]
 ')
 

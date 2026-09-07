@@ -13,7 +13,7 @@
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。
-- `external/vllm-omni-review.md`：外部 vLLM Omni review skill 的说明，不硬编码个人账号。
+- `skills/vllm-omni-review/`：仓库内置的 vLLM Omni review skill 和辅助脚本。
 
 ## 安装
 
@@ -29,6 +29,16 @@ cd /path/to/project
 - `vllm-omni`
 - `afd-plugin`
 - `vllm-omni-cookbook`
+
+同步脚本会安装规则引用的 skills、参考文档和辅助脚本。复制前检查全部目标
+文件：内容相同则跳过，内容冲突则停止。请手动合并已有项目规则；仅在确定
+要替换时使用 `--force`。符号链接和目录不会被替换。
+
+辅助脚本回归测试无需联网，需要 Python 3.8+、Bash 和 `jq`：
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## 核心原则
 
