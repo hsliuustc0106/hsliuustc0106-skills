@@ -24,6 +24,10 @@ A good review is:
 
 If a concern cannot be supported with evidence, do not present it as blocking.
 
+Posting requires user authorization for the current task or an applicable standing
+instruction. Until then, keep findings local. When posting is authorized, use
+individual inline comments; review events remain the user's decision.
+
 ## Usage modes
 
 Inspired by common PR-review skill patterns (e.g. explicit modes + tool choice); **repo is always `vllm-project/vllm-omni`** unless the user says otherwise.
@@ -79,7 +83,9 @@ Always run the blocker scan. Under context pressure, do a shallow scan of the mo
 
 Check whether this PR is still a draft or WIP in the PR title, if so, end the review process.
 
-**Token budget principle:** Post inline comments as you find them. Use subagents for codebase investigation. Load references only after skimming the diff. If you're past ~60% context and haven't posted comments, wrap up and post what you have — partial review posted is better than a perfect review lost.
+**Token budget principle:** Record findings as you go; post inline comments only
+when authorized. Load references only after skimming the diff. Under context
+pressure, preserve a local handoff of findings and remaining investigation.
 
 ### Step 0: Verify Review Gates First
 
@@ -244,12 +250,14 @@ Be explicit in review comments. Treat "manual verification only" as insufficient
 
 ### Step 9: Incremental Posting + Final Verdict
 
-**Post inline comments directly to GitHub as you find them.** Do not accumulate comments for a batch post at the end. Each `gh api` call posts one or more comments immediately. If context runs out mid-review, the comments already posted are safe on GitHub.
+When posting is authorized, publish findings as individual inline comments using
+the endpoint in [review-execution.md](references/review-execution.md). Otherwise,
+present them locally. Do not submit a review event to batch comments.
 
-Posting strategy:
+Posting strategy (after authorization):
 - After completing the blocker scan, post any blocking-issue comments immediately
 - As domain review surfaces issues, post each comment right away
-- Minor style nits can be batched (up to 3) in a single review call if they're on the same file
+- Send each inline comment through the individual-comment endpoint
 - If you find yourself past ~60% context, stop investigating and post whatever you have
 ### Final self-check before posting
 

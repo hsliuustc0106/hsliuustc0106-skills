@@ -13,7 +13,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
-- `external/vllm-omni-review.md`: pointer to the external vLLM Omni review skill without hard-coding a personal account.
+- `skills/vllm-omni-review/`: bundled vLLM Omni review workflow and helpers.
 
 ## Core Principles
 
@@ -72,37 +72,54 @@ Supported projects:
 - `afd-plugin`
 - `vllm-omni-cookbook`
 
-Supported tools:
+Supported tools (each also installs the skills referenced by the project rules):
 
 - `codex`: installs `AGENTS.md`
 - `claude`: installs `CLAUDE.md` and `AGENTS.md`
 - `cursor`: installs `.cursor/rules/*.mdc`
 
-## Direct Use
+The installer checks all destination files before copying. Identical files are
+left alone; conflicting files cause it to stop. Merge existing project rules
+manually, or pass `--force` only when you intend to replace them. Symlink and
+directory destinations are never replaced.
+
+## Tool-Specific Installation
+
+Use the sync script so the instruction files and their skill dependencies stay
+together. Replace `vllm-omni` with the appropriate supported project.
 
 For Codex:
 
 ```bash
-cp ~/.agentic-coding-rules/AGENTS.md ./AGENTS.md
+~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools codex
 ```
 
 For Claude Code:
 
 ```bash
-cp ~/.agentic-coding-rules/AGENTS.md ./AGENTS.md
-cp ~/.agentic-coding-rules/CLAUDE.md ./CLAUDE.md
+~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools claude
 ```
 
 For Cursor:
 
 ```bash
-mkdir -p .cursor/rules
-cp ~/.agentic-coding-rules/.cursor/rules/agentic-coding-guidelines.mdc .cursor/rules/
+~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools cursor
 ```
 
 ## vLLM Omni Review
 
-For vLLM Omni code review, use the external `vllm-omni-review` skill repository as the source of truth. This repo intentionally keeps that URL configurable instead of hard-coding a personal GitHub account.
+For vLLM Omni code review, use
+[skills/vllm-omni-review/SKILL.md](skills/vllm-omni-review/SKILL.md) as the source
+of truth. Review helpers require Bash, `gh`, `jq`, and Python 3.8 or newer.
+
+## Helper Regression Tests
+
+Run the network-free installation and review-helper tests with Python 3.8+,
+Bash, and `jq` available (the tests provide a fake `gh`):
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## License
 

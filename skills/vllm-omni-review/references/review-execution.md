@@ -175,26 +175,15 @@ Keep replies to 1 sentence. Never a paragraph.
 
 ## Review Submission
 
-**Post inline comments as you find them — prefer individual posts over batching.** Each comment should go to GitHub immediately via gh api to prevent losing work if context runs out. Small batches (2-3) for related nits on the same file are acceptable.
+When the user has authorized posting, publish inline comments as you find them
+using the individual-comment endpoint below. Otherwise, keep findings local.
+For several comments, repeat this request for each comment; do not use the
+review-submission endpoint as a batching shortcut.
 
 For individual comments (preferred):
 ```bash
 gh api repos/vllm-project/vllm-omni/pulls/<pr_number>/comments --method POST --input - <<EOF
 {"commit_id": "<sha>", "path": "<file>", "line": <num>, "side": "RIGHT", "body": "<comment>"}
-EOF
-```
-
-For batching 2-3 related nits on the same file (optional):
-```bash
-gh api repos/vllm-project/vllm-omni/pulls/<pr_number>/reviews --method POST --input - <<EOF
-{
-  "commit_id": "<sha>",
-  "event": "COMMENT",
-  "body": "",
-  "comments": [
-    {"path": "<file>", "line": <num>, "side": "RIGHT", "body": "<comment>"}
-  ]
-}
 EOF
 ```
 
@@ -230,7 +219,7 @@ COMMIT_ID=$(gh api repos/vllm-project/vllm-omni/pulls/<pr_number> --jq '.head.sh
 1. Check if the file is new (status "added" in the gh pr view files output)
 2. Retry the individual comment post using the PR HEAD commit SHA
 
-### Review Event
+### Recommended Verdict (Local Only)
 
 - `COMMENT` for most reviews
 - `APPROVE` when code is clean -- use empty body for ~30% of approvals
@@ -299,7 +288,10 @@ Before posting each review, verify line numbers:
 echo "$REVIEW_JSON" | ./scripts/verify_line_numbers.sh <pr_number>
 ```
 
-This catches off-by-N errors where comments land on the wrong line.
+This helper requires Python 3 and `gh`. It checks that the requested file, side,
+and line (or same-side multiline range) exist in the diff, and exits nonzero on
+invalid input or a fetch failure. It does not verify that the comment's claim
+matches the code; inspect that separately.
 
 ### 5. Log what you reviewed
 
