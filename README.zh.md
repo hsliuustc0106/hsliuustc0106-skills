@@ -40,6 +40,24 @@ cd /path/to/project
 python3 -m unittest discover -s tests -v
 ```
 
+## vLLM-Omni 发布维护
+
+使用 [update-vllm-omni-skills](skills/update-vllm-omni-skills/SKILL.md)：
+
+```text
+Use $update-vllm-omni-skills to refresh the skills for the latest stable release.
+```
+
+可以指定目标版本；需要提交 PR 时，在请求中明确说明。默认生成本地修改和
+PR 文案。
+
+每次正式发布后，按
+[发布维护流程](skills/update-vllm-omni-skills/references/release-maintenance.md)
+检查版本相关规则，并在
+[覆盖记录](skills/update-vllm-omni-skills/references/release-status.md)
+中保存上游 commit、证据、检查范围和未验证部分。初次 v0.28.0 检查仅覆盖
+部分依赖、配置和测试规则，不代表完整运行时兼容性验证。
+
 ## 核心原则
 
 1. 先理解，再编码。
