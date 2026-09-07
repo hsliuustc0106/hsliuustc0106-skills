@@ -112,6 +112,26 @@ For vLLM Omni code review, use
 [skills/vllm-omni-review/SKILL.md](skills/vllm-omni-review/SKILL.md) as the source
 of truth. Review helpers require Bash, `gh`, `jq`, and Python 3.8 or newer.
 
+## vLLM-Omni Release Maintenance
+
+Use [update-vllm-omni-skills](skills/update-vllm-omni-skills/SKILL.md):
+
+```text
+Use $update-vllm-omni-skills to refresh the skills for the latest stable release.
+```
+
+Specify a release to target an older version, or add "create a PR" to authorize
+publication of the validated update. Without that request, the skill delivers
+a local patch and PR text.
+
+Update version-sensitive skills when a published vLLM-Omni release changes
+their assumptions. Follow the
+[release-maintenance workflow](skills/update-vllm-omni-skills/references/release-maintenance.md)
+and maintain a [coverage record](skills/update-vllm-omni-skills/references/release-status.md)
+with the exact upstream commit, checked areas, evidence, and remaining gaps.
+The initial v0.28.0 audit covers selected dependency, configuration, and test
+guidance; it is not a full runtime compatibility certification.
+
 ## Helper Regression Tests
 
 Run the network-free installation and review-helper tests with Python 3.8+,
