@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Optimizer"
+  short_description: "Review skill changes with an approval gate"
+  default_prompt: "Use $skill-optimizer to review changed skills and propose safe improvements for my approval."
