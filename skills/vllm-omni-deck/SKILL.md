@@ -1,6 +1,6 @@
 ---
 name: vllm-omni-deck
-description: Create, restyle, repair, validate, or provide blank editable English-first vLLM-Omni PowerPoint or native Google Slides decks from papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template. Use when Codex needs to turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact, build a new .pptx, repair text reflow or object placement, migrate or restyle slides, select layouts, create paper/blog/PR references, perform rendered whole-deck QA, provide a branded blank template, or regenerate and validate the vLLM-Omni deck templates.
+description: Create, update, restyle, repair, validate, or provide blank editable English-first vLLM-Omni PowerPoint or native Google Slides decks from release tags, papers, blogs, pull requests, approved slide blueprints, or existing slides with a bundled eight-layout example template and a nine-page blank template. Use when Codex needs to produce a recurring stable-release deck update, identify and rank release highlights, retire stale evidence, turn vLLM or vLLM-Omni technical sources into a cited deck, preserve provided source figures intact, build a new .pptx, repair text reflow or object placement, migrate or restyle slides, select layouts, perform rendered whole-deck QA, provide a branded blank template, or regenerate and validate the vLLM-Omni deck templates.
 ---
 
 # vLLM-Omni Deck
@@ -22,6 +22,10 @@ Read all three references before creating, restyling, or repairing slides:
 - `references/layout-qa.md` defines text-flow, connector-gutter, target-renderer,
   contact-sheet, and full-deck repair checks.
 
+For a recurring stable-release update, also read
+`references/stable-release-update.md`. Prepare and validate its release brief
+before proposing the release narrative or mutating the existing deck.
+
 Treat these files and the template generators as the source of truth:
 
 - Use `assets/vllm-omni-template.pptx` when layout examples and an editable
@@ -42,6 +46,11 @@ output path.
 - For an explicitly approved outline and per-slide blueprint, proceed directly.
 - For restyling or repair, preserve approved wording, evidence, citations, source
   figures, hyperlinks, and slide order unless the user authorizes changes.
+- For a stable-release update, treat the existing deck as the approved baseline.
+  Lock unchanged introduction and community sections, audit every carried-forward
+  claim, and approve only the release delta and declared slide-change map. Follow
+  `references/stable-release-update.md`; do not infer shipped support from an
+  issue, discussion, model family, or older deck.
 - For native Google Slides, use an available Google Slides editing skill or
   connector for native reads, revision-guarded writes, and fresh thumbnails;
   apply this skill's vLLM-Omni design and evidence contract. If native editing is
@@ -55,6 +64,12 @@ substantive wording changes or a slide split. Start body-slide selection with
 layout 8. Switch to layouts 3–7 only when their structure materially improves
 reading order, comparison, or comprehension. When two layouts are plausible,
 recommend one and explain the tradeoff.
+
+For an established release deck, obtain one approval for the ranked highlight
+shortlist and one approval for the complete slide-change blueprint. Preserve
+later user instructions in the release brief instead of rediscovering them from
+page numbers or chat history. A requested exemplar slide and its placement
+outrank the generic layout-8 default when they satisfy the design contract.
 
 ## Preserve Provided Figures Intact
 
@@ -162,6 +177,10 @@ limits.
 
 ## Verify Every Output
 
+- For a stable-release update, run `scripts/validate_release_brief.py` before
+  authoring and again after the final blueprint update. Confirm that every
+  changed slide is declared, every locked slide is preserved, and post-tag work
+  is visibly labeled as roadmap or post-tag context.
 - Confirm that every delivered slide has one primary message.
 - Confirm Arial and the allowed sizes only: 36, 28, 18, and 12 pt.
 - Confirm no text is clipped, overlapped, or smaller than 12 pt.
