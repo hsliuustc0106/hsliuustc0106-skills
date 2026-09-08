@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update vLLM-Omni Recipes"
+  short_description: "Refresh recipes safely for a stable release"
+  default_prompt: "Use $update-vllm-omni-recipes to audit and refresh the in-tree recipes for a stable release."
