@@ -2,6 +2,16 @@
 
 Use this file when you are actively running the review and need the gate checks, concrete `gh` commands, or comment-writing rules.
 
+## Validation environment
+
+A disposable, secret-free sandbox is not a prerequisite for review validation,
+including fork PRs. Run targeted checks under the existing user, host, and
+repository execution policies. Use an isolated detached worktree for the pinned
+PR head and preserve unrelated user changes.
+
+If a check cannot run in the available environment, use static inspection and
+existing CI evidence, and report the specific validation gap.
+
 ## Review Gates
 
 Check these before deep review. If any fail, stop and post a short comment instead of doing a full review.
