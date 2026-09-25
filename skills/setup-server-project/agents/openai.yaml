@@ -1,0 +1,4 @@
+interface:
+  display_name: "Set Up Server Project"
+  short_description: "Prepare repositories and dependencies on a server"
+  default_prompt: "Use $setup-server-project to create repos, models, llm_wiki, and envs under my server workspace, then clone requested repositories, install their dependencies, and verify the setup."
