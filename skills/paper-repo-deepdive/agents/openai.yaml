@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper & Repo Deep Dive"
+  short_description: "Understand a paper or repo; deliver one PowerPoint slide"
+  default_prompt: "Use $paper-repo-deepdive to analyze this paper or GitHub repository and create one editable PowerPoint slide using the saved reference-slide style, with cited evidence and speaker notes."
