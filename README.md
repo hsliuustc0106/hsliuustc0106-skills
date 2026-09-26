@@ -16,6 +16,9 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
+- `skills/reference-slide-style/`: a bilingual presentation style skill with 14
+  fixed layouts, blank English/Chinese templates and a final thank-you slide.
+  Build the six editable PPTX/POTX files from source; see its README for usage.
 - `skills/vllm-omni-review/`: bundled vLLM Omni review workflow and helpers.
 
 ## Core Principles
@@ -43,6 +46,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 ├── skills/
 │   ├── agentic-coding-guidelines/
 │   ├── vllm-omni-deck/
+│   ├── reference-slide-style/
 │   ├── vllm-guidelines/
 │   ├── vllm-omni-guidelines/
 │   ├── afd-plugin-guidelines/

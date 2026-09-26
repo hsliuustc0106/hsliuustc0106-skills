@@ -1,0 +1,2 @@
+# Tested dependency; pulls in lxml and Pillow through python-pptx.
+python-pptx==1.0.2
