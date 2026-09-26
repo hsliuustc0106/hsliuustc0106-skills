@@ -7,15 +7,16 @@ boxes to fill with weak evidence. The default visual system comes from
 
 ## Slide 1: Business — why this product matters
 
-**Audience test:** Can a reader explain who would choose this product, for what
-job, against which alternative, and with what commercial caveat?
+**Audience test:** Can a reader explain whose unmet need this product addresses,
+what improves over the current workflow, and what would attract that user and
+make them return?
 
 | Region | Content | Suggested treatment |
 | --- | --- | --- |
-| Header | Product/vendor, category, as-of date; a specific takeaway about its value | Short takeaway title and identity line |
-| Left, about 56% of body width | One concrete workflow showing what changes for the user | Large sourced product screenshot or before/after flow, with a short caption |
-| Right, about 42%, separated by a gutter | User/buyer and job; value and differentiation; pricing/distribution; adoption evidence and business risk | Up to four numbered findings, each with a blue heading and about two lines of explanation |
-| Bottom strip | Best-fit use case and the main business risk or unresolved question | One sentence, qualified as an assessment where appropriate |
+| Header | Product/vendor, category, as-of date; a specific user benefit | Outcome-led takeaway title and identity line |
+| Left, about 56% of body width | User need → enabling mechanism → practical benefit, compared with the current workflow | A before/after flow, compact mapping, or screenshot annotated to explain the benefit |
+| Right, about 42%, separated by a gutter | Priority user and unmet need; how to attract them; first useful result and access; reason to return or recommend | Up to four numbered findings; distinguish documented adoption mechanisms from proposed tactics |
+| Bottom strip | Adoption thesis and its main uncertainty or validation signal | One sentence, qualified as an assessment or hypothesis where appropriate |
 | Footer | Short source references matching claim markers | Linked source titles; full details in notes/ledger |
 
 Choose the commercial facts that explain adoption: distribution, purchasing
@@ -24,8 +25,16 @@ them onto the page. A logo wall or funding figure alone does not show product
 success. If comparing alternatives, use at most a few decision-relevant
 dimensions and make the comparison scope explicit.
 
-Good takeaway pattern: **“[Product] helps [specific user] accomplish [job] through
-[differentiator], with [important adoption constraint].”** Replace every slot with
+Make adoption reasoning product-specific: where the selected user would encounter
+the product, which useful result earns the first trial, and which recurring task
+supports reuse. Treat this as a proposed path unless supported by evidence.
+A reusable artifact does not prove retention; a free tier does not prove
+acquisition. Put secondary pricing and adoption detail in notes when it would
+displace the user-benefit explanation.
+
+Good takeaway pattern: **“[Product] helps [specific user] move from [painful current
+task] to [useful outcome]; [adoption mechanism] gives them a reason to try it.”**
+Replace every slot with
 evidence-backed content. A title such as “Product overview” carries no finding.
 
 ## Slide 2: Technical — what enables the value
@@ -37,7 +46,7 @@ what is distinctive, and name the main technical constraint?
 | --- | --- | --- |
 | Header | A takeaway connecting a mechanism to its benefit and tradeoff | Claim title, consistent identity/date treatment |
 | Left, about 56% of body width | The same use case, traced from input through documented components to output | Large editable architecture or sequence diagram, typically four to six major nodes |
-| Right, about 42%, separated by a gutter | Distinctive mechanisms, execution/dependencies, outputs or verification, and the main constraint | Up to four numbered findings; connect each design choice to its benefit or tradeoff |
+| Right, about 42%, separated by a gutter | Mechanisms behind the business slide's benefits, plus the main constraints | Up to four numbered findings; make the need, mechanism and tradeoff explicit |
 | Bottom strip | Most consequential integration/deployment limit, evidence gap, or next verification | One concise statement |
 | Footer | Technical evidence supporting nodes, arrows, and claims | Linked docs, paper sections, or pinned code references |
 

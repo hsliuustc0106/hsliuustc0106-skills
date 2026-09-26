@@ -77,10 +77,10 @@ when reconstructing. Keep the caption and optional link from colliding.
 
 ## Adapt the two pages
 
-- **Business:** put a relevant product screenshot or customer workflow in the
-  left frame. Use the right-hand findings for customer/job, value versus an
-  alternative, commercial model, and adoption evidence or risk. The takeaway
-  states who benefits and the main qualification.
+- **Business:** put a user-need/benefit mapping, customer workflow, or annotated
+  product screenshot in the left frame. Use the right-hand findings to explain
+  who benefits and why they would try, return to, or recommend the product.
+  Pricing and distribution support that argument. Label untested growth ideas.
 - **Technical:** use the same left frame for an editable architecture or execution
   diagram. Use the right-hand findings to explain mechanisms and constraints.
   The takeaway connects the mechanism to the business-page benefit and limitation.
@@ -99,7 +99,7 @@ it. For a local `.pptx` reconstruction, reproduce those regions as native object
 | --- | --- |
 | White background, divider rules, takeaway shape | Keep the visual structure |
 | Title, subtitle, four finding pairs, takeaway text | Replace with the new product's supported findings |
-| Claude Science screenshot | Replace with the current product visual or an editable technical diagram |
+| Claude Science screenshot | Replace with the current product visual, a user-benefit flow, or an editable technical diagram |
 | Caption and demo link | Replace with matching provenance/link, or remove when unused |
 | Beta/tier label | Replace with verified current status, or remove when irrelevant |
 | Source line and hyperlinks | Replace with the actual supporting sources and dates |

@@ -7,7 +7,7 @@ description: Research a new or unfamiliar product and distill it into an editabl
 
 Research broadly enough to explain the product; select narrowly enough for the
 audience to understand it in two slides. Connect customer value to the mechanisms
-that enable it and the constraints that limit it.
+that enable it, the reasons users would adopt it, and the constraints that limit it.
 
 ## Establish the brief
 
@@ -46,8 +46,10 @@ Keep a compact evidence ledger in the working notes:
 Research these questions, then select what materially explains this product:
 
 - **Business:** Who uses it and who pays? What painful task and existing workflow
-  does it change? Why choose it over the status quo or closest alternatives? How
-  is it priced and distributed? What evidence supports adoption, outcomes, and
+  does it change, and what concrete user outcome improves? Why choose it over the
+  status quo or closest alternatives? How would users discover it, reach a first
+  useful result, and find a reason to return or recommend it? How do pricing and
+  distribution affect that path? What evidence supports benefits, adoption, and
   any claimed defensibility? What could prevent purchase or sustained use?
 - **Technical:** What happens from input to useful output in one representative
   task? What components, interfaces, dependencies, and data flows are documented?
@@ -86,9 +88,20 @@ family, with a product visual on the business page and a mechanism diagram on th
 technical page.
 
 Write a one-sentence takeaway for each slide before laying it out. Use the same
-representative use case on both pages. Tie at least one business differentiator
-to a documented technical mechanism and its tradeoff, or explicitly state that
-the mechanism is undisclosed. Avoid repeating the feature list on both pages.
+representative user and task on both pages. Make the business argument visible:
+**user need → product mechanism → user benefit → reason to try or return**.
+Show the benefit compared with the user's current workflow; a feature list,
+price, or customer logo cannot substitute for this explanation. Tie the central
+benefits to documented mechanisms and their tradeoffs on the technical slide,
+or explicitly state that the mechanism is undisclosed.
+
+Explain a plausible adoption path with a concrete audience, way to reach them,
+first useful result, and reason for repeated use. When evidence is missing, label
+the selected audience, expected benefits, and growth tactics as hypotheses rather
+than existing strategy or proven effects. If proposing a tactic, name a useful
+signal to test it, such as completion of a valuable task or subsequent reuse;
+do not invent conversion rates or growth targets. Keep this analysis concise
+within the business slide rather than adding a marketing-plan slide.
 
 Select a few decisive findings. Keep the main limitation visible beside the
 benefit it qualifies. Put research depth and secondary evidence in speaker notes
@@ -126,7 +139,9 @@ or the evidence ledger; do not make the audience read a miniature report.
    establish legibility; disclose when rendering or target-app checks cannot run.
 3. Check the two pages together: same product/version/date, consistent terms and
    numbers, business claims supported by the technical view, and visible material
-   uncertainty. Distinguish a verified feature from a verified outcome.
+   uncertainty. Can the reader explain whose problem is solved, the practical
+   benefit, and why a user would try and keep using it? Distinguish a verified
+   feature from a verified outcome or proposed adoption tactic.
 4. Deliver the `.pptx`, slide previews when available, and the evidence ledger
    when stored separately. Summarize the main finding and any consequential gap.
    If file generation is blocked, deliver the completed content and evidence and
