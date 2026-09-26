@@ -10,6 +10,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
+- `skills/paper-repo-deepdive/`: analyze a paper or GitHub repository and produce
+  one editable PowerPoint slide with speaker notes and a cited technical analysis.
 - `skills/setup-server-project/`: prepare `repos/`, `models/`, `llm_wiki/`, and
   `envs/` in an existing server account, clone repositories, install dependencies, and verify
   the setup without expanding into account or machine administration.
