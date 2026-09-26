@@ -78,9 +78,11 @@ when reconstructing. Keep the caption and optional link from colliding.
 ## Adapt the two pages
 
 - **Business:** put a user-need/benefit mapping, customer workflow, or annotated
-  product screenshot in the left frame. Use the right-hand findings to explain
-  who benefits and why they would try, return to, or recommend the product.
-  Pricing and distribution support that argument. Label untested growth ideas.
+  product screenshot in the left frame. Prioritize supported improvement numbers
+  in the right-hand findings, with the task, baseline and evidence status nearby.
+  Numbers can use larger blue type or native comparison bars within that column;
+  reduce the finding count to keep explanations at 14 pt. Keep the reason to try
+  or return visible in the takeaway or a remaining finding. Label growth hypotheses.
 - **Technical:** use the same left frame for an editable architecture or execution
   diagram. Use the right-hand findings to explain mechanisms and constraints.
   The takeaway connects the mechanism to the business-page benefit and limitation.

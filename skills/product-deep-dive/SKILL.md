@@ -46,8 +46,9 @@ Keep a compact evidence ledger in the working notes:
 Research these questions, then select what materially explains this product:
 
 - **Business:** Who uses it and who pays? What painful task and existing workflow
-  does it change, and what concrete user outcome improves? Why choose it over the
-  status quo or closest alternatives? How would users discover it, reach a first
+  does it change, what concrete user outcome improves, and by how much? Look for
+  changes in task time, effort, cost, quality or completion rate. Why choose it
+  over the status quo or closest alternatives? How would users discover it, reach a first
   useful result, and find a reason to return or recommend it? How do pricing and
   distribution affect that path? What evidence supports benefits, adoption, and
   any claimed defensibility? What could prevent purchase or sustained use?
@@ -61,8 +62,13 @@ Keep these distinctions explicit:
 - Shipped features, restricted previews, and roadmap promises are different.
 - Price needs its currency, billing unit, tier, region when relevant, and date.
   Funding, registered users, active users, and revenue are different measures.
-- Benchmark claims need attribution and their workload, baseline, and conditions.
-  Do not compute comparisons from incompatible measurements.
+- Improvement numbers need attribution, units, a baseline, workload and conditions.
+  Prefer comparable before/after measurements; label customer reports and vendor
+  benchmarks. Preserve ranges, approximations, quality tradeoffs and sample scope.
+  Distinguish elapsed time from hands-on effort, percentage changes from percentage
+  points, and component speedups from complete-task gains. Do not compute
+  comparisons from incompatible measurements or attribute a different product,
+  model, or research-only configuration's result to the app available to users.
 - A differentiator needs a named alternative and a shared comparison dimension.
   The current manual workflow may be the most relevant alternative. Omit arbitrary
   scores, unsupported market sizes, and invented customer counts or unit economics.
@@ -103,6 +109,14 @@ signal to test it, such as completion of a valuable task or subsequent reuse;
 do not invent conversion rates or growth targets. Keep this analysis concise
 within the business slide rather than adding a marketing-plan slide.
 
+Prioritize the strongest supported improvement numbers in the right-hand findings
+so the audience can see the size of the benefit. Show **baseline → result → change**
+with the task and evidence status nearby; mark any arithmetic derived from a source.
+Retain the user-benefit mapping and a concise adoption implication. One credible
+comparison is better than filling every finding with numbers: if a benefit is not
+quantified, say so. Feature counts, user counts and free access do not substitute
+for measured improvements in users' work.
+
 Select a few decisive findings. Keep the main limitation visible beside the
 benefit it qualifies. Put research depth and secondary evidence in speaker notes
 or the evidence ledger; do not make the audience read a miniature report.
@@ -141,7 +155,8 @@ or the evidence ledger; do not make the audience read a miniature report.
    numbers, business claims supported by the technical view, and visible material
    uncertainty. Can the reader explain whose problem is solved, the practical
    benefit, and why a user would try and keep using it? Distinguish a verified
-   feature from a verified outcome or proposed adoption tactic.
+   feature from a verified outcome or proposed adoption tactic. Recheck improvement
+   arithmetic, baseline compatibility and visible qualifications for every number.
 4. Deliver the `.pptx`, slide previews when available, and the evidence ledger
    when stored separately. Summarize the main finding and any consequential gap.
    If file generation is blocked, deliver the completed content and evidence and

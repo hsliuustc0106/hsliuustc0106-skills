@@ -8,14 +8,14 @@ boxes to fill with weak evidence. The default visual system comes from
 ## Slide 1: Business — why this product matters
 
 **Audience test:** Can a reader explain whose unmet need this product addresses,
-what improves over the current workflow, and what would attract that user and
-make them return?
+what improves over the current workflow, how much it helps when quantified,
+and what would attract that user and make them return?
 
 | Region | Content | Suggested treatment |
 | --- | --- | --- |
 | Header | Product/vendor, category, as-of date; a specific user benefit | Outcome-led takeaway title and identity line |
 | Left, about 56% of body width | User need → enabling mechanism → practical benefit, compared with the current workflow | A before/after flow, compact mapping, or screenshot annotated to explain the benefit |
-| Right, about 42%, separated by a gutter | Priority user and unmet need; how to attract them; first useful result and access; reason to return or recommend | Up to four numbered findings; distinguish documented adoption mechanisms from proposed tactics |
+| Right, about 42%, separated by a gutter | Strongest quantified user benefits, evidence scope, and an adoption implication | Prominent before/after numbers or a small chart, with task, baseline, units and source status; use fewer findings when evidence is sparse |
 | Bottom strip | Adoption thesis and its main uncertainty or validation signal | One sentence, qualified as an assessment or hypothesis where appropriate |
 | Footer | Short source references matching claim markers | Linked source titles; full details in notes/ledger |
 
@@ -32,6 +32,15 @@ A reusable artifact does not prove retention; a free tier does not prove
 acquisition. Put secondary pricing and adoption detail in notes when it would
 displace the user-benefit explanation.
 
+For a quantitative finding, a useful pattern is **“[task]: [baseline] → [result]
+([change]); [who reported it and under what conditions].”** Use actual durations,
+costs or success rates when available. A normalized comparison is acceptable when
+only a ratio is reported, but label the normalization and do not invent absolute
+values. Preserve approximate language. Keep a customer anecdote visibly distinct
+from a controlled benchmark, and do not make an average from unrelated cases.
+If only one supported improvement exists, feature it prominently and leave other
+benefits qualitative; no numerical target needs to be invented to complete the page.
+
 Good takeaway pattern: **“[Product] helps [specific user] move from [painful current
 task] to [useful outcome]; [adoption mechanism] gives them a reason to try it.”**
 Replace every slot with
@@ -46,7 +55,7 @@ what is distinctive, and name the main technical constraint?
 | --- | --- | --- |
 | Header | A takeaway connecting a mechanism to its benefit and tradeoff | Claim title, consistent identity/date treatment |
 | Left, about 56% of body width | The same use case, traced from input through documented components to output | Large editable architecture or sequence diagram, typically four to six major nodes |
-| Right, about 42%, separated by a gutter | Mechanisms behind the business slide's benefits, plus the main constraints | Up to four numbered findings; make the need, mechanism and tradeoff explicit |
+| Right, about 42%, separated by a gutter | Mechanisms behind the benefits, scoped improvement measurements where available, and constraints | Show benchmark baseline, hardware/version and quality tradeoff; distinguish component measurements or research demonstrations from app-level user gains |
 | Bottom strip | Most consequential integration/deployment limit, evidence gap, or next verification | One concise statement |
 | Footer | Technical evidence supporting nodes, arrows, and claims | Linked docs, paper sections, or pinned code references |
 
