@@ -1,0 +1,4 @@
+interface:
+  display_name: "Export to Google Drive"
+  short_description: "Organize generated exports by project and revision"
+  default_prompt: "Use $export-to-google-drive to upload these generated files into Projects/<project> with consistent names and no duplicate exports."

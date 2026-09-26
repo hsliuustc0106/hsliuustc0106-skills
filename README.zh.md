@@ -10,6 +10,8 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
+- [导出到 Google Drive](skills/export-to-google-drive/SKILL.md)：将生成文件归入
+  `Projects/<project>`，统一命名，并在再次导出时处理版本、避免重复上传。
 - `skills/setup-server-project/`：在已有服务器账号中创建 `repos/`、`models/`、
   `llm_wiki/` 和 `envs/` 目录、克隆仓库、
   安装隔离的项目依赖并验证环境，不扩展为账号创建或整机管理。
