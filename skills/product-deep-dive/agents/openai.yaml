@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Deep Dive"
+  short_description: "Research a product in business and technical slides"
+  default_prompt: "Use $product-deep-dive to research this product and create a two-slide PowerPoint: one business view and one technical view."
