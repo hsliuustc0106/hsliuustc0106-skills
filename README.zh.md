@@ -16,6 +16,8 @@
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。
+- `skills/reference-slide-style/`：中英文演示风格技能，包含 14 种固定版式、
+  空白模板和独立致谢页。通过源码生成六份可编辑 PPTX/POTX，使用方法见目录内说明。
 - `skills/vllm-omni-review/`：仓库内置的 vLLM Omni review skill 和辅助脚本。
 
 ## 安装

@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+/.venv/
+/assets/starter-layouts.pptx
+/templates/*.pptx
+/templates/*.potx
+/previews/

@@ -1,0 +1,48 @@
+name: Reference slide style templates
+
+on:
+  pull_request:
+    paths:
+      - 'skills/reference-slide-style/**'
+      - '.github/workflows/reference-slide-style.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'skills/reference-slide-style/**'
+      - '.github/workflows/reference-slide-style.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.13'
+      - name: Install template dependencies
+        run: python -m pip install -r skills/reference-slide-style/requirements.txt
+      - name: Test a clean source-only build
+        run: python -m unittest discover -s skills/reference-slide-style/tests -v
+      - name: Generate bilingual Office templates
+        working-directory: skills/reference-slide-style
+        run: |
+          python scripts/build_templates.py
+          python scripts/check_templates.py templates/blank-layouts-*.pptx templates/reference-style-*.potx
+          python scripts/check_templates.py templates/layout-guide-*.pptx --guide
+      - name: Upload the six editable templates
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: reference-slide-style-templates
+          path: |
+            skills/reference-slide-style/templates/*.pptx
+            skills/reference-slide-style/templates/*.potx
+            skills/reference-slide-style/templates/layout-index.json
+          if-no-files-found: error
+          retention-days: 30
