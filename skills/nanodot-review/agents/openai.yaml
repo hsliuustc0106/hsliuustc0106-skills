@@ -1,0 +1,4 @@
+interface:
+  display_name: "nanodot Review"
+  short_description: "Evidence-grounded nanodot pull request review"
+  default_prompt: "Use $nanodot-review to review this nanodot change at its exact head."

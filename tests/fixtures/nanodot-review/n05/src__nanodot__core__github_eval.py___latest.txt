@@ -1,0 +1,18 @@
+def _latest(runs: tuple[CheckRun, ...]) -> list[CheckRun]:
+    """Reruns replace only the same source/app/suite/name, never another app.
+
+    Suite identity preserves independently required same-name workflow jobs.
+    Without ordered IDs, retain every result rather than guessing a winner.
+    """
+    groups: dict[tuple, list[CheckRun]] = {}
+    for run in runs:
+        key = (run.source, run.name.casefold(), run.app_id, run.suite_id)
+        groups.setdefault(key, []).append(run)
+    selected = []
+    for group in groups.values():
+        if all(type(run.run_id) is int and run.run_id > 0 for run in group):
+            newest = max(run.run_id for run in group)
+            selected.extend(run for run in group if run.run_id == newest)
+        else:
+            selected.extend(group)
+    return selected

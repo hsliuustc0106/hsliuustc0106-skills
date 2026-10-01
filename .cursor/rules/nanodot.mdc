@@ -1,0 +1,11 @@
+---
+description: Evidence-grounded code review for ThinkFlowLab/nanodot.
+globs: "**/*"
+alwaysApply: false
+---
+
+# nanodot Review
+
+For nanodot pull request or branch reviews, use `skills/nanodot-review/SKILL.md`.
+Resolve the exact target SHA before applying runtime guidance: main and an open
+integration branch can have different implementations and test coverage.

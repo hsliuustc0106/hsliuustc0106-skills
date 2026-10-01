@@ -20,6 +20,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
+- `skills/nanodot-review/`: snapshot-grounded nanodot review and offline-tested selection.
 - `skills/vllm-omni-review/`: bundled vLLM Omni review workflow and helpers.
 
 ## Core Principles
@@ -80,6 +81,7 @@ Supported projects:
 - `vllm-omni`
 - `afd-plugin`
 - `vllm-omni-cookbook`
+- `nanodot`
 
 Supported tools (each also installs the skills referenced by the project rules):
 
@@ -120,6 +122,13 @@ For Cursor:
 For vLLM Omni code review, use
 [skills/vllm-omni-review/SKILL.md](skills/vllm-omni-review/SKILL.md) as the source
 of truth. Review helpers require Bash, `gh`, `jq`, and Python 3.8 or newer.
+
+## nanodot Review
+
+Use [skills/nanodot-review/SKILL.md](skills/nanodot-review/SKILL.md) for
+`ThinkFlowLab/nanodot` reviews. The skill distinguishes main from unmerged
+integration code and includes a read-only paginated PR selector with a local
+review ledger. Helpers require Python 3.8+; live selection additionally uses `gh`.
 
 ## Nsight Compute Profiling
 

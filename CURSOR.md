@@ -5,7 +5,7 @@ This repository includes Cursor project rules under [`.cursor/rules`](.cursor/ru
 ## In this repository
 
 - [`.cursor/rules/agentic-coding-guidelines.mdc`](.cursor/rules/agentic-coding-guidelines.mdc) applies the shared behavior rules.
-- Project-specific rules are available for `vllm`, `vllm-omni`, `afd-plugin`, and `vllm-omni-cookbook`.
+- Project-specific rules are available for `vllm`, `vllm-omni`, `afd-plugin`, `vllm-omni-cookbook`, and `nanodot`.
 - The legacy `.cursorrules` format is intentionally not used.
 
 ## Use in another project

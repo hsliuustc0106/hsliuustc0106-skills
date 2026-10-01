@@ -1,0 +1,41 @@
+def _run_runner(args: argparse.Namespace) -> int:
+    import threading
+
+    from nanodot.native.daemon import RunnerDaemon
+    from nanodot.native.runner_control import RunnerControlError, RunnerLease
+
+    stop = threading.Event()
+
+    def _sigint(_signum, _frame) -> None:
+        stop.set()
+
+    store = None
+    daemon = None
+
+    def prepare() -> None:
+        nonlocal store, daemon
+        _, store, _, _, _, loop = _wiring()
+        daemon = RunnerDaemon(loop, store)
+
+    try:
+        with RunnerLease(_pidfile(), stop, prepare=prepare):
+            assert store is not None and daemon is not None
+            if args.once:
+                attempted = daemon.tick(stop=stop)
+                blockers = [t for t in store.list() if t.blocker]
+                if blockers:
+                    for task in blockers:
+                        print(f"blocked: {task.id} ({task.target}): {task.blocker}",
+                              file=sys.stderr)
+                    return 1
+                print(f"ran {attempted} task(s)")
+                return 0
+            signal.signal(signal.SIGINT, _sigint)
+            signal.signal(signal.SIGTERM, _sigint)
+            print("nanodot runner started — Ctrl-C to stop", flush=True)
+            daemon.serve(stop)
+            print("nanodot runner stopped")
+            return 0
+    except (RunnerControlError, OSError, ValueError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1

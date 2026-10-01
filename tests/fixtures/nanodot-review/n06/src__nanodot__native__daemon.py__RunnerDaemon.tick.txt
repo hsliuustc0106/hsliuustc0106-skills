@@ -1,0 +1,21 @@
+    def tick(self, stop: threading.Event | None = None) -> int:
+        """Run due tasks once, checking for shutdown before each new task.
+
+        An in-flight task finishes and persists its progress. Returns the
+        number of tasks attempted; omitting ``stop`` runs the full pass.
+        """
+        now = self._clock.time()
+        attempted = 0
+        for task in self._store.list_schedulable(now):
+            if stop is not None and stop.is_set():
+                break
+            attempted += 1
+            try:
+                self._loop.run_once(task, now)
+            except Exception:
+                # Adapter bugs and optional-service failures must not stop
+                # unrelated watches. Never log exception text: remote payloads
+                # and provider errors can contain credentials or private data.
+                logger.warning("task %s raised an unexpected error", task.id)
+                self._retry_failed_task(task, now)
+        return attempted

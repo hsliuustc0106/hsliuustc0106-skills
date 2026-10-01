@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "scope": "Four narrow integration defect families, each paired with a clean control; not whole-file bug-free labels.",
+  "cases": [
+    {
+      "id": "n01",
+      "family": "required-catalog-failure-alert",
+      "has_defect": false,
+      "expected_severity": null,
+      "adjudication": "Observed complete current-head failures notify without claiming success when the required catalog is empty/unknown; latest-rerun, current SHA and source provenance filter the failure names. Optional-only green results keep watching.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_failures_without_known_required_checks",
+          "start": 101,
+          "end": 121,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L101-L121"
+        },
+        {
+          "test": "tests/test_github.py::test_observed_failure_survives_unknown_or_empty_requirements",
+          "start": 275,
+          "end": 279,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L275-L279"
+        },
+        {
+          "test": "tests/test_github.py::test_native_failure_survives_empty_or_unknown_rules",
+          "start": 472,
+          "end": 486,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L472-L486"
+        },
+        {
+          "test": "tests/test_statemachine.py::test_failure_without_requirements_notifies_once_and_recovery_keeps_watching",
+          "start": 172,
+          "end": 197,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_statemachine.py#L172-L197"
+        }
+      ]
+    },
+    {
+      "id": "n02",
+      "family": "cooperative-stop-between-tasks",
+      "has_defect": true,
+      "expected_severity": "P2",
+      "adjudication": "A cooperative stop arriving during one fetch is seen only outside a scheduler pass, so the daemon or --once runner starts subsequent already-queued tasks before honoring stop.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_daemon_resilience.py::test_shutdown_finishes_current_task_without_starting_next",
+          "start": 135,
+          "end": 187,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_daemon_resilience.py#L135-L187"
+        },
+        {
+          "test": "tests/test_daemon_resilience.py::test_stopped_tick_does_not_attempt_due_tasks",
+          "start": 190,
+          "end": 209,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_daemon_resilience.py#L190-L209"
+        },
+        {
+          "test": "tests/test_public_mode.py::test_once_runner_stop_during_fetch_skips_remaining_tasks",
+          "start": 96,
+          "end": 142,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_public_mode.py#L96-L142"
+        }
+      ]
+    },
+    {
+      "id": "n03",
+      "family": "crash-replay-notification-identity",
+      "has_defect": false,
+      "expected_severity": null,
+      "adjudication": "For sequenced events identity is task_id, occurrence, kind, head_sha; mutable text/evidence/time excluded. Different occurrence/task/kind/head remain distinct. Unsequenced events keep legacy content fallback. No exactly-once OS-popup guarantee.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_crash_replay_with_changed_optional_status",
+          "start": 68,
+          "end": 97,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L68-L97"
+        },
+        {
+          "test": "tests/test_notifier.py::test_sequenced_replay_ignores_changed_evidence_and_text",
+          "start": 196,
+          "end": 209,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L196-L209"
+        },
+        {
+          "test": "tests/test_notifier.py::test_transition_identity_does_not_hide_distinct_events",
+          "start": 218,
+          "end": 222,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L218-L222"
+        },
+        {
+          "test": "tests/test_notifier.py::test_same_sha_failure_recurrence_delivered_once_per_occurrence_after_restart",
+          "start": 149,
+          "end": 192,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L149-L192"
+        }
+      ]
+    },
+    {
+      "id": "n04",
+      "family": "optional-failure-required-pending",
+      "has_defect": true,
+      "expected_severity": "P2",
+      "adjudication": "With nonempty known required checks pending or missing, failure of an optional current-head check is omitted because evaluation considers only required contexts.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/661f4bae106e9f9718137812a803020b8954acc8",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_optional_failure_while_required_checks_pending",
+          "start": 124,
+          "end": 165,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L124-L165"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_notifies_until_required_success_is_confirmed",
+          "start": 344,
+          "end": 348,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L344-L348"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_does_not_block_required_success",
+          "start": 327,
+          "end": 329,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L327-L329"
+        },
+        {
+          "test": "tests/test_github.py::test_pending_required_checks_ignore_unconfirmed_optional_failures",
+          "start": 355,
+          "end": 357,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L355-L357"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_with_pending_requirements_uses_latest_rerun",
+          "start": 362,
+          "end": 366,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L362-L366"
+        }
+      ]
+    },
+    {
+      "id": "n05",
+      "family": "required-catalog-failure-alert",
+      "has_defect": true,
+      "expected_severity": "P2",
+      "adjudication": "With complete current-head failing checks but required_checks=None or (), evaluate_checks returns PENDING/NO_CHECKS and suppresses a checks-failed notification.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_failures_without_known_required_checks",
+          "start": 101,
+          "end": 121,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L101-L121"
+        },
+        {
+          "test": "tests/test_github.py::test_observed_failure_survives_unknown_or_empty_requirements",
+          "start": 275,
+          "end": 279,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L275-L279"
+        },
+        {
+          "test": "tests/test_github.py::test_native_failure_survives_empty_or_unknown_rules",
+          "start": 472,
+          "end": 486,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L472-L486"
+        },
+        {
+          "test": "tests/test_statemachine.py::test_failure_without_requirements_notifies_once_and_recovery_keeps_watching",
+          "start": 172,
+          "end": 197,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_statemachine.py#L172-L197"
+        }
+      ]
+    },
+    {
+      "id": "n06",
+      "family": "cooperative-stop-between-tasks",
+      "has_defect": false,
+      "expected_severity": null,
+      "adjudication": "Pass stop into tick from serve and CLI --once, check it before each new task, allow in-flight work to persist. Later due tasks remain unchanged and schedulable. Omitting stop preserves one-pass API.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_daemon_resilience.py::test_shutdown_finishes_current_task_without_starting_next",
+          "start": 135,
+          "end": 187,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_daemon_resilience.py#L135-L187"
+        },
+        {
+          "test": "tests/test_daemon_resilience.py::test_stopped_tick_does_not_attempt_due_tasks",
+          "start": 190,
+          "end": 209,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_daemon_resilience.py#L190-L209"
+        },
+        {
+          "test": "tests/test_public_mode.py::test_once_runner_stop_during_fetch_skips_remaining_tasks",
+          "start": 96,
+          "end": 142,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_public_mode.py#L96-L142"
+        }
+      ]
+    },
+    {
+      "id": "n07",
+      "family": "crash-replay-notification-identity",
+      "has_defect": true,
+      "expected_severity": "P2",
+      "adjudication": "Crash after inbox commit but before task checkpoint replays the same occurrence. If optional evidence/text changed, the content-based key changes and produces a duplicate durable inbox notification.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_crash_replay_with_changed_optional_status",
+          "start": 68,
+          "end": 97,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L68-L97"
+        },
+        {
+          "test": "tests/test_notifier.py::test_sequenced_replay_ignores_changed_evidence_and_text",
+          "start": 196,
+          "end": 209,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L196-L209"
+        },
+        {
+          "test": "tests/test_notifier.py::test_transition_identity_does_not_hide_distinct_events",
+          "start": 218,
+          "end": 222,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L218-L222"
+        },
+        {
+          "test": "tests/test_notifier.py::test_same_sha_failure_recurrence_delivered_once_per_occurrence_after_restart",
+          "start": 149,
+          "end": 192,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L149-L192"
+        }
+      ]
+    },
+    {
+      "id": "n08",
+      "family": "optional-failure-required-pending",
+      "has_defect": false,
+      "expected_severity": null,
+      "adjudication": "Confirmed required success has precedence, otherwise observed current-head failures (including optional checks) yield FAILING. Optional failures must not block an actual required-check pass.",
+      "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/661f4bae106e9f9718137812a803020b8954acc8",
+      "regression_tests": [
+        {
+          "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_optional_failure_while_required_checks_pending",
+          "start": 124,
+          "end": 165,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L124-L165"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_notifies_until_required_success_is_confirmed",
+          "start": 344,
+          "end": 348,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L344-L348"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_does_not_block_required_success",
+          "start": 327,
+          "end": 329,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L327-L329"
+        },
+        {
+          "test": "tests/test_github.py::test_pending_required_checks_ignore_unconfirmed_optional_failures",
+          "start": 355,
+          "end": 357,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L355-L357"
+        },
+        {
+          "test": "tests/test_github.py::test_optional_failure_with_pending_requirements_uses_latest_rerun",
+          "start": 362,
+          "end": 366,
+          "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L362-L366"
+        }
+      ]
+    }
+  ]
+}

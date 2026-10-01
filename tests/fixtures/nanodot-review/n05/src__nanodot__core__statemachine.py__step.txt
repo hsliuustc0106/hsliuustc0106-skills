@@ -1,0 +1,118 @@
+def step(task: Task, snapshot: Snapshot, now: float) -> tuple[dict, list[WatchEvent]]:
+    """Advance the watch for one snapshot.
+
+    Returns the new ``watch_state`` dict (persisted on the task) and the
+    events to record and deliver. Dedup: an unchanged snapshot produces no
+    events; terminal states are emitted exactly once.
+    """
+    task.validate()
+    state: dict = dict(task.watch_state)
+    events: list[WatchEvent] = []
+
+    if state.get("terminal"):
+        return state, []
+
+    evidence = _checks_evidence(snapshot)
+
+    # Terminal: the PR itself merged or closed — outranks check state.
+    if snapshot.pr_state == "merged":
+        events.append(
+            _event(PR_MERGED, task, snapshot, now, f"{task.target} was merged")
+        )
+        state.update(terminal=True, terminal_kind=PR_MERGED, last_fingerprint=_fingerprint(snapshot))
+        return _finish(state, events)
+    if snapshot.pr_state == "closed":
+        events.append(
+            _event(PR_CLOSED, task, snapshot, now, f"{task.target} was closed")
+        )
+        state.update(terminal=True, terminal_kind=PR_CLOSED, last_fingerprint=_fingerprint(snapshot))
+        return _finish(state, events)
+
+    # A new head SHA resets evaluation — passing on the old commit never
+    # carries over to the new one.
+    last_sha = state.get("last_sha")
+    if last_sha is not None and last_sha != snapshot.head_sha:
+        state.pop("last_outcome", None)
+        events.append(
+            WatchEvent(
+                kind=NEW_COMMIT,
+                message=f"new commit {snapshot.head_sha[:10]} on {task.target}; "
+                "previous results no longer apply",
+                evidence=evidence,
+                notable=True,
+                task_id=task.id,
+                at=now,
+            )
+        )
+
+    outcome = evaluate_checks(snapshot)
+    state.update(last_sha=snapshot.head_sha)
+
+    if outcome is CheckOutcome.PASSING:
+        events.append(
+            _event(
+                CHECKS_PASSED,
+                task,
+                snapshot,
+                now,
+                f"required checks passed on {snapshot.head_sha[:10]} for {task.target}",
+            )
+        )
+        state.update(terminal=True, terminal_kind=CHECKS_PASSED)
+    elif outcome is CheckOutcome.FAILING:
+        if state.get("last_outcome") != CheckOutcome.FAILING.value:
+            failing = [
+                run.name
+                for run in snapshot.checks_for(snapshot.head_sha)
+                if run.conclusion in FAILING_CONCLUSIONS
+            ]
+            events.append(
+                _event(
+                    CHECKS_FAILED,
+                    task,
+                    snapshot,
+                    now,
+                    f"checks failing on {snapshot.head_sha[:10]} for {task.target}: "
+                    + ", ".join(failing),
+                )
+            )
+    else:  # PENDING or NO_CHECKS — intermediate polls, recorded not notified
+        if snapshot.required_checks is None:
+            pending_message = "required-check rules unavailable or unsupported; cannot confirm success"
+        elif not snapshot.checks_complete:
+            pending_message = "check results incomplete; cannot confirm success"
+        elif not snapshot.required_checks:
+            pending_message = "no required checks configured; watch remains active until PR closes or merges"
+        else:
+            pending_message = "required checks pending on the current commit"
+        uncertain = (
+            snapshot.required_checks is None
+            or not snapshot.checks_complete
+            or not snapshot.required_checks
+        )
+        reason_changed = state.get("last_pending_reason") != pending_message
+        if reason_changed and (uncertain or state.get("last_outcome") is not None):
+            events.append(
+                WatchEvent(
+                    kind=CHECKS_PENDING,
+                    message=pending_message + f" ({task.target})",
+                    evidence=evidence,
+                    notable=False,
+                    task_id=task.id,
+                    at=now,
+                )
+            )
+        state["last_pending_reason"] = pending_message
+
+    if outcome not in (CheckOutcome.PENDING, CheckOutcome.NO_CHECKS):
+        state.pop("last_pending_reason", None)
+
+    fingerprint = _fingerprint(snapshot)
+    if state.get("last_fingerprint") == fingerprint and not events:
+        return state, []  # unchanged snapshot: nothing new
+    state.update(
+        last_fingerprint=fingerprint,
+        last_outcome=outcome.value,
+        last_event_at=now,
+    )
+    return _finish(state, events)

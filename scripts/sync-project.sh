@@ -11,6 +11,7 @@ Projects:
   vllm-omni
   afd-plugin
   vllm-omni-cookbook
+  nanodot
 
 Tools:
   codex   Copy AGENTS.md and its referenced skills
@@ -58,7 +59,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$PROJECT" in
-  vllm|vllm-omni|afd-plugin|vllm-omni-cookbook)
+  vllm|vllm-omni|afd-plugin|vllm-omni-cookbook|nanodot)
     ;;
   "")
     echo "--project is required" >&2
@@ -100,8 +101,8 @@ for tool in "${TOOL_LIST[@]}"; do
 done
 
 if [ "$COPY_SKILLS" = true ]; then
-  # AGENTS.md routes to all five directories, including review references/scripts.
-  for skill in vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
+  # Copy every skill referenced by AGENTS.md, including review resources.
+  for skill in nanodot-review vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
     while IFS= read -r -d '' source; do
       FILES+=("${source#"$ROOT/"}")
     done < <(find "$ROOT/skills/$skill" -type f ! -name '*.pyc' ! -path '*/__pycache__/*' -print0)

@@ -1,0 +1,14 @@
+def failing_checks_on_current_commit(snapshot: Snapshot) -> tuple[CheckRun, ...]:
+    """Observed failures independent of whether required-check rules are known.
+
+    A partial listing might omit a newer rerun. Only report failures from a
+    complete, current-head listing, using the same source/app/suite ordering
+    as required-check evaluation.
+    """
+    if snapshot.checks_complete is not True:
+        return ()
+    return tuple(
+        run for run in _latest(snapshot.checks_for(snapshot.head_sha))
+        if run.source in {"check_run", "status"}
+        and run.status == "completed" and run.conclusion in FAILING_CONCLUSIONS
+    )
