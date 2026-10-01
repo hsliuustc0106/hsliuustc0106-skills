@@ -66,6 +66,7 @@ Use the matching skill when working in these repositories:
 - `vllm`: `skills/vllm-guidelines/SKILL.md`
 - `vllm-omni`: `skills/vllm-omni-guidelines/SKILL.md`
 - vLLM Omni reviews: `skills/vllm-omni-review/SKILL.md`
+- vLLM Omni skill release updates: `skills/update-vllm-omni-skills/SKILL.md`
 - `afd-plugin`: `skills/afd-plugin-guidelines/SKILL.md`
 - `vllm-omni-cookbook`: `skills/vllm-omni-cookbook-guidelines/SKILL.md`
 

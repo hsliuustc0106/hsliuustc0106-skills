@@ -100,8 +100,8 @@ for tool in "${TOOL_LIST[@]}"; do
 done
 
 if [ "$COPY_SKILLS" = true ]; then
-  # AGENTS.md routes to all five directories, including review references/scripts.
-  for skill in vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
+  # Include the routed skills and their shared release-maintenance references.
+  for skill in vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines update-vllm-omni-skills; do
     while IFS= read -r -d '' source; do
       FILES+=("${source#"$ROOT/"}")
     done < <(find "$ROOT/skills/$skill" -type f ! -name '*.pyc' ! -path '*/__pycache__/*' -print0)

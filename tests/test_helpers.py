@@ -99,6 +99,7 @@ else:
             "vllm-omni-review",
             "afd-plugin-guidelines",
             "vllm-omni-cookbook-guidelines",
+            "update-vllm-omni-skills",
         ):
             for source in (ROOT / "skills" / skill).rglob("*"):
                 if source.is_file():

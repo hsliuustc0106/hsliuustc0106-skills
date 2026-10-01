@@ -25,14 +25,19 @@ On a remote server, use `ssh <server> "cd /path/to/repo && gh pr checkout <n>"` 
 Run at minimum the tests for the changed area:
 
 ```bash
-# For bench/tool changes
-pytest tests/benchmarks/ -v -m "core_model"
+# Example CPU selection at v0.28.0; inspect the affected tests and fixtures first
+pytest <affected tests> -v -m "core_model and cpu"
 
 # For specific test files mentioned in the PR
 pytest tests/path/to/test_file.py -v
 ```
 
 Verify all tests pass. If any fail, report which ones and whether the failure is pre-existing or introduced by the PR.
+
+Resolve run levels and hardware selectors from the target snapshot's CI and
+pytest configuration. `core_model` alone can include accelerator tests. The
+[release record](../../update-vllm-omni-skills/references/release-status.md) links the
+checked source; use the target's own equivalent for other releases.
 
 ### 3. E2E smoke test
 
@@ -89,4 +94,8 @@ Bugs found during verification are **blocking** — flag them in the review.
 - **Python version mismatch** — the server may use a different Python than the default; check `.venv` or `uv` setup
 - **Missing HF token** — gated models need `HF_TOKEN` set
 - **Port conflicts** — check for existing servers with `ps aux | grep vllm`
-- **StrEnum on 3.10** — vllm-omni requires Python ≥3.11; if the venv is 3.10, create a new one with `uv venv --python 3.12`
+- **Python/dependency mismatch** — read the target's `requires-python`, platform
+  requirements, and paired vLLM constraints together. v0.28.0's Omni metadata
+  declares `>=3.10,<3.14`; that alone does not establish compatibility of the
+  complete dependency stack. Diagnose an import failure before choosing a
+  replacement interpreter, and reuse a compatible existing environment.

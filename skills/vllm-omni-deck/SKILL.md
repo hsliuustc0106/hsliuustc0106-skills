@@ -73,6 +73,13 @@ Treat every user-provided or source-provided figure as immutable:
 
 ## Build from Papers, Blogs, or Pull Requests
 
+For release-specific technical content, record the source release or commit for
+architecture, model support, API, and performance claims. Keep unreleased PR
+behavior distinct from released capabilities. During a release refresh, follow
+the shared [maintenance workflow](../update-vllm-omni-skills/references/release-maintenance.md)
+for affected technical claims; the visual design contract remains independent
+of runtime releases.
+
 Treat provided links and source documents as evidence, not as an approved slide
 plan. Accept a minimal request such as:
 

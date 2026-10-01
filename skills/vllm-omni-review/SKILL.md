@@ -11,6 +11,16 @@ Review PRs like a real maintainer — direct, selective, and focused on high-sig
 
 Use this skill as a router for `vllm-project/vllm-omni` pull request reviews. Keep the default context small, load only the references that match the diff, and prioritize high-confidence findings over coverage theater.
 
+## Target version and freshness
+
+Freeze the requested base/head commits and inspect the target's dependency,
+test, and module-design sources before enforcing version-sensitive guidance.
+The [release-maintenance workflow](../update-vllm-omni-skills/references/release-maintenance.md)
+and [coverage record](../update-vllm-omni-skills/references/release-status.md) identify
+what has been checked. Missing coverage means verify the affected assumption;
+it is not itself a PR blocker. Do not impose a newer release's behavior on an
+older branch, or turn a draft design into a requirement through this skill.
+
 ## Quality contract
 
 A good review is:
@@ -161,7 +171,7 @@ For detailed anti-patterns with code examples, see [references/blocker-patterns.
 When hardware access (SSH/server/GPU) is available, **verify the PR works** — not just that it looks correct. Bugs found during verification are blocking. See [references/verification.md](references/verification.md) for detailed procedures.
 
 1. **Checkout** — `gh pr checkout <n>` on a server with the appropriate GPU/model
-2. **Unit tests** — run affected tests at minimum (e.g. `pytest -m "core_model"` for the changed area)
+2. **Unit tests** — select affected tests using the target's CI and hardware markers; a run level alone does not imply CPU-only execution
 3. **E2E smoke** — for bench/tool/metric PRs, start a server and run a quick smoke test (10 prompts, low concurrency) to verify new outputs appear and the tool doesn't crash
 4. **Compare claims** — check PR claims (metrics appear, values sensible, no crashes) against actual output
 5. **Report** — post findings as a PR comment; bugs found are blocking
@@ -235,7 +245,7 @@ Be explicit in review comments. Treat "manual verification only" as insufficient
 2. Detect hardware — same detection as Step 6 (cross-referenced from `perf-verification.md`)
 3. Find affected tests — map changed source files to test files via grep (not path convention)
 4. Filter by hardware — skip tests requiring unavailable resources
-5. Run tests — `pytest` with `--run-level core_model` by default; use `advanced_model` only if hardware is sufficient
+5. Run tests — use the target snapshot's run levels plus explicit hardware selection; inspect fixtures and obtain the required reservation before accelerator work
 6. Categorize failures — test bug / code bug / infrastructure / flaky
 7. Assess quality — score assertion quality, edge case coverage, marker compliance, anti-patterns (A-D grades for internal analysis)
 

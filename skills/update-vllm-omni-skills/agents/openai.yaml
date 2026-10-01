@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update vLLM-Omni Skills"
+  short_description: "Refresh skills against vLLM-Omni releases"
+  default_prompt: "Use $update-vllm-omni-skills to check the latest stable vLLM-Omni release, update affected guidance, validate it, and prepare a PR-ready patch."
