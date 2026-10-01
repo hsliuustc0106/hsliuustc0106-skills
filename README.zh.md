@@ -10,6 +10,9 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
+- `skills/ncu-report-skill/`：Nsight Compute CUDA 性能分析、瓶颈诊断与优化报告，
+  包含 B200/sm_100 参考文档、辅助脚本和上游 MIT 许可证。
+  固定版本与运行要求见 [来源说明](external/ncu-report-skill.md)。
 - `skills/setup-server-project/`：在已有服务器账号中创建 `repos/`、`models/`、
   `llm_wiki/` 和 `envs/` 目录、克隆仓库、
   安装隔离的项目依赖并验证环境，不扩展为账号创建或整机管理。

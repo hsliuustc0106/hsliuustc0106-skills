@@ -10,6 +10,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
+- `skills/ncu-report-skill/`: Nsight Compute profiling, report analysis, and
+  evidence-backed CUDA optimization plans, with B200/sm_100 references and helpers.
 - `skills/product-deep-dive/`: research a product and create two editable,
   source-backed PowerPoint slides covering its business and technical views.
 - `skills/setup-server-project/`: prepare `repos/`, `models/`, `llm_wiki/`, and
@@ -44,12 +46,14 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 │       └── vllm-omni-cookbook.mdc
 ├── skills/
 │   ├── agentic-coding-guidelines/
+│   ├── ncu-report-skill/
 │   ├── vllm-omni-deck/
 │   ├── vllm-guidelines/
 │   ├── vllm-omni-guidelines/
 │   ├── afd-plugin-guidelines/
 │   └── vllm-omni-cookbook-guidelines/
 ├── external/
+│   ├── ncu-report-skill.md
 │   └── vllm-omni-review.md
 └── scripts/
     └── sync-project.sh
@@ -116,6 +120,19 @@ For Cursor:
 For vLLM Omni code review, use
 [skills/vllm-omni-review/SKILL.md](skills/vllm-omni-review/SKILL.md) as the source
 of truth. Review helpers require Bash, `gh`, `jq`, and Python 3.8 or newer.
+
+## Nsight Compute Profiling
+
+Use [skills/ncu-report-skill/SKILL.md](skills/ncu-report-skill/SKILL.md) for CUDA
+kernel profiling and `.ncu-rep` analysis. The complete upstream skill, helpers,
+references, and MIT license are bundled; see
+[source and runtime notes](external/ncu-report-skill.md) for the pinned version.
+The existing plugin discovers it through `./skills/`; the project-rule sync
+script continues to copy only the skills referenced by those project rules.
+
+Profiling requires CUDA/Nsight Compute and an appropriate GPU; report analysis
+requires Nsight Compute's `ncu_report` Python module. Adding the skill does not
+install these tools or change GPU performance-counter permissions.
 
 ## Helper Regression Tests
 
