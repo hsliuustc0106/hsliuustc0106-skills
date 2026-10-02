@@ -128,7 +128,10 @@ sources without copying their checklists. Supported public review projects are
 vLLM Omni, AFD Plugin, Router, ScienceDiscovery, System1 Omni, and nanodot.
 
 See [repository-review-source](skills/repository-review-source/SKILL.md).
-Given an authorized checkout containing its canonical skill:
+The connected GitHub API can load the canonical skill and needed references at
+a resolved immutable commit without a local checkout; record the commit and
+Git blob identifiers of the actual files read. See the connector workflow in
+the loader skill. Alternatively, given an authorized local checkout:
 
 ```bash
 python3 skills/repository-review-source/scripts/load_source.py nanodot --checkout /path/to/nanodot

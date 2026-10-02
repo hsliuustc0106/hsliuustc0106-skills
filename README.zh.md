@@ -69,3 +69,5 @@ MIT
 
 入口见 [repository-review-source](skills/repository-review-source/SKILL.md)。
 私有项目通过未跟踪的本地 JSON 配置加载，配置与私有内容不提交到公共仓库。
+
+没有本地 checkout 时，可通过已授权的 GitHub connector 固定源码提交，并读取规范技能及需要的引用文件；记录实际读取文件的 Git blob 标识，不需要复制或维护另一份规则。
