@@ -5,20 +5,23 @@ This repository includes Cursor project rules under [`.cursor/rules`](.cursor/ru
 ## In this repository
 
 - [`.cursor/rules/agentic-coding-guidelines.mdc`](.cursor/rules/agentic-coding-guidelines.mdc) applies the shared behavior rules.
-- Project-specific rules are available for `vllm`, `vllm-omni`, `afd-plugin`, `vllm-omni-cookbook`, and `nanodot`.
+- Project-specific rules are available for `vllm`, `vllm-omni`, `afd-plugin`, `vllm-omni-cookbook`, `nanodot`, `router`, `sciencediscovery`, and `system1-omni`.
 - The legacy `.cursorrules` format is intentionally not used.
 
 ## Use in another project
 
-Copy the relevant `.mdc` files into that project's `.cursor/rules/` directory:
+Use the sync script so the selected rules and their loader dependencies are
+installed together:
 
 ```bash
-mkdir -p .cursor/rules
-cp ~/.agentic-coding-rules/.cursor/rules/agentic-coding-guidelines.mdc .cursor/rules/
-cp ~/.agentic-coding-rules/.cursor/rules/vllm-omni.mdc .cursor/rules/
+~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools cursor --target /path/to/project
 ```
 
-For Codex and Claude Code, copy or symlink `AGENTS.md` and `CLAUDE.md` as needed.
+For Codex or Claude Code, select `--tools codex` or `--tools claude`. Existing
+conflicting files are preserved unless explicitly replaced with `--force`.
+Project review entrypoints load their canonical repository source through an
+authorized checkout or the connected GitHub API; review policy is not copied
+into this personal repository.
 
 ## Keep files in sync
 

@@ -18,5 +18,6 @@ Use this skill when working in `vllm-omni`.
 
 ## Review Workflow
 
-For vLLM Omni code review, use the bundled
-[vllm-omni-review skill](../vllm-omni-review/SKILL.md) as the source of truth.
+For vLLM Omni code review, use the
+[vllm-omni-review entrypoint](../vllm-omni-review/SKILL.md) to load the
+canonical repository-owned skill and record the source revision actually read.
