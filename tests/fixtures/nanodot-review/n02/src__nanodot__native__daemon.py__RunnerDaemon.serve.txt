@@ -1,6 +1,0 @@
-    def serve(self, stop: threading.Event, poll_seconds: float | None = None) -> None:
-        """Foreground loop; stop by setting the event."""
-        interval = poll_seconds if poll_seconds is not None else self._tick
-        while not stop.is_set():
-            self.tick()
-            stop.wait(interval)

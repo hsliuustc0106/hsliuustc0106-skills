@@ -11,3 +11,5 @@ alwaysApply: false
 - Check host framework expectations before changing lifecycle, registration, loading, or config behavior.
 - Prefer focused tests that exercise plugin integration points.
 
+
+For PR or branch reviews, load `skills/afd-plugin-review/SKILL.md` and follow its canonical repository-owned source.

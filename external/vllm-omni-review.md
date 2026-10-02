@@ -1,5 +1,8 @@
 # vLLM Omni Review Skill
 
-The review skill is now bundled in this repository. Use
-[skills/vllm-omni-review/SKILL.md](../skills/vllm-omni-review/SKILL.md) as the
-source of truth. The project sync script installs its references and scripts.
+The canonical review skill lives in `vllm-project/vllm-omni` at
+`.claude/skills/review-pr/SKILL.md`. The personal
+[entrypoint](../skills/vllm-omni-review/SKILL.md) loads that repository source
+through [repository-review-source](../skills/repository-review-source/SKILL.md).
+The project sync script installs the loader, not a second maintained review
+checklist. Inspect the source checkout and record the actual version read.

@@ -12,6 +12,9 @@ Projects:
   afd-plugin
   vllm-omni-cookbook
   nanodot
+  router
+  sciencediscovery
+  system1-omni
 
 Tools:
   codex   Copy AGENTS.md and its referenced skills
@@ -59,7 +62,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$PROJECT" in
-  vllm|vllm-omni|afd-plugin|vllm-omni-cookbook|nanodot)
+  vllm|vllm-omni|afd-plugin|vllm-omni-cookbook|nanodot|router|sciencediscovery|system1-omni)
     ;;
   "")
     echo "--project is required" >&2
@@ -87,7 +90,10 @@ for tool in "${TOOL_LIST[@]}"; do
       COPY_SKILLS=true
       ;;
     cursor)
-      FILES+=(.cursor/rules/agentic-coding-guidelines.mdc ".cursor/rules/$PROJECT.mdc")
+      FILES+=(.cursor/rules/agentic-coding-guidelines.mdc)
+      if [ -f "$ROOT/.cursor/rules/$PROJECT.mdc" ]; then
+        FILES+=(".cursor/rules/$PROJECT.mdc")
+      fi
       COPY_SKILLS=true
       ;;
     "")
@@ -102,12 +108,29 @@ done
 
 if [ "$COPY_SKILLS" = true ]; then
   # Copy every skill referenced by AGENTS.md, including review resources.
-  for skill in nanodot-review vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
+  for skill in repository-review-source router-review sciencediscovery-review system1-omni-review afd-plugin-review personal-skills-review nanodot-review vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
     while IFS= read -r -d '' source; do
       FILES+=("${source#"$ROOT/"}")
     done < <(find "$ROOT/skills/$skill" -type f ! -name '*.pyc' ! -path '*/__pycache__/*' -print0)
   done
 fi
+
+# Reject ancestor collisions too; otherwise mkdir/cp can follow a directory
+# symlink or partially install before encountering a regular-file parent.
+python3 - "$TARGET" "${FILES[@]}" <<'PY_PREFLIGHT'
+import os
+from pathlib import Path
+import sys
+root = Path(os.path.abspath(sys.argv[1]))
+for relative in sys.argv[2:]:
+    parent = (root / relative).parent
+    while True:
+        if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+            raise SystemExit("Refusing non-directory or symlink ancestor: " + str(parent))
+        if parent == root or parent == parent.parent:
+            break
+        parent = parent.parent
+PY_PREFLIGHT
 
 # Preflight the complete install before changing any target files.
 for file in "${FILES[@]}"; do

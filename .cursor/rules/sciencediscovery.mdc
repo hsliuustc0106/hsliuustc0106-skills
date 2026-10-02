@@ -1,0 +1,7 @@
+---
+description: Repository-owned sciencediscovery code review instructions
+globs:
+alwaysApply: true
+---
+
+For sciencediscovery pull request or branch reviews, load `skills/sciencediscovery-review/SKILL.md`, then follow its canonical-source loader. Record the actual source revision and report missing or unmerged sources explicitly.

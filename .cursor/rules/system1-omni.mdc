@@ -1,0 +1,7 @@
+---
+description: Repository-owned system1-omni code review instructions
+globs:
+alwaysApply: true
+---
+
+For system1-omni pull request or branch reviews, load `skills/system1-omni-review/SKILL.md`, then follow its canonical-source loader. Record the actual source revision and report missing or unmerged sources explicitly.

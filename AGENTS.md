@@ -70,4 +70,10 @@ Use the matching skill when working in these repositories:
 - `afd-plugin`: `skills/afd-plugin-guidelines/SKILL.md`
 - `vllm-omni-cookbook`: `skills/vllm-omni-cookbook-guidelines/SKILL.md`
 
-For vLLM Omni review workflows, use the local `vllm-omni-review` skill as the source of truth.
+Project review skills are thin loaders. The canonical source lives in each project repository; follow `skills/repository-review-source/SKILL.md` and record the source revision actually loaded.
+
+- AFD reviews: `skills/afd-plugin-review/SKILL.md`
+- Router reviews: `skills/router-review/SKILL.md`
+- ScienceDiscovery reviews: `skills/sciencediscovery-review/SKILL.md`
+- System1 Omni reviews: `skills/system1-omni-review/SKILL.md`
+- This repository: `skills/personal-skills-review/SKILL.md`

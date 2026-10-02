@@ -1,0 +1,31 @@
+{
+  "vllm-omni": {
+    "repository": "vllm-project/vllm-omni",
+    "path": ".claude/skills/review-pr/SKILL.md",
+    "proposed_source": "https://github.com/vllm-project/vllm-omni/pull/8410"
+  },
+  "afd-plugin": {
+    "repository": "vllm-project/afd-plugin",
+    "path": ".agents/skills/review-pr/SKILL.md",
+    "proposed_source": "https://github.com/vllm-project/afd-plugin/pull/420"
+  },
+  "router": {
+    "repository": "vllm-project/router",
+    "path": ".agents/skills/review-pr/SKILL.md",
+    "proposed_source": "https://github.com/vllm-project/router/pull/336"
+  },
+  "sciencediscovery": {
+    "repository": "openJiuwen-ai/sciencediscovery",
+    "path": ".agents/skills/sciencediscovery-review/SKILL.md",
+    "proposed_source": "https://github.com/openJiuwen-ai/sciencediscovery/pull/231"
+  },
+  "system1-omni": {
+    "repository": "ThinkFlowLab/system1-omni",
+    "path": ".agents/skills/system1-omni-review/SKILL.md"
+  },
+  "nanodot": {
+    "repository": "ThinkFlowLab/nanodot",
+    "path": ".agents/skills/nanodot-review/SKILL.md",
+    "proposed_source": "https://github.com/ThinkFlowLab/nanodot/pull/29"
+  }
+}

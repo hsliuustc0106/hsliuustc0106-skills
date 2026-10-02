@@ -1,0 +1,7 @@
+---
+description: Repository-owned router code review instructions
+globs:
+alwaysApply: true
+---
+
+For router pull request or branch reviews, load `skills/router-review/SKILL.md`, then follow its canonical-source loader. Record the actual source revision and report missing or unmerged sources explicitly.

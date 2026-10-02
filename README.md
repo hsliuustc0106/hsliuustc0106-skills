@@ -20,8 +20,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/vllm-omni-deck/`: an editable vLLM-Omni PowerPoint skill with
   a seven-layout example template, an eight-page blank template with a branded
   white canvas, intact source-figure reuse, and typed generators.
-- `skills/nanodot-review/`: snapshot-grounded nanodot review and offline-tested selection.
-- `skills/vllm-omni-review/`: bundled vLLM Omni review workflow and helpers.
+- `skills/nanodot-review/`: thin loader for the canonical nanodot repository review skill.
+- `skills/vllm-omni-review/`: thin loader for the canonical vLLM Omni repository review skill.
 
 ## Core Principles
 
@@ -82,6 +82,9 @@ Supported projects:
 - `afd-plugin`
 - `vllm-omni-cookbook`
 - `nanodot`
+- `router`
+- `sciencediscovery`
+- `system1-omni`
 
 Supported tools (each also installs the skills referenced by the project rules):
 
@@ -117,18 +120,32 @@ For Cursor:
 ~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools cursor
 ```
 
-## vLLM Omni Review
+## Repository-owned review skills
 
-For vLLM Omni code review, use
-[skills/vllm-omni-review/SKILL.md](skills/vllm-omni-review/SKILL.md) as the source
-of truth. Review helpers require Bash, `gh`, `jq`, and Python 3.8 or newer.
+Project repositories own the maintained review instructions. Personal skill
+entrypoints remain discoverable through the existing plugin and load those
+sources without copying their checklists. Supported public review projects are
+vLLM Omni, AFD Plugin, Router, ScienceDiscovery, System1 Omni, and nanodot.
 
-## nanodot Review
+See [repository-review-source](skills/repository-review-source/SKILL.md).
+Given an authorized checkout containing its canonical skill:
 
-Use [skills/nanodot-review/SKILL.md](skills/nanodot-review/SKILL.md) for
-`ThinkFlowLab/nanodot` reviews. The skill distinguishes main from unmerged
-integration code and includes a read-only paginated PR selector with a local
-review ledger. Helpers require Python 3.8+; live selection additionally uses `gh`.
+```bash
+python3 skills/repository-review-source/scripts/load_source.py nanodot --checkout /path/to/nanodot
+```
+
+The read-only loader verifies the checkout origin, returns the canonical skill,
+and reports the exact HEAD and skill content hash. It does not fetch or switch
+branches. Until a project skill PR merges, explicitly check out that draft
+branch; missing main-branch instructions are reported as missing, not replaced
+with generic guidance. A changed checkout is labeled dirty.
+
+Private sources use the same generic loader with a local JSON mapping through
+`--config`; keep that mapping outside the repository or in ignored
+`review-sources.local.json`. No private project identity or content is bundled.
+
+For this repository itself use
+[personal-skills-review](skills/personal-skills-review/SKILL.md).
 
 ## Nsight Compute Profiling
 
@@ -145,8 +162,9 @@ install these tools or change GPU performance-counter permissions.
 
 ## Helper Regression Tests
 
-Run the network-free installation and review-helper tests with Python 3.8+,
-Bash, and `jq` available (the tests provide a fake `gh`):
+Run the network-free installation, canonical-source loader, and bundled NCU
+packaging tests with Python 3.8+ and Bash. Project review-helper and corpus tests
+now live alongside their canonical project skills:
 
 ```bash
 python3 -m unittest discover -s tests -v

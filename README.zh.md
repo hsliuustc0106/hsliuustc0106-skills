@@ -19,8 +19,8 @@
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。
-- `skills/nanodot-review/`：基于固定源码版本的 nanodot 审查、只读 PR 筛选和离线测试。
-- `skills/vllm-omni-review/`：仓库内置的 vLLM Omni review skill 和辅助脚本。
+- `skills/nanodot-review/`：加载 nanodot 仓库维护的规范审查技能。
+- `skills/vllm-omni-review/`：加载 vLLM Omni 仓库维护的规范审查技能。
 
 ## 安装
 
@@ -59,3 +59,13 @@ python3 -m unittest discover -s tests -v
 ## License
 
 MIT
+
+## 仓库维护的审查技能
+
+项目仓库是审查规则的唯一维护源；个人技能仅保留可发现的加载入口。
+加载器校验本地仓库 origin，并返回实际读取的提交、内容哈希和工作树状态。
+它不会联网更新源码；源码是否最新须另行核实。尚未合并的技能需显式使用其
+草稿分支，缺失时明确报告，不以通用审查代替。
+
+入口见 [repository-review-source](skills/repository-review-source/SKILL.md)。
+私有项目通过未跟踪的本地 JSON 配置加载，配置与私有内容不提交到公共仓库。
