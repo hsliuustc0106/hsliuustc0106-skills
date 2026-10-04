@@ -1,0 +1,248 @@
+{
+  "repository": "vllm-project/vllm-omni",
+  "source_license": "Upstream code excerpts: Apache-2.0; Copyright contributors to the vLLM-Omni project.",
+  "method": "Static source adjudication with exact full-file Git blob and SHA-256 verification; no upstream imports or runtime tests.",
+  "sample_size": {
+    "merged_prs": 2,
+    "defect_families": 2,
+    "outcomes": 4,
+    "historical_defects": 2,
+    "specific_fixed_clean": 2
+  },
+  "interpretation": "Historical maintenance fixtures, not new review findings on current main. Defect and fixed cases in a pair are not independent samples. PR selection is purposive and already exposed to fix descriptions; not blinded evaluation, not recall/precision estimation, not model benchmark. Clean means the specific adjudicated defect is absent.",
+  "skill_pin": "d29a35bb659a19eef5b520e85c449421a932b605",
+  "cases": [
+    {
+      "id": "realtime-typed-config-defect",
+      "pair": "PR8279",
+      "outcome": "defect-present",
+      "severity": "P1",
+      "commit": "235c43032646bce93950b6746dd7fe6b6d8e06ba",
+      "comparison_commit": "c1b8b747a96078d749e682963147ec76673714ce",
+      "pr_url": "https://github.com/vllm-project/vllm-omni/pull/8279",
+      "route": {
+        "primary": "Entrypoints and serving boundaries",
+        "owning_exception": "docs/design/module/entrypoints.md primary_path_exceptions assigns entrypoints/duplex/** to docs/design/fullduplex.md; load that owner record as well",
+        "secondary": "No separate configuration review is claimed: the producer is traced only to establish the actual input contract, and the fix changes protocol dispatch",
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "entrypoints module status is draft/current-plus-in-flight; fullduplex owner document has no front-matter status. Findings rely on live code, not candidate invariants."
+      },
+      "trigger": "An ordinary Qwen3-Omni turn deployment exposes three structured stage configs (thinker, talker, code2wav; Qwen3OmniMoeForConditionalGeneration) and receives /v1/realtime without a proprietary duplex handler or explicit duplex=1 request.",
+      "independent_reasoning": "BaseVllmOmniStageConfig stores architecture on model_config.model_arch and role on model_stage. The base helper gets stage.engine_args with a None default; that field is absent on this typed object. Its model_arch read consequently returns None, so all(...) is false even when the live topology is eligible. dispatch_realtime_websocket necessarily invokes the generic fallback and returns before constructing the intended full-duplex connection.",
+      "consequence": "Every otherwise matching typed-config Qwen3 turn session follows the wrong realtime implementation. The intended conformant connection and its session/conversation/structured-error contract are bypassed. This is a deterministic compatibility failure of this supported route, not a hypothetical future field mismatch. The exact client traceback reported by the PR is not independently asserted here.",
+      "severity_reason": "P1 is limited to the supported Qwen3 realtime route: it is systematically disabled by the predicate under the normal producer representation. No P0, broad-project failure or data-loss claim; HTTP chat and proprietary duplex paths are outside this finding.",
+      "test_reasoning": "The new positive typed-topology assertion would be false on base. The full HTTP/WebSocket routing fixture also reaches the rejected branch on base. Three negative topology variants should remain false. These are source-derived expectations, not locally executed results.",
+      "source": {
+        "path": "vllm_omni/entrypoints/duplex/openai.py",
+        "git_blob_sha": "e55d1118cb74151e8a2a8b68079760ee93da95c7",
+        "sha256": "aa43f8ded11b6e7ffee5c8565bd6ad6f8f7732329f6a67ada9ba11bac2dc9832",
+        "line_start": 24,
+        "line_end": 34,
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/235c43032646bce93950b6746dd7fe6b6d8e06ba/vllm_omni/entrypoints/duplex/openai.py#L24-L34",
+        "excerpt": "def supports_qwen3_omni_realtime(stage_configs: Any) -> bool:\n    def stage_arg(stage: Any, name: str) -> Any:\n        engine_args = getattr(stage, \"engine_args\", None)\n        return engine_args.get(name) if isinstance(engine_args, Mapping) else getattr(engine_args, name, None)\n\n    stages = stage_configs or ()\n    return (\n        len(stages) == len(_QWEN3_OMNI_REALTIME_STAGES)\n        and all(stage_arg(stage, \"model_arch\") == _QWEN3_OMNI_REALTIME_ARCH for stage in stages)\n        and {stage_arg(stage, \"model_stage\") for stage in stages} == _QWEN3_OMNI_REALTIME_STAGES\n    )\n",
+        "excerpt_sha256": "88f521ced73b694caa4e402eab8f112acf8437b5da97be86ce28e32ca02d5b72"
+      }
+    },
+    {
+      "id": "realtime-typed-config-fixed-clean",
+      "pair": "PR8279",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+      "comparison_commit": "235c43032646bce93950b6746dd7fe6b6d8e06ba",
+      "pr_url": "https://github.com/vllm-project/vllm-omni/pull/8279",
+      "route": {
+        "primary": "Entrypoints and serving boundaries",
+        "owning_exception": "docs/design/module/entrypoints.md primary_path_exceptions assigns entrypoints/duplex/** to docs/design/fullduplex.md; load that owner record as well",
+        "secondary": "No separate configuration review is claimed: the producer is traced only to establish the actual input contract, and the fix changes protocol dispatch",
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "entrypoints module status is draft/current-plus-in-flight; fullduplex owner document has no front-matter status. Findings rely on live code, not candidate invariants."
+      },
+      "trigger": "The same three typed stage objects and /v1/realtime route as the historical defect case.",
+      "independent_reasoning": "The fixed helper reads the actual typed architecture and role fields. For the pinned production pipeline, all three architectures equal the required string, the role set equals thinker/talker/code2wav, and count is three. The predicate is therefore true; dispatch bypasses generic fallback and instantiates OpenAIFullDuplexConnection. Missing-stage, duplicate-stage and other-architecture guards remain explicitly present.",
+      "consequence": "The legacy engine_args representation mismatch is absent. This clean outcome says nothing about realtime audio generation quality, VAD replay, cancellation, upstream generic behavior, or the rest of the PR.",
+      "severity_reason": "No severity on a clean case; zero findings for this exact defect. A broader all-clear would exceed the evidence.",
+      "test_reasoning": "The fixture builds configs through production VllmOmniConfig.from_pipeline_config, rather than manually constructing the representation under test. The WebSocket test crosses realtime_websocket into dispatch; tokenizer/model generation dependencies are mocked, so it is not model inference or real-client replay evidence.",
+      "source": {
+        "path": "vllm_omni/entrypoints/duplex/openai.py",
+        "git_blob_sha": "946c489bdde2d805b07d0863c10cafc263cef3c7",
+        "sha256": "5df429beecad45db14dab4d9f21f8bb532a6e7fa87bb71803fed17b08568313c",
+        "line_start": 27,
+        "line_end": 33,
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/entrypoints/duplex/openai.py#L27-L33",
+        "excerpt": "def supports_qwen3_omni_realtime(stage_configs: Sequence[BaseVllmOmniStageConfig] | None) -> bool:\n    stages = stage_configs or ()\n    return (\n        len(stages) == len(_QWEN3_OMNI_REALTIME_STAGES)\n        and all(stage.model_config.model_arch == _QWEN3_OMNI_REALTIME_ARCH for stage in stages)\n        and {stage.model_stage for stage in stages} == _QWEN3_OMNI_REALTIME_STAGES\n    )\n",
+        "excerpt_sha256": "164f1e57894cdc36e8b7da5f5df24bedc7e36cd4cc4f6e6f2ba9e71631ed3afc"
+      }
+    },
+    {
+      "id": "layerwise-shutdown-restore-defect",
+      "pair": "PR8453",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "commit": "ee8fdab1dc26ea8f09d7910cdc98a17c4b0ea02a",
+      "comparison_commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+      "pr_url": "https://github.com/vllm-project/vllm-omni/pull/8453",
+      "route": {
+        "primary": "Diffusion family / Offloader",
+        "boundary": "worker shutdown invokes rank-local offloader teardown; the offloader owns residency, copies and hooks",
+        "secondary": "No separate stage-runtime finding: broader orchestrator timeout is contextual and the precise terminal signal was not reproduced",
+        "feature_overlays": "diffusion-acceleration reference inspected; distributed-layerwise-offload feature is not applied as a mandate because this patch targets rank-local LayerWiseOffloadBackend",
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "offloader design status is draft; candidate bounded-memory/teardown invariants are questions, not standalone blockers. Base OffloadBackend.shutdown docstring and actual disposal call establish the contract."
+      },
+      "trigger": "DiffusionWorker.shutdown is called while a rank-local LayerWiseOffloadBackend is enabled and has offloaded DiT/encoder blocks; original tensor devices are accelerators. Shutdown is disposing the model, not temporarily disabling offload for later inference.",
+      "independent_reasoning": "The complete base LayerWiseOffloadBackend class has no shutdown override. Virtual dispatch uses OffloadBackend.shutdown, which calls self.disable(); LayerWiseOffloadBackend.disable invokes _disable(restore_weights=True). That queues restore_next_block for every DiT hook and propagates restore_weights to encoder cleanup. Each restore allocates fresh tensor storage on the recorded original device and copies the CPU backing there. Restored tensors remain owned by the model until the worker drops model_runner after the backend call, so the whole restored model can accumulate on the accelerator during teardown.",
+      "consequence": "Shutdown performs a needless full model transfer and can demand the accelerator capacity that layerwise offload was selected to avoid. The concrete conditional failure is allocation failure when restoration exceeds free device memory, or bounded-shutdown overrun when the copies take too long. Worker catches backend exceptions but still incurs the transfer/allocation failure and logs it. PR-reported SIGABRT/timing measurements were not independently reproduced and are not the proof.",
+      "severity_reason": "P2: real lifecycle/resource bug on an opt-in path, with OOM/timeout consequences dependent on model size, free memory and timing. The source proves the unnecessary restore and concrete failure mechanism; it does not establish universal startup/inference failure, a universal 30-second overrun or P1 urgency for all deployments. It is more than P3 polish because the extra allocations can fail at process exit.",
+      "test_reasoning": "With three enabled block hooks and restore methods replaced by spies, inherited shutdown on base calls those spies, violating assert_not_called. This is a stable lifecycle boundary test but not GPU-memory or wall-clock evidence.",
+      "source": {
+        "path": "vllm_omni/diffusion/offloader/layerwise_backend.py",
+        "git_blob_sha": "e9f8cf5bec06acb8c06db7a77201fde8ea1d4e27",
+        "sha256": "c8fd112e08d1ecb6e079d5b995400689bff28f83f2c520ee3c22143e7a65331c",
+        "line_start": 486,
+        "line_end": 523,
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/ee8fdab1dc26ea8f09d7910cdc98a17c4b0ea02a/vllm_omni/diffusion/offloader/layerwise_backend.py#L486-L523",
+        "excerpt": "    def _disable(self, *, restore_weights: bool) -> None:\n        if not self.enabled and not (\n            self._dit_hooks or self._hooked_dit_blocks or self._encoder_modules or self._staged_components\n        ):\n            return\n\n        steps = []\n        if restore_weights:\n            steps.extend((\"restoring a DiT block\", hook.restore_next_block) for hook in self._dit_hooks)\n        steps.extend(\n            (\"removing a DiT block hook\", lambda block=block: remove_block_hook(block))\n            for block in self._hooked_dit_blocks\n        )\n        steps.extend(\n            (\n                \"disabling encoder layerwise offload\",\n                lambda module=module: disable_plan_encoder_layerwise_offload(\n                    module,\n                    restore_weights=restore_weights,\n                ),\n            )\n            for module in self._encoder_modules\n        )\n        cleanup_error = run_cleanup_steps(steps)\n        if cleanup_error is not None:\n            # Keep every host-master reference so a transient teardown error\n            # can be retried without losing weights behind placeholders.\n            raise RuntimeError(\"Failed to fully disable layerwise offload\") from cleanup_error\n        self._blocks.clear()\n        self._dit_hooks.clear()\n        self._hooked_dit_blocks.clear()\n        self._encoder_modules.clear()\n        self._staged_components.clear()\n        self.enabled = False\n        logger.info(\"Layer-wise offloading disabled\")\n\n    def disable(self) -> None:\n        self._disable(restore_weights=True)\n",
+        "excerpt_sha256": "35d6bf352bde8e9b5a28b89666ee97bb4d14925be332e67fb265d6633e1f0bb8"
+      }
+    },
+    {
+      "id": "layerwise-shutdown-restore-fixed-clean",
+      "pair": "PR8453",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+      "comparison_commit": "ee8fdab1dc26ea8f09d7910cdc98a17c4b0ea02a",
+      "pr_url": "https://github.com/vllm-project/vllm-omni/pull/8453",
+      "route": {
+        "primary": "Diffusion family / Offloader",
+        "boundary": "worker shutdown invokes rank-local offloader teardown; the offloader owns residency, copies and hooks",
+        "secondary": "No separate stage-runtime finding: broader orchestrator timeout is contextual and the precise terminal signal was not reproduced",
+        "feature_overlays": "diffusion-acceleration reference inspected; distributed-layerwise-offload feature is not applied as a mandate because this patch targets rank-local LayerWiseOffloadBackend",
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "offloader design status is draft; candidate bounded-memory/teardown invariants are questions, not standalone blockers. Base OffloadBackend.shutdown docstring and actual disposal call establish the contract."
+      },
+      "trigger": "Same enabled rank-local offloader shutdown as the historical defect case.",
+      "independent_reasoning": "The new override dispatches directly to _disable(restore_weights=False). The DiT restoration branch is skipped; the false flag also reaches encoder offload cleanup. Hook removal and ownership clearing remain in the same cleanup routine. The separate disable method still passes true, so normal restoration for re-use remains available.",
+      "consequence": "The unwanted restore-all-blocks-on-shutdown defect is absent. This is not proof that every cleanup failure, device synchronization, distributed offload path or LTX accuracy test passes.",
+      "severity_reason": "No severity on a clean case. One specific fixed-path conclusion, not approval or general release readiness.",
+      "test_reasoning": "The added test checks no restore call and checks enabled/_dit_hooks/_hooked_dit_blocks are cleared. It mocks restore methods and platform streams, making the assertion narrowly appropriate for dispatch and cleanup, while leaving actual device-memory lifetime/timing untested.",
+      "source": {
+        "path": "vllm_omni/diffusion/offloader/layerwise_backend.py",
+        "git_blob_sha": "660219092b9ee44fe856ab97dc4b5e5248ad7276",
+        "sha256": "41077e5fabe95d481e5e82e31c636a1e553431c576a296fa05121e19c6d4d5dd",
+        "line_start": 522,
+        "line_end": 529,
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/vllm_omni/diffusion/offloader/layerwise_backend.py#L522-L529",
+        "excerpt": "    def disable(self) -> None:\n        self._disable(restore_weights=True)\n\n    def shutdown(self) -> None:\n        # Restoring every block copies the whole DiT back onto the device, which\n        # only matters for a later ``enable`` and can outlast the executor's\n        # shutdown grace period.\n        self._disable(restore_weights=False)\n",
+        "excerpt_sha256": "01121e57e98a25a0b271eabe3752ae3574978d3dd3d1c2aac33806e44d0cce22"
+      }
+    }
+  ],
+  "supporting_sources": {
+    "PR8279": [
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "vllm_omni/model_executor/models/qwen3_omni/pipeline.py",
+        "git_blob_sha": "9caff6d279135160dbf386315819ed9abf140e06",
+        "sha256": "c2a587dbd90e47900ca30b47f096c3654540dfbc54fcd058511937e827515b5c",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/model_executor/models/qwen3_omni/pipeline.py#L22-L38",
+        "role": "Production topology sets turn mode, architecture and thinker role; talker at L52 and code2wav at L68"
+      },
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "vllm_omni/config/omni_config.py",
+        "git_blob_sha": "3a650dd03d272bc6173ea2c4d1c72fae26b7a746",
+        "sha256": "fb4c3061ee4e8f5cd5de2fcce247d297a8107774635ed64c165b2fe9220fc3ca",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/config/omni_config.py#L1637-L1660",
+        "role": "Typed stage fields and model_stage property; no legacy engine_args field"
+      },
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "vllm_omni/entrypoints/openai/api_server.py",
+        "git_blob_sha": "5d474306bae9d85375bffcc45c36385b268f58c4",
+        "sha256": "cc999df03863c235b8c79142abcdc21e940589f38bd69694d5e2f1d2b40da579",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/entrypoints/openai/api_server.py#L798-L811",
+        "role": "Server state receives the live engine stage configs"
+      },
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "vllm_omni/entrypoints/openai/api_server.py",
+        "git_blob_sha": "5d474306bae9d85375bffcc45c36385b268f58c4",
+        "sha256": "cc999df03863c235b8c79142abcdc21e940589f38bd69694d5e2f1d2b40da579",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/entrypoints/openai/api_server.py#L1768-L1789",
+        "role": "/v1/realtime ingress and opt-in branch"
+      },
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "vllm_omni/entrypoints/duplex/openai.py",
+        "git_blob_sha": "946c489bdde2d805b07d0863c10cafc263cef3c7",
+        "sha256": "5df429beecad45db14dab4d9f21f8bb532a6e7fa87bb71803fed17b08568313c",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/vllm_omni/entrypoints/duplex/openai.py#L66-L80",
+        "role": "Predicate controls generic fallback before full-duplex setup"
+      },
+      {
+        "commit": "c1b8b747a96078d749e682963147ec76673714ce",
+        "path": "tests/entrypoints/openai_api/test_duplex_api_server.py",
+        "git_blob_sha": "31421f6ff4a1f72ef80550009414ef4a639d05ef",
+        "sha256": "1286274357e1499fe358f377d99382341c02a606355271f147aaa102b701f7b2",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/c1b8b747a96078d749e682963147ec76673714ce/tests/entrypoints/openai_api/test_duplex_api_server.py#L443-L492",
+        "role": "Two positive regression cases and three negative topology variants"
+      }
+    ],
+    "PR8453": [
+      {
+        "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+        "path": "vllm_omni/diffusion/worker/diffusion_worker.py",
+        "git_blob_sha": "fe344e4d06531175265e12110086e824687b9b38",
+        "sha256": "3942cfb434dab5871e10fdda7e9d9c9af8776b7d67c472c959551ea6fbd40bda",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/vllm_omni/diffusion/worker/diffusion_worker.py#L1027-L1053",
+        "role": "Live worker shutdown invokes backend before model disposal; exceptions are logged"
+      },
+      {
+        "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+        "path": "vllm_omni/diffusion/offloader/base.py",
+        "git_blob_sha": "2438cedcf4b5be01b29bdf0a5a2d27952cac055d",
+        "sha256": "2a9eb095efa4527b19501387d6ba96de284eba44ba60d91a2232e76e96f02d44",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/vllm_omni/diffusion/offloader/base.py#L238-L252",
+        "role": "Base shutdown calls virtual disable; docstring explicitly permits skipping work needed only for re-enable"
+      },
+      {
+        "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+        "path": "vllm_omni/diffusion/offloader/layerwise_backend.py",
+        "git_blob_sha": "660219092b9ee44fe856ab97dc4b5e5248ad7276",
+        "sha256": "41077e5fabe95d481e5e82e31c636a1e553431c576a296fa05121e19c6d4d5dd",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/vllm_omni/diffusion/offloader/layerwise_backend.py#L210-L226",
+        "role": "Each hook copies stored tensors to recorded original device"
+      },
+      {
+        "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+        "path": "vllm_omni/diffusion/offloader/tensor_utils.py",
+        "git_blob_sha": "ffc9ef3a001898160141a752e06c11f4785c8dc0",
+        "sha256": "06fb691521d36d6f3dccad6ff7bd816c0a6e66cf7e5f4a0eb7ad8653f40aee5e",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/vllm_omni/diffusion/offloader/tensor_utils.py#L183-L197",
+        "role": "Restoration allocates device storage then copies values"
+      },
+      {
+        "commit": "f5a40c2f59a0f326e3c6c848a9e957e05f262c7c",
+        "path": "tests/diffusion/offloader/test_layerwise_backend.py",
+        "git_blob_sha": "6411ae24617c9c23c72bf5d493abcc2cf1d8b516",
+        "sha256": "3db02cc535b605ca3fa58c00094360723fb38e65ce60b22e79757edcbf796475",
+        "line_url": "https://github.com/vllm-project/vllm-omni/blob/f5a40c2f59a0f326e3c6c848a9e957e05f262c7c/tests/diffusion/offloader/test_layerwise_backend.py#L545-L561",
+        "role": "Regression enables three blocks, spies on restore calls and asserts cleanup"
+      }
+    ]
+  }
+}
