@@ -1,13 +1,14 @@
 ---
 name: tech-blog-post
-description: Research, blueprint, write, and locally integrate evidence-backed technical blog posts. Use when the user asks to write, add, update, or organize a technical blog or article for a Next.js site, Markdown file, or Zhihu; provides source URLs, repositories, papers, issues, or PRs to turn into a post; or requests code-, architecture-, benchmark-, or contributor-grounded technical writing. Default to the repository-aware nextjs-site profile while preserving explicit markdown and backward-compatible zhihu profiles.
+description: Research, blueprint, write, and locally integrate evidence-backed technical blog posts. Use when the user asks to write, add, update, or organize a technical blog or article for a Next.js site, Markdown file, Zhihu, or Xiaohongshu (小红书) technical long-form post; provides source URLs, repositories, papers, issues, or PRs to turn into a post; or requests code-, architecture-, benchmark-, or contributor-grounded technical writing. Default to the repository-aware nextjs-site profile while preserving explicit markdown, backward-compatible zhihu, and xiaohongshu profiles.
 ---
 
 # Technical Blog Post
 
 Create technical posts through a required narrative-blueprint approval gate.
-Default to English and the `nextjs-site` profile. Keep source claims auditable,
-make minimal repository changes, validate locally, and never publish implicitly.
+Default to the `nextjs-site` profile and its English language default. Keep
+source claims auditable, make minimal repository changes, validate locally,
+and never publish implicitly.
 
 ## Non-negotiable rules
 
@@ -18,7 +19,8 @@ make minimal repository changes, validate locally, and never publish implicitly.
 - Use secondary sources for framing only. Mark inference, experimental results,
   projections, and unverified claims explicitly.
 - Link or cite reference figures, tables, and code rather than copying them.
-  Copy an asset locally only when its reuse rights are clear.
+  Copy an asset locally only when its reuse rights are clear. Keep auditable
+  source links in the working evidence even when a platform copy omits URLs.
 - Require approval of the narrative blueprint before drafting or editing output
   files. After presenting it, stop and wait.
 - Do not commit, push, publish, create a PR, or send content externally unless
@@ -29,7 +31,8 @@ make minimal repository changes, validate locally, and never publish implicitly.
 ## Select the output profile
 
 Use an explicitly requested profile when provided. Otherwise default to
-`nextjs-site`.
+`nextjs-site`. Naming Xiaohongshu or 小红书 selects `xiaohongshu`; a generic
+technical blog request does not.
 
 - `nextjs-site`: Read [references/nextjs-site.md](references/nextjs-site.md)
   before repository discovery or file edits.
@@ -37,8 +40,12 @@ Use an explicitly requested profile when provided. Otherwise default to
   writing the standalone draft.
 - `zhihu`: Read [references/zhihu.md](references/zhihu.md) before composing.
   Preserve the legacy Chinese/Zhihu formatting behavior.
+- `xiaohongshu`: Read [references/xiaohongshu.md](references/xiaohongshu.md)
+  for a Chinese technical long-form mother draft and platform-ready derivatives.
+  Authoring does not require platform access or authorize uploading/publishing.
 
-English is the default language. Honor an explicit language request. For an
+English is the default language except for the Chinese-default `zhihu` and
+`xiaohongshu` profiles. Honor an explicit language request. For an
 established target site, match its language only when doing so does not conflict
 with an explicit choice; surface a multilingual ambiguity in the blueprint.
 
@@ -67,6 +74,10 @@ For each material claim, record:
 - whether it is a fact, measured result, inference, projection, or opinion;
 - the exact environment or topology for performance claims;
 - relevant limitations, exclusions, or contradictory evidence.
+
+For blog-plus-slide sources or optimization comparisons, read
+[references/benchmark-evidence.md](references/benchmark-evidence.md) before
+turning numbers or diagrams into claims.
 
 Code and architecture analysis are optional. Include them when they materially
 improve the thesis. Prefer concise pseudocode and links to pinned commits or
@@ -108,8 +119,10 @@ revision.
 
 Write in an engineer's deep-dive voice: clear, evidence-led, accessible to the
 approved audience, and precise about experimental boundaries. Keep copied
-quotes short. Attach links near the claims or reused elements they support, and
-include a references section when the target format benefits from one.
+quotes short. Attach links near the claims or reused elements they support in
+the working draft, and include a references section when the target format
+benefits from one. The Xiaohongshu profile keeps provenance in the evidence
+companion while adapting its platform copy to the approved link policy.
 
 ### 5. Integrate minimally
 
