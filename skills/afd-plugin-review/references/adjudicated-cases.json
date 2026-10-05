@@ -1,0 +1,345 @@
+{
+  "repository": "vllm-project/afd-plugin",
+  "source_license": "Upstream code excerpts: Apache-2.0; Copyright contributors to the AFD plugin project.",
+  "method": "Static source adjudication with raw full-file UTF-8 byte capture, recomputed Git blob SHA-1 matching the GitHub blob, full-file SHA-256 and excerpt SHA-256 verification; no upstream imports, tests, builds or hardware runs.",
+  "audited_at_utc": "2026-10-05T16:07:00Z",
+  "sample_size": {
+    "merged_prs": 2,
+    "defect_families": 2,
+    "outcomes": 4,
+    "historical_defects": 2,
+    "specific_fixed_clean": 2
+  },
+  "interpretation": "Historical maintenance fixtures, not new findings on current main. Each defect/fixed pair is correlated. Purposive selection with prior exposure to fix descriptions and review outcomes; not blinded evaluation, recall/precision estimation, or a model benchmark. Clean means the specific adjudicated defect is absent.",
+  "skill_pin": "fbd0e5eb47128771994e0e9530fc230693d97b0a",
+  "main_pin": "9cae2d2ddaae7e1752fc12ead577d59540b17f27",
+  "pair_metadata": {
+    "PR416": {
+      "boundary": "Actual merged PR base versus final PR head",
+      "pr_base": "d360690a590a38353e58009dfba75db78e5e450a",
+      "final_head": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+      "merge_commit": "9cae2d2ddaae7e1752fc12ead577d59540b17f27",
+      "merged_at": "2026-09-30T14:08:18Z",
+      "adjudication_sources": [
+        "https://github.com/vllm-project/afd-plugin/pull/416",
+        "https://github.com/vllm-project/afd-plugin/commit/9cae2d2ddaae7e1752fc12ead577d59540b17f27"
+      ]
+    },
+    "PR404": {
+      "boundary": "Intra-PR revision pair: the first proposed fix versus the reviewed final fix, not original PR base versus head",
+      "pr_base": "05a37b0c5a5ed436bf7c26adb372cce4660d0a30",
+      "defective_first_pr_commit": "7a84e03e6815ed1a0f2284430e0af540816a25a5",
+      "final_head": "56238fa14704d611ded36094155001ff5f93dd45",
+      "merge_commit": "b14cea1aca367a4a4fd458aa9b6b26ab838d66a7",
+      "merged_at": "2026-09-28T12:50:27Z",
+      "adjudication_sources": [
+        "https://github.com/vllm-project/afd-plugin/pull/404#discussion_r4122201794",
+        "https://github.com/vllm-project/afd-plugin/pull/404#discussion_r4122313954"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "dbo-caller-prefill-defect",
+      "pair": "PR416",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "commit": "d360690a590a38353e58009dfba75db78e5e450a",
+      "comparison_commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+      "pr_url": "https://github.com/vllm-project/afd-plugin/pull/416",
+      "route": {
+        "primary": "E2E testing",
+        "owning_contract": "docs/design/module/e2e_testing.md",
+        "owners": [
+          "@yujuancao07"
+        ],
+        "secondary": "No production runner fix is claimed; trace the test runner's common argument list into both service command lines.",
+        "feature_overlays": [
+          "graphs-and-compilation"
+        ],
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "E2E design is normative. Its last_reviewed field is 2026-08-27; current source/test behavior, not stale accuracy prose, decides the fixture."
+      },
+      "trigger": "configure_scenario selects an enabled-DBO scenario such as afd-graph-dbo-2a2f with no caller chunked-prefill flag, or with an explicit --enable-chunked-prefill argument.",
+      "independent_reasoning": "The base unconditionally appends --no-enable-chunked-prefill whenever the negative spelling is absent. It checks neither the positive spelling nor whether the user requested a departure from the runtime default. The second identical append block is redundant, not a second independent defect. build_vllm_command then extends both role command lines with this mutated common list, so the altered launch configuration reaches the real vLLM process.",
+      "consequence": "The caller's enabled/default chunked-prefill policy is replaced by a forced-disable request. The merged PR records that this raised the DeepSeek-V2-Lite default profiling budget from 256 to 4096 and exposed the Legacy DBO startup stall from issue 398. Static source establishes the undesired argument mutation; the observed stall and token budgets are historical author-reported evidence, not reproduced here.",
+      "severity_reason": "P2 is limited to the directly source-proven command-policy defect: the test harness overrides the caller/default chunked-prefill choice. The merged PR reports a blocked Legacy smoke startup under the forced-disable configuration, but static flags alone do not independently reproduce that hardware stall or establish P1 urgency. No P0, universal production crash, numerical defect or precision-parity claim.",
+      "test_reasoning": "The final exact-list-preservation regression would fail on base for the unrelated/default and explicit-positive choices and pass for an already-negative choice. Its three parameter cases call the production scenario configurator. This is source-derived adjudication, not a locally executed upstream test.",
+      "source": {
+        "path": "tests/e2e/runner.py",
+        "git_blob_sha": "d9b19de9fdc940201738fc84299fec1729b6c50b",
+        "sha256": "5f696cdb021423ead622928ead01fca3771d69b1e5687362e26fc6135cd2b41e",
+        "size_bytes": 39775,
+        "line_start": 525,
+        "line_end": 535,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py#L525-L535",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py",
+        "excerpt": "    if enable_dbo:\n        args.dbo_decode_token_threshold = 1\n        args.dbo_prefill_token_threshold = 8\n        if not any(\n            arg == \"--no-enable-chunked-prefill\" for arg in args.common_vllm_arg\n        ):\n            args.common_vllm_arg.append(\"--no-enable-chunked-prefill\")\n        if not any(\n            arg == \"--no-enable-chunked-prefill\" for arg in args.common_vllm_arg\n        ):\n            args.common_vllm_arg.append(\"--no-enable-chunked-prefill\")\n",
+        "excerpt_sha256": "ef6ec57929976f9f11ce988f3ac37e8742c414417d68b67dfd0c26b9da097e09"
+      }
+    },
+    {
+      "id": "dbo-caller-prefill-fixed-clean",
+      "pair": "PR416",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+      "comparison_commit": "d360690a590a38353e58009dfba75db78e5e450a",
+      "pr_url": "https://github.com/vllm-project/afd-plugin/pull/416",
+      "route": {
+        "primary": "E2E testing",
+        "owning_contract": "docs/design/module/e2e_testing.md",
+        "owners": [
+          "@yujuancao07"
+        ],
+        "secondary": "No production runner fix is claimed; trace the test runner's common argument list into both service command lines.",
+        "feature_overlays": [
+          "graphs-and-compilation"
+        ],
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "E2E design is normative. Its last_reviewed field is 2026-08-27; current source/test behavior, not stale accuracy prose, decides the fixture."
+      },
+      "trigger": "The same enabled-DBO scenario and default, explicit-positive or explicit-negative common argument list.",
+      "independent_reasoning": "The fixed enable_dbo branch sets only decode and prefill thresholds and does not touch common_vllm_arg. The caller list reaches command construction without the removed forced-disable mutation. This conclusion is specific to this DBO branch; other scenario-specific argument normalizations remain intentional and outside this pair.",
+      "consequence": "The forced-disable/caller-choice defect is absent. The separate threshold change to 0.25 for up-to-24-sample DeepSeek smoke is acceptance-policy calibration, not this startup fix. The PR expressly leaves the large-message/SHM production deadlock unresolved.",
+      "severity_reason": "No severity on the clean case. Do not transform a specific fixed-path result into approval, full runtime correctness, or GPU/NPU accuracy equivalence.",
+      "test_reasoning": "The new parameterized regression asserts unchanged lists for default, explicit enable and explicit disable. Threshold fixtures separately check caller override, large/full runs, NPU and MRV2. The PR reports 160 runner tests passed; no tests or GPU/NPU inference were executed in this maintenance task, and earlier GPU CI runs do not validate later head changes.",
+      "source": {
+        "path": "tests/e2e/runner.py",
+        "git_blob_sha": "4649a619d0beba23f5b21b01440b3d073ba5720f",
+        "sha256": "8d850c0306aba284d52c356689cad8bb9215844d433f5822ed80acde3a730273",
+        "size_bytes": 39409,
+        "line_start": 525,
+        "line_end": 529,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/runner.py#L525-L529",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/runner.py",
+        "excerpt": "    if enable_dbo:\n        args.dbo_decode_token_threshold = 1\n        args.dbo_prefill_token_threshold = 8\n\n\n",
+        "excerpt_sha256": "f44cedca17f20e40b45ec1cf3532d02ab55272b7a22181fe1c017e730745aaee"
+      }
+    },
+    {
+      "id": "eager-dbo-extra-warmup-defect",
+      "pair": "PR404",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "commit": "7a84e03e6815ed1a0f2284430e0af540816a25a5",
+      "comparison_commit": "56238fa14704d611ded36094155001ff5f93dd45",
+      "pr_url": "https://github.com/vllm-project/afd-plugin/pull/404",
+      "route": {
+        "primary": "Workers and model runners",
+        "owning_contract": "docs/design/module/attention_runtime.md",
+        "owners": [
+          "@hsliuustc0106",
+          "@jiangkuaixue123"
+        ],
+        "secondary": "FFN runtime workspace is the live cross-boundary consumer, with execution_platforms graph-policy ownership; no independent connector finding.",
+        "feature_overlays": [
+          "graphs-and-compilation"
+        ],
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "Attention/FFN runtime and execution-platform designs are draft, last_reviewed 2026-08-27. The finding relies on concrete eager-policy and profile-call behavior plus an adjudicated review, not candidate architecture rules."
+      },
+      "trigger": "GPU V1 startup profile_run with --enforce-eager and DBO enabled (parallel_config.use_ubatching is true).",
+      "independent_reasoning": "The first PR commit always preserves the native profile, then gates a max-token unsplit dummy forward and device synchronization solely on use_ubatching. The graph policy disables graph execution for enforce_eager, but that policy is not consulted by the defective guard. Eager + DBO therefore performs the additional full model/connector pass despite having no captured graph whose workspace address needs protection.",
+      "consequence": "Eager DBO startup incurs an unnecessary full-batch Attention-to-FFN transaction, workspace growth and synchronization. The source proves the extra work; no latency amount, memory size, OOM or inference-output defect is asserted by this fixture.",
+      "severity_reason": "P2 is explicitly adjudicated by the maintainer at discussion_r4122201794: real resource/lifecycle regression for eager startup, not the distinct P1 CUDA-address fault that the broader PR fixes.",
+      "test_reasoning": "The revised regression uses the production graph-policy validator and crosses enforce_eager × use_ubatching. On the first PR commit its eager + DBO case would produce native/dummy/sync rather than the expected native-only trace. Device calls are spies; this checks gating and call order, not hardware performance.",
+      "source": {
+        "path": "afd_plugin/v1/worker/attention_model_runner.py",
+        "git_blob_sha": "24ecf9834823a9d86830d68e99da72dc49da7ca2",
+        "sha256": "903f6bcf796c55b945aa593830407756f77e0ff1dae9c14cfaa0477ef983d933",
+        "size_bytes": 24432,
+        "line_start": 364,
+        "line_end": 379,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/7a84e03e6815ed1a0f2284430e0af540816a25a5/afd_plugin/v1/worker/attention_model_runner.py#L364-L379",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/7a84e03e6815ed1a0f2284430e0af540816a25a5/afd_plugin/v1/worker/attention_model_runner.py",
+        "excerpt": "    # Patch reason: DBO profiling only warms FFN microbatch-sized workspaces.\n    # Patch functionality: also profile the full token budget before graph capture.\n    # Signature: matches upstream; no added parameters.\n    def profile_run(self) -> None:\n        super().profile_run()\n        # ### PATCH START: warm the unsplit FFN workspace\n        if self.parallel_config.use_ubatching:\n            # FFN runs stages sequentially in one workspace. A larger unsplit\n            # prefill must not resize buffers already referenced by CUDA graphs.\n            self._dummy_run(\n                self.max_num_tokens,\n                allow_microbatching=False,\n                is_profile=True,\n            )\n            self._sync_device()\n        # ### PATCH END: warm the unsplit FFN workspace\n",
+        "excerpt_sha256": "47e9456ef296c457d4f367d8b6baf37d85ae545920f9dac9a5e5c4570e9a487b"
+      }
+    },
+    {
+      "id": "eager-dbo-extra-warmup-fixed-clean",
+      "pair": "PR404",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "commit": "56238fa14704d611ded36094155001ff5f93dd45",
+      "comparison_commit": "7a84e03e6815ed1a0f2284430e0af540816a25a5",
+      "pr_url": "https://github.com/vllm-project/afd-plugin/pull/404",
+      "route": {
+        "primary": "Workers and model runners",
+        "owning_contract": "docs/design/module/attention_runtime.md",
+        "owners": [
+          "@hsliuustc0106",
+          "@jiangkuaixue123"
+        ],
+        "secondary": "FFN runtime workspace is the live cross-boundary consumer, with execution_platforms graph-policy ownership; no independent connector finding.",
+        "feature_overlays": [
+          "graphs-and-compilation"
+        ],
+        "evidence_overlays": [
+          "test-quality-evaluation",
+          "tests-docs-checklist"
+        ],
+        "status": "Attention/FFN runtime and execution-platform designs are draft, last_reviewed 2026-08-27. The finding relies on concrete eager-policy and profile-call behavior plus an adjudicated review, not candidate architecture rules."
+      },
+      "trigger": "Same GPU V1 profile path, including eager + DBO and graph + DBO controls.",
+      "independent_reasoning": "The final guard reads allow_cuda_graph_with_ubatching. validate_cuda_graph_mode returns a policy with that flag defaulting false under enforce_eager; the extra unsplit forward/sync is therefore skipped. With supported graph + two-stage ubatching, the flag is true and warmup remains before capture. Native profiling is unconditional in every combination.",
+      "consequence": "The eager extra-warmup defect is absent while graph+DBO retains the intended preallocation. This does not prove every graph buffer lifetime, distributed transfer, NPU path, MRV2 path, or model accuracy scenario correct.",
+      "severity_reason": "No severity on the clean case; zero findings for the adjudicated eager guard issue only.",
+      "test_reasoning": "Four policy combinations assert native-only versus native/dummy/sync. The PR reports 74 CPU runner/graph tests and two four-GPU smoke runs, but the GPU runs preceded the final eager guard restriction; that exclusion was covered CPU-side. These remain historical reported runs, not maintenance executions.",
+      "source": {
+        "path": "afd_plugin/v1/worker/attention_model_runner.py",
+        "git_blob_sha": "cc9cf2d92d2e01738c5fcbe10f005bafb7bcd72a",
+        "sha256": "5744742118eedb85118ac2e59cf2a0630ddfd164e897b47a49e343c1996e1d7b",
+        "size_bytes": 24455,
+        "line_start": 364,
+        "line_end": 379,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/attention_model_runner.py#L364-L379",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/attention_model_runner.py",
+        "excerpt": "    # Patch reason: DBO profiling only warms FFN microbatch-sized workspaces.\n    # Patch functionality: also profile the full token budget before graph capture.\n    # Signature: matches upstream; no added parameters.\n    def profile_run(self) -> None:\n        super().profile_run()\n        # ### PATCH START: warm the unsplit FFN workspace\n        if self.afd_cudagraph_policy.allow_cuda_graph_with_ubatching:\n            # FFN runs stages sequentially in one workspace. A larger unsplit\n            # prefill must not resize buffers already referenced by CUDA graphs.\n            self._dummy_run(\n                self.max_num_tokens,\n                allow_microbatching=False,\n                is_profile=True,\n            )\n            self._sync_device()\n        # ### PATCH END: warm the unsplit FFN workspace\n",
+        "excerpt_sha256": "150151a721cbc4c1e296f1d4a35f1e32f1ebe31f4bcafd96a07eab6a8bd084e3"
+      }
+    }
+  ],
+  "supporting_sources": {
+    "PR416": [
+      {
+        "commit": "d360690a590a38353e58009dfba75db78e5e450a",
+        "path": "tests/e2e/runner.py",
+        "git_blob_sha": "d9b19de9fdc940201738fc84299fec1729b6c50b",
+        "sha256": "5f696cdb021423ead622928ead01fca3771d69b1e5687362e26fc6135cd2b41e",
+        "size_bytes": 39775,
+        "line_start": 118,
+        "line_end": 124,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py#L118-L124",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py",
+        "excerpt": "def main() -> int:\n    args = parse_args()\n    configure_scenario(args)\n    attention_devices = parse_csv(args.attention_devices)\n    ffn_devices = parse_csv(args.ffn_devices)\n    validate_topology(args, attention_devices, ffn_devices)\n    use_npu_async_process_cleanup = uses_npu_async_process_cleanup(args)\n",
+        "excerpt_sha256": "88f7235388a69c4fe87e40c47577083af04ea29c037c2c660cc6938ff8bb3155",
+        "role": "Runner main configures scenario before launching services"
+      },
+      {
+        "commit": "d360690a590a38353e58009dfba75db78e5e450a",
+        "path": "tests/e2e/runner.py",
+        "git_blob_sha": "d9b19de9fdc940201738fc84299fec1729b6c50b",
+        "sha256": "5f696cdb021423ead622928ead01fca3771d69b1e5687362e26fc6135cd2b41e",
+        "size_bytes": 39775,
+        "line_start": 739,
+        "line_end": 754,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py#L739-L754",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/d360690a590a38353e58009dfba75db78e5e450a/tests/e2e/runner.py",
+        "excerpt": "        )\n\n    if role == \"attention\":\n        cmd.extend(\n            [\"--host\", args.api_host, \"--port\", str(attention_api_port(args))],\n        )\n        if args.use_decode_bench_connector:\n            cmd.extend([\"--kv-transfer-config\", decode_bench_connector_config()])\n        cmd.extend(args.attention_vllm_arg)\n    else:\n        cmd.extend(\n            [\"--host\", args.api_host, \"--port\", str(ffn_api_port(args))],\n        )\n        cmd.extend(args.ffn_vllm_arg)\n    cmd.extend(args.common_vllm_arg)\n    return cmd\n",
+        "excerpt_sha256": "d2399f200b15a30a8665b6e6c493e30791e87533a178f272793e4ba8a1c6a117",
+        "role": "Common arguments are appended to role command construction; this range is frozen source context"
+      },
+      {
+        "commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+        "path": "tests/e2e/runner.py",
+        "git_blob_sha": "4649a619d0beba23f5b21b01440b3d073ba5720f",
+        "sha256": "8d850c0306aba284d52c356689cad8bb9215844d433f5822ed80acde3a730273",
+        "size_bytes": 39409,
+        "line_start": 736,
+        "line_end": 746,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/runner.py#L736-L746",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/runner.py",
+        "excerpt": "        )\n        if args.use_decode_bench_connector:\n            cmd.extend([\"--kv-transfer-config\", decode_bench_connector_config()])\n        cmd.extend(args.attention_vllm_arg)\n    else:\n        cmd.extend(\n            [\"--host\", args.api_host, \"--port\", str(ffn_api_port(args))],\n        )\n        cmd.extend(args.ffn_vllm_arg)\n    cmd.extend(args.common_vllm_arg)\n    return cmd\n",
+        "excerpt_sha256": "fe6618a30447058de323809a4b3b25b7796e40b26dd1033ddd840d0c5fcb693a",
+        "role": "Fixed runner still forwards common caller arguments to each role command"
+      },
+      {
+        "commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+        "path": "tests/unit/test_e2e_runner.py",
+        "git_blob_sha": "aa9c28654fdcdc71abd1df08183b0d1beaeaad1b",
+        "sha256": "98bda57e1b7da452f9fc94cc21eeac4e5db27e5a8687133d75c8284ab96acba7",
+        "size_bytes": 56516,
+        "line_start": 1704,
+        "line_end": 1718,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/unit/test_e2e_runner.py#L1704-L1718",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/unit/test_e2e_runner.py",
+        "excerpt": "@pytest.mark.parametrize(\n    \"common_args\",\n    [\n        [\"--unrelated-arg\"],\n        [\"--enable-chunked-prefill\"],\n        [\"--no-enable-chunked-prefill\"],\n    ],\n)\ndef test_configure_dbo_preserves_chunked_prefill_choice(common_args):\n    args = _args()\n    args.scenario = \"afd-graph-dbo-2a2f\"\n    args.common_vllm_arg = list(common_args)\n    runner.configure_scenario(args)\n\n    assert args.common_vllm_arg == common_args\n",
+        "excerpt_sha256": "b11f198be2c79a27734a8d151d20a1292e3a07c28d2bc572c828e9fa41802efb",
+        "role": "Three direct regression cases require unchanged chunked-prefill choices"
+      },
+      {
+        "commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+        "path": "tests/e2e/models/deepseek_v2_lite/test_deepseek_v2_lite.py",
+        "git_blob_sha": "57c778ecdf2563317ac8c721612eb3d6bdd7debd",
+        "sha256": "c3814cd4f99fd0072142445892e27ea5a0150e76a255961d1bc6ff9307575d33",
+        "size_bytes": 5447,
+        "line_start": 166,
+        "line_end": 174,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/models/deepseek_v2_lite/test_deepseek_v2_lite.py#L166-L174",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/e2e/models/deepseek_v2_lite/test_deepseek_v2_lite.py",
+        "excerpt": "@pytest.mark.parametrize(\"scenario\", SCENARIOS, ids=SCENARIOS)\ndef test_deepseek_v2_lite(scenario: str, tmp_path: Path) -> None:\n    command = build_runner_command(scenario, tmp_path / scenario)\n    env = os.environ.copy()\n    sample_limit = env.get(GSM8K_LIMIT_ENV, str(DEFAULT_GSM8K_SAMPLE_LIMIT))\n    if sample_limit != \"all\" and int(sample_limit) <= SMOKE_MAX_SAMPLES:\n        # Model smoke gates require 2/7 or 6/24 correct; larger runs keep 0.27.\n        env.setdefault(GSM8K_THRESHOLD_ENV, str(SMOKE_MIN_ACCURACY))\n    run_runner(command, env=env)\n",
+        "excerpt_sha256": "e1c525a2891bc251addb3dbf0dae219532ae5d368b8cb619e247ccdc9bf2322f",
+        "role": "Separate model-specific smoke threshold calibration preserves explicit environment overrides"
+      },
+      {
+        "commit": "ebad7b747f4d4ba8d4550e241392979f86228f54",
+        "path": "tests/unit/test_e2e_runner.py",
+        "git_blob_sha": "aa9c28654fdcdc71abd1df08183b0d1beaeaad1b",
+        "sha256": "98bda57e1b7da452f9fc94cc21eeac4e5db27e5a8687133d75c8284ab96acba7",
+        "size_bytes": 56516,
+        "line_start": 88,
+        "line_end": 120,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/unit/test_e2e_runner.py#L88-L120",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/ebad7b747f4d4ba8d4550e241392979f86228f54/tests/unit/test_e2e_runner.py",
+        "excerpt": "@pytest.mark.parametrize(\n    (\"backend\", \"scenario\", \"limit\", \"override\", \"expected\"),\n    [\n        (\"gpu\", \"afd-graph-dbo-2a2f\", None, None, \"0.25\"),\n        (\"gpu\", \"afd-graph-dbo-2a2f\", \"24\", \"0.30\", \"0.30\"),\n        (\"gpu\", \"afd-graph-dbo-2a2f\", \"256\", None, None),\n        (\"npu\", \"afd-graph-dbo-2a2f\", \"24\", None, \"0.25\"),\n        (\"gpu\", \"afd-v2-graph-dp2\", None, None, \"0.25\"),\n        (\"gpu\", \"afd-graph-dbo-2a2f\", \"all\", None, None),\n    ],\n)\ndef test_deepseek_smoke_threshold_preserves_large_runs_and_overrides(\n    monkeypatch, tmp_path, backend, scenario, limit, override, expected\n):\n    monkeypatch.setenv(\"AFD_E2E_BACKEND\", backend)\n    monkeypatch.setenv(f\"AFD_{backend.upper()}_E2E_MODEL\", \"model\")\n    monkeypatch.delenv(\"AFD_GSM8K_LIMIT\", raising=False)\n    if limit is not None:\n        monkeypatch.setenv(\"AFD_GSM8K_LIMIT\", limit)\n    monkeypatch.delenv(\"AFD_GSM8K_THRESHOLD\", raising=False)\n    if override is not None:\n        monkeypatch.setenv(\"AFD_GSM8K_THRESHOLD\", override)\n\n    def check_runner_env(command, env):\n        assert env.get(\"AFD_GSM8K_THRESHOLD\") == expected\n\n    monkeypatch.setattr(deepseek_v2_lite_e2e, \"run_runner\", check_runner_env)\n    deepseek_v2_lite_e2e.test_deepseek_v2_lite(scenario, tmp_path)\n    assert os.environ.get(\"AFD_GSM8K_THRESHOLD\") == override\n\n\ndef test_qwen3_moe_baseline_entrypoint_uses_four_devices(monkeypatch, tmp_path):\n    monkeypatch.setenv(\"AFD_E2E_BACKEND\", \"gpu\")\n",
+        "excerpt_sha256": "94a9b9be837f443b088196511c83ee8599928bf795b931ba9deef92efa56f8df",
+        "role": "Threshold regression covers default, explicit override, large/full runs, NPU and MRV2"
+      }
+    ],
+    "PR404": [
+      {
+        "commit": "56238fa14704d611ded36094155001ff5f93dd45",
+        "path": "afd_plugin/v1/worker/cuda_graph.py",
+        "git_blob_sha": "71323dd7beeeb51ec16c195fe7cb2af9848d06ed",
+        "sha256": "f2aa03900c7353bf2eab20a67778d19e259813115504ba31942ecde895baa57c",
+        "size_bytes": 6667,
+        "line_start": 28,
+        "line_end": 39,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/cuda_graph.py#L28-L39",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/cuda_graph.py",
+        "excerpt": "    REPLAY = \"replay\"\n\n\n@dataclass(frozen=True, slots=True)\nclass AFDCUDAGraphPolicy:\n    \"\"\"Resolved AFD CUDA graph policy for one runtime role.\"\"\"\n\n    enabled: bool\n    mode_name: str | None\n    allow_attention_full_decode_only: bool\n    enable_ffn_graph_cache: bool\n    allow_cuda_graph_with_ubatching: bool = False\n",
+        "excerpt_sha256": "fe90a5ee769df533cc58fcf36042a8367796cd796d571a815ba9bd8ad6887f1c",
+        "role": "Graph policy defaults allow_cuda_graph_with_ubatching to false"
+      },
+      {
+        "commit": "56238fa14704d611ded36094155001ff5f93dd45",
+        "path": "afd_plugin/v1/worker/cuda_graph.py",
+        "git_blob_sha": "71323dd7beeeb51ec16c195fe7cb2af9848d06ed",
+        "sha256": "f2aa03900c7353bf2eab20a67778d19e259813115504ba31942ecde895baa57c",
+        "size_bytes": 6667,
+        "line_start": 42,
+        "line_end": 85,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/cuda_graph.py#L42-L85",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/56238fa14704d611ded36094155001ff5f93dd45/afd_plugin/v1/worker/cuda_graph.py",
+        "excerpt": "def validate_cuda_graph_mode(\n    vllm_config: VllmConfig,\n    *,\n    role: str | None = None,\n) -> AFDCUDAGraphPolicy:\n    \"\"\"Return the CUDA graph policy or raise for unsupported AFD modes.\"\"\"\n\n    enforce_eager = bool(getattr(vllm_config.model_config, \"enforce_eager\", False))\n    mode_name = cudagraph_mode_name(vllm_config)\n    graph_enabled = not enforce_eager\n\n    if not graph_enabled:\n        return AFDCUDAGraphPolicy(\n            enabled=False,\n            mode_name=mode_name,\n            allow_attention_full_decode_only=False,\n            enable_ffn_graph_cache=False,\n        )\n\n    if mode_name not in _SUPPORTED_GRAPH_MODES:\n        role_suffix = f\" for {role}\" if role else \"\"\n        raise RuntimeError(\n            \"AFD only supports CUDA graph mode \"\n            f\"{FULL_DECODE_ONLY}{role_suffix}; got {mode_name!r}.\",\n        )\n\n    parallel_config = getattr(vllm_config, \"parallel_config\", None)\n    use_ubatching = bool(getattr(parallel_config, \"use_ubatching\", False))\n    num_ubatches = getattr(parallel_config, \"num_ubatches\", None)\n    allow_ubatching = use_ubatching and int(num_ubatches or 0) == 2\n    if use_ubatching and not allow_ubatching:\n        raise RuntimeError(\n            \"AFD CUDA graph support currently supports ubatching only for \"\n            f\"{FULL_DECODE_ONLY} with exactly two ubatches; \"\n            f\"got num_ubatches={num_ubatches!r}.\",\n        )\n\n    return AFDCUDAGraphPolicy(\n        enabled=True,\n        mode_name=mode_name,\n        allow_attention_full_decode_only=role in (None, \"attention\"),\n        enable_ffn_graph_cache=role in (None, \"ffn\"),\n        allow_cuda_graph_with_ubatching=allow_ubatching,\n    )\n",
+        "excerpt_sha256": "a7e8bb52e4a14fc07297c0bb60a43fa935d938c7a5b8b88e7f19658d3c463860",
+        "role": "Eager exclusion and supported two-ubatch graph policy"
+      },
+      {
+        "commit": "56238fa14704d611ded36094155001ff5f93dd45",
+        "path": "tests/unit/v1/worker/test_attention_model_runner.py",
+        "git_blob_sha": "1a69d32fa369893ee2aa71ad5cecb09bd6e80c03",
+        "sha256": "f657d444a544b17b601c60fe7d07add9f78f18f71739e05ce85ae8bf0b1e494b",
+        "size_bytes": 39117,
+        "line_start": 720,
+        "line_end": 760,
+        "line_url": "https://github.com/vllm-project/afd-plugin/blob/56238fa14704d611ded36094155001ff5f93dd45/tests/unit/v1/worker/test_attention_model_runner.py#L720-L760",
+        "raw_url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/56238fa14704d611ded36094155001ff5f93dd45/tests/unit/v1/worker/test_attention_model_runner.py",
+        "excerpt": "@pytest.mark.parametrize(\"use_ubatching\", [False, True])\n@pytest.mark.parametrize(\"enforce_eager\", [False, True])\ndef test_attention_profile_preserves_native_and_warms_unsplit_dbo(\n    monkeypatch, use_ubatching, enforce_eager\n):\n    runner = object.__new__(AFDAttentionModelRunner)\n    runner.parallel_config = _parallel_config(\n        use_ubatching=use_ubatching, num_ubatches=2 if use_ubatching else 1\n    )\n    runner.afd_cudagraph_policy = validate_cuda_graph_mode(\n        SimpleNamespace(\n            model_config=SimpleNamespace(enforce_eager=enforce_eager),\n            compilation_config=SimpleNamespace(\n                cudagraph_mode=CUDAGraphMode.FULL_DECODE_ONLY\n            ),\n            parallel_config=runner.parallel_config,\n        ),\n        role=\"attention\",\n    )\n    runner.max_num_tokens = 8192\n    calls: list[str] = []\n\n    def native_profile(self):\n        assert self is runner\n        calls.append(\"native\")\n\n    def dummy_run(*args, **kwargs):\n        assert args == (8192,)\n        assert kwargs == {\"allow_microbatching\": False, \"is_profile\": True}\n        calls.append(\"dummy\")\n\n    monkeypatch.setattr(GPUModelRunner, \"profile_run\", native_profile)\n    runner._dummy_run = dummy_run\n    runner._sync_device = lambda: calls.append(\"sync\")\n\n    runner.profile_run()\n\n    assert calls == (\n        [\"native\", \"dummy\", \"sync\"]\n        if use_ubatching and not enforce_eager\n        else [\"native\"]\n",
+        "excerpt_sha256": "266272e138a2aab8d47a9bf96a417770a0cbe1d22216211f5c3dd6be1bffa367",
+        "role": "Four profile-mode combinations and expected call-order trace"
+      }
+    ]
+  }
+}
