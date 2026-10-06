@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "repository": "vllm-project/router",
+  "sample_size": {
+    "defect_families": 2,
+    "outcomes": 4,
+    "sampling": "purposive historical pairs; not independent accuracy samples"
+  },
+  "adjudication": {
+    "method": "Pinned source, merged fixes and regression-source inspection; independent source review, not runtime execution.",
+    "public_reviews": [
+      "https://github.com/vllm-project/router/pull/271#pullrequestreview-5198812395",
+      "https://github.com/vllm-project/router/pull/272#pullrequestreview-5195856218"
+    ],
+    "severity": "Local bounded corpus adjudication, not upstream severity attribution."
+  },
+  "supporting_sources": {
+    "PR271": [
+      {
+        "commit": "d61f7f5394aa7d6d0ed18fca8b12370097df7905",
+        "role": "fixed regression tests",
+        "path": "src/routers/header_utils.rs",
+        "git_blob_sha": "d91c591a5ffea4ad167b556edad40355af838841",
+        "sha256": "5baf9b1854e4ea073387440a0005b275d68217f43ef6401844c7eb2795c9bea8",
+        "line_start": 97,
+        "line_end": 129,
+        "line_url": "https://github.com/vllm-project/router/blob/d61f7f5394aa7d6d0ed18fca8b12370097df7905/src/routers/header_utils.rs#L97-L129",
+        "excerpt": "#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn test_preserve_repeated_set_cookie_headers() {\n        let mut headers = HeaderMap::new();\n        headers.append(\"set-cookie\", \"a=1; Path=/\".parse().unwrap());\n        headers.append(\"set-cookie\", \"b=2; Path=/\".parse().unwrap());\n\n        let result = preserve_response_headers(&headers);\n        let cookies: Vec<_> = result\n            .get_all(\"set-cookie\")\n            .iter()\n            .map(|value| value.to_str().unwrap())\n            .collect();\n\n        assert_eq!(cookies, [\"a=1; Path=/\", \"b=2; Path=/\"]);\n    }\n\n    #[test]\n    fn test_preserve_response_headers_filters_hop_by_hop_headers() {\n        let mut headers = HeaderMap::new();\n        headers.insert(\"content-type\", \"application/json\".parse().unwrap());\n        headers.append(\"connection\", \"keep-alive\".parse().unwrap());\n        headers.append(\"connection\", \"close\".parse().unwrap());\n        headers.insert(\"transfer-encoding\", \"chunked\".parse().unwrap());\n\n        let result = preserve_response_headers(&headers);\n\n        assert_eq!(result.len(), 1);\n        assert_eq!(result[\"content-type\"], \"application/json\");\n    }\n",
+        "excerpt_sha256": "b14c9750884215ce50dac414f6411f7cdcb9c7fc88c3284702c783c2ac6ddc0d"
+      },
+      {
+        "commit": "d61f7f5394aa7d6d0ed18fca8b12370097df7905",
+        "role": "production HTTP helper callers",
+        "path": "src/routers/http/router.rs",
+        "git_blob_sha": "e8e1259eabfa4723a160989ce1dd33381c04146d",
+        "sha256": "a01e7ee306c1ac8ab26c7ea2537b7a35240e1d9c39d00286c4a7c13a1e9e3b6a",
+        "line_start": 885,
+        "line_end": 1009,
+        "line_url": "https://github.com/vllm-project/router/blob/d61f7f5394aa7d6d0ed18fca8b12370097df7905/src/routers/http/router.rs#L885-L1009",
+        "excerpt": "        if !is_stream {\n            // For non-streaming requests, preserve headers\n            let response_headers = header_utils::preserve_response_headers(res.headers());\n\n            let response = match res.bytes().await {\n                Ok(body) => {\n                    let mut response = Response::new(axum::body::Body::from(body));\n                    *response.status_mut() = status;\n                    *response.headers_mut() = response_headers;\n                    response\n                }\n                Err(e) => {\n                    // IMPORTANT: Decrement load on error before returning\n                    if load_incremented {\n                        if let Some(worker) = self.worker_registry.get_by_url(worker_url) {\n                            worker.decrement_load();\n                            RouterMetrics::set_running_requests(worker_url, worker.load());\n                        }\n                    }\n\n                    let error_msg = format!(\"Failed to get response body: {}\", e);\n                    (StatusCode::INTERNAL_SERVER_ERROR, error_msg).into_response()\n                }\n            };\n\n            // Decrement load counter for non-streaming requests if it was incremented\n            if load_incremented {\n                if let Some(worker) = self.worker_registry.get_by_url(worker_url) {\n                    worker.decrement_load();\n                    RouterMetrics::set_running_requests(worker_url, worker.load());\n                }\n            }\n\n            response\n        } else if load_incremented {\n            // For streaming with load tracking, we need to manually decrement when done\n            let registry = Arc::clone(&self.worker_registry);\n            let worker_url = worker_url.to_string();\n\n            // Preserve headers for streaming response\n            let mut response_headers = header_utils::preserve_response_headers(res.headers());\n            // Ensure we set the correct content-type for SSE\n            response_headers.insert(CONTENT_TYPE, HeaderValue::from_static(\"text/event-stream\"));\n\n            let stream = res.bytes_stream();\n            let (tx, rx) = tokio::sync::mpsc::unbounded_channel();\n\n            // Spawn task to forward stream and detect completion\n            tokio::spawn(async move {\n                let mut stream = stream;\n                let mut decremented = false;\n                while let Some(chunk) = stream.next().await {\n                    match chunk {\n                        Ok(bytes) => {\n                            // Check for stream end marker\n                            if bytes\n                                .as_ref()\n                                .windows(12)\n                                .any(|window| window == b\"data: [DONE]\")\n                            {\n                                if let Some(worker) = registry.get_by_url(&worker_url) {\n                                    worker.decrement_load();\n                                    RouterMetrics::set_running_requests(&worker_url, worker.load());\n                                    decremented = true;\n                                }\n                            }\n                            if tx.send(Ok(bytes)).is_err() {\n                                break;\n                            }\n                        }\n                        Err(e) => {\n                            let _ = tx.send(Err(format!(\"Stream error: {}\", e)));\n                            break;\n                        }\n                    }\n                }\n                if !decremented {\n                    if let Some(worker) = registry.get_by_url(&worker_url) {\n                        worker.decrement_load();\n                        RouterMetrics::set_running_requests(&worker_url, worker.load());\n                    }\n                }\n            });\n\n            let stream = UnboundedReceiverStream::new(rx);\n            let body = Body::from_stream(stream);\n\n            let mut response = Response::new(body);\n            *response.status_mut() = status;\n            *response.headers_mut() = response_headers;\n            response\n        } else {\n            // For requests without load tracking, just stream\n            // Preserve headers for streaming response\n            let mut response_headers = header_utils::preserve_response_headers(res.headers());\n            // Ensure we set the correct content-type for SSE\n            response_headers.insert(CONTENT_TYPE, HeaderValue::from_static(\"text/event-stream\"));\n\n            let stream = res.bytes_stream();\n            let (tx, rx) = tokio::sync::mpsc::unbounded_channel();\n\n            // Spawn task to forward stream\n            tokio::spawn(async move {\n                let mut stream = stream;\n                while let Some(chunk) = stream.next().await {\n                    match chunk {\n                        Ok(bytes) => {\n                            if tx.send(Ok(bytes)).is_err() {\n                                break;\n                            }\n                        }\n                        Err(e) => {\n                            let _ = tx.send(Err(format!(\"Stream error: {}\", e)));\n                            break;\n                        }\n                    }\n                }\n            });\n\n            let stream = UnboundedReceiverStream::new(rx);\n            let body = Body::from_stream(stream);\n\n            let mut response = Response::new(body);\n            *response.status_mut() = status;\n            *response.headers_mut() = response_headers;\n",
+        "excerpt_sha256": "ece925e7184e53a89c0ba90f414a5a21e10006d0886b4428802685243ffb834a"
+      }
+    ],
+    "PR272": [
+      {
+        "commit": "35efacc64ce4f501ada9227cc92809cfad7db9f7",
+        "role": "fixed local-tokenizer regression tests",
+        "path": "src/tokenizer/stop.rs",
+        "git_blob_sha": "f5c3607d932362e6de38b81e60c541f31c8c78a1",
+        "sha256": "621ed0e85ec764b222bb32c6366349909841e248e7e56da3aa394ce595a35789",
+        "line_start": 339,
+        "line_end": 425,
+        "line_url": "https://github.com/vllm-project/router/blob/35efacc64ce4f501ada9227cc92809cfad7db9f7/src/tokenizer/stop.rs#L339-L425",
+        "excerpt": "    }\n\n    #[test]\n    fn test_partial_hidden_stop_completion() {\n        for (stop, prefix, suffix) in [\n            (\"éx\", \"é\", \"x\"),\n            (\"结束\", \"结\", \"束\"),\n            (\"🙂x\", \"🙂\", \"x\"),\n            (\"STOP\", \"ST\", \"OP\"),\n        ] {\n            let tokenizer = piece_tokenizer(&[prefix, suffix]);\n            let config = StopSequenceConfig::default().with_stop_sequence(stop);\n            let mut decoder = StopSequenceDecoder::new(tokenizer, config, false);\n\n            assert_eq!(\n                decoder.process_tokens(&[0, 1, 0]).unwrap(),\n                vec![\n                    SequenceDecoderOutput::Held,\n                    SequenceDecoderOutput::Stopped,\n                    SequenceDecoderOutput::Stopped,\n                ],\n                \"stop sequence: {stop:?}\"\n            );\n            assert!(decoder.is_stopped());\n            assert_eq!(decoder.flush(), SequenceDecoderOutput::Text(String::new()));\n        }\n    }\n\n    #[test]\n    fn test_partial_visible_stop_completion() {\n        let tokenizer = piece_tokenizer(&[\"before é\", \"🙂\", \"x after\"]);\n        let config = StopSequenceConfig::default().with_visible_stop_sequence(\"é🙂x\");\n        let mut decoder = StopSequenceDecoder::new(tokenizer, config, false);\n\n        assert_eq!(\n            decoder.process_tokens(&[0, 1, 2]).unwrap(),\n            vec![\n                SequenceDecoderOutput::Text(\"before \".to_string()),\n                SequenceDecoderOutput::Held,\n                SequenceDecoderOutput::StoppedWithText(\"é🙂x\".to_string()),\n            ]\n        );\n        assert!(decoder.is_stopped());\n        assert_eq!(decoder.flush(), SequenceDecoderOutput::Text(String::new()));\n    }\n\n    #[test]\n    fn test_partial_stop_released_after_mismatch() {\n        for (stop, pieces, safe_text, released_text) in [\n            (\"é🙂x\", [\"before é\", \"🙂\", \"!\"], \"before \", \"é🙂!\"),\n            (\"abc\", [\"éa\", \"b\", \"x\"], \"é\", \"abx\"),\n        ] {\n            for visible in [false, true] {\n                let tokenizer = piece_tokenizer(&pieces);\n                let config = if visible {\n                    StopSequenceConfig::default().with_visible_stop_sequence(stop)\n                } else {\n                    StopSequenceConfig::default().with_stop_sequence(stop)\n                };\n                let mut decoder = StopSequenceDecoder::new(tokenizer, config, false);\n\n                assert_eq!(\n                    decoder.process_tokens(&[0, 1, 2]).unwrap(),\n                    vec![\n                        SequenceDecoderOutput::Text(safe_text.to_string()),\n                        SequenceDecoderOutput::Held,\n                        SequenceDecoderOutput::Text(released_text.to_string()),\n                    ],\n                    \"stop sequence: {stop:?}, visible: {visible}\"\n                );\n                assert!(!decoder.is_stopped());\n                assert_eq!(decoder.flush(), SequenceDecoderOutput::Text(String::new()));\n            }\n        }\n    }\n\n    #[test]\n    fn test_unicode_text_without_partial_stop() {\n        let tokenizer = piece_tokenizer(&[\"é🙂\"]);\n        let config = StopSequenceConfig::default().with_stop_sequence(\"STOP\");\n        let mut decoder = StopSequenceDecoder::new(tokenizer, config, false);\n\n        assert_eq!(\n            decoder.process_token(0).unwrap(),\n            SequenceDecoderOutput::Text(\"é🙂\".to_string())\n        );\n    }\n",
+        "excerpt_sha256": "5643c3b13c4a90b7d547091b7d263b888bc7c290fc61fff5c7a243b3964074e9"
+      },
+      {
+        "commit": "35efacc64ce4f501ada9227cc92809cfad7db9f7",
+        "role": "public library export, not production reachability",
+        "path": "src/tokenizer/mod.rs",
+        "git_blob_sha": "98a23f761754f3f1b18cd22f9862a2fa8f6fa326",
+        "sha256": "4cf97872df4abaaf0564695ec038f50a6e4318523e4ed30670b80c78b4870258",
+        "line_start": 24,
+        "line_end": 32,
+        "line_url": "https://github.com/vllm-project/router/blob/35efacc64ce4f501ada9227cc92809cfad7db9f7/src/tokenizer/mod.rs#L24-L32",
+        "excerpt": "// Re-exports\npub use factory::{\n    create_tokenizer, create_tokenizer_async, create_tokenizer_from_file,\n    create_tokenizer_with_chat_template, TokenizerType,\n};\npub use sequence::Sequence;\npub use stop::{SequenceDecoderOutput, StopSequenceConfig, StopSequenceDecoder};\npub use stream::DecodeStream;\npub use traits::{Decoder, Encoder, Encoding, SpecialTokens, Tokenizer as TokenizerTrait};\n",
+        "excerpt_sha256": "22a2b7c8da44b7b9da8428b8832973e8aebd81fce1391f76ebc721ac22cb70d1"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "pr271-before",
+      "pair": "PR271",
+      "repository": "vllm-project/router",
+      "commit": "35efacc64ce4f501ada9227cc92809cfad7db9f7",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "severity_reason": "P2: conditional response-header data loss on production proxy paths; no universal outage claim.",
+      "route": {
+        "primary": "HTTP/OpenAI proxy response headers"
+      },
+      "trigger": "A backend response has two allowed Set-Cookie fields and reaches preserve_response_headers.",
+      "consequence": "The buggy helper replaces the earlier cookie; the client receives only the final value.",
+      "independent_reasoning": "insert replaces an existing same-name value while iteration visits repeated values.",
+      "test_reasoning": "The upstream tests create two Set-Cookie values and verify both survive; a separate test verifies the existing hop-by-hop name filter.",
+      "mechanism": "header-values",
+      "source": {
+        "path": "src/routers/header_utils.rs",
+        "git_blob_sha": "bb6ea3db4ed925ecf94d59d76a9e10c305ab328d",
+        "sha256": "3b90f7c067b16219ba3ddcbc58baf1252675e85d445ae3c5990b8ad0c9137cce",
+        "line_start": 22,
+        "line_end": 54,
+        "line_url": "https://github.com/vllm-project/router/blob/35efacc64ce4f501ada9227cc92809cfad7db9f7/src/routers/header_utils.rs#L22-L54",
+        "excerpt": "/// Convert headers from reqwest Response to axum HeaderMap\n/// Filters out hop-by-hop headers that shouldn't be forwarded\npub fn preserve_response_headers(reqwest_headers: &HeaderMap) -> HeaderMap {\n    let mut headers = HeaderMap::new();\n\n    for (name, value) in reqwest_headers.iter() {\n        // Skip hop-by-hop headers that shouldn't be forwarded\n        let name_str = name.as_str().to_lowercase();\n        if should_forward_header(&name_str) {\n            // The original name and value are already valid, so we can just clone them\n            headers.insert(name.clone(), value.clone());\n        }\n    }\n\n    headers\n}\n\n/// Determine if a header should be forwarded from backend to client\nfn should_forward_header(name: &str) -> bool {\n    // List of headers that should NOT be forwarded (hop-by-hop headers)\n    !matches!(\n        name,\n        \"connection\" |\n        \"keep-alive\" |\n        \"proxy-authenticate\" |\n        \"proxy-authorization\" |\n        \"te\" |\n        \"trailers\" |\n        \"transfer-encoding\" |\n        \"upgrade\" |\n        \"content-encoding\" | // Let axum/hyper handle encoding\n        \"host\" // Should not forward the backend's host header\n    )\n",
+        "excerpt_sha256": "7ffc4c99a4a3ba098613d36f7a0f15098afc4471ee58ea1badf863b664e52315"
+      }
+    },
+    {
+      "id": "pr271-fixed",
+      "pair": "PR271",
+      "repository": "vllm-project/router",
+      "commit": "d61f7f5394aa7d6d0ed18fca8b12370097df7905",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "severity_reason": "Only the named defect is absent; not whole-PR approval or runtime correctness.",
+      "route": {
+        "primary": "HTTP/OpenAI proxy response headers"
+      },
+      "trigger": "A backend response has two allowed Set-Cookie fields and reaches preserve_response_headers.",
+      "consequence": "The named mechanism is corrected; other paths and hardware remain untested.",
+      "independent_reasoning": "append preserves successive same-name values without changing the filter.",
+      "test_reasoning": "The upstream tests create two Set-Cookie values and verify both survive; a separate test verifies the existing hop-by-hop name filter.",
+      "mechanism": "header-values",
+      "source": {
+        "path": "src/routers/header_utils.rs",
+        "git_blob_sha": "d91c591a5ffea4ad167b556edad40355af838841",
+        "sha256": "5baf9b1854e4ea073387440a0005b275d68217f43ef6401844c7eb2795c9bea8",
+        "line_start": 22,
+        "line_end": 54,
+        "line_url": "https://github.com/vllm-project/router/blob/d61f7f5394aa7d6d0ed18fca8b12370097df7905/src/routers/header_utils.rs#L22-L54",
+        "excerpt": "/// Convert headers from reqwest Response to axum HeaderMap\n/// Filters out hop-by-hop headers that shouldn't be forwarded\npub fn preserve_response_headers(reqwest_headers: &HeaderMap) -> HeaderMap {\n    let mut headers = HeaderMap::new();\n\n    for (name, value) in reqwest_headers.iter() {\n        // Skip hop-by-hop headers that shouldn't be forwarded\n        let name_str = name.as_str().to_lowercase();\n        if should_forward_header(&name_str) {\n            // The original name and value are already valid, so we can just clone them\n            headers.append(name.clone(), value.clone());\n        }\n    }\n\n    headers\n}\n\n/// Determine if a header should be forwarded from backend to client\nfn should_forward_header(name: &str) -> bool {\n    // List of headers that should NOT be forwarded (hop-by-hop headers)\n    !matches!(\n        name,\n        \"connection\" |\n        \"keep-alive\" |\n        \"proxy-authenticate\" |\n        \"proxy-authorization\" |\n        \"te\" |\n        \"trailers\" |\n        \"transfer-encoding\" |\n        \"upgrade\" |\n        \"content-encoding\" | // Let axum/hyper handle encoding\n        \"host\" // Should not forward the backend's host header\n    )\n",
+        "excerpt_sha256": "bcd5410619df0ac771d28d8fd4f5567e4acfc1ef90fef877ae8c94a3d2047174"
+      }
+    },
+    {
+      "id": "pr272-before",
+      "pair": "PR272",
+      "repository": "vllm-project/router",
+      "commit": "a0f46733bf63c0d57d5f710a47706aba43036b56",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "severity_reason": "P2: exported library correctness/availability failure for Unicode; do not infer a live HTTP/gRPC outage.",
+      "route": {
+        "primary": "Exported tokenizer library / UTF-8 partial stop decoding"
+      },
+      "trigger": "An exported StopSequenceDecoder caller reaches the partial scan with check_text é and configured stop éx (or é🙂 and unrelated STOP), after no complete match.",
+      "consequence": "The buggy byte-offset slice panics instead of returning decoder output. No production router caller was found at the fix or audited main.",
+      "independent_reasoning": "UTF-8 é has two bytes, so len minus one is a continuation byte and Rust str slicing there panics.",
+      "test_reasoning": "Upstream local WordLevel/Fuse regressions cover hidden/visible completion, mismatch release, ASCII stops and Unicode text with unrelated ASCII stop; no model download is needed for those fixtures.",
+      "mechanism": "utf8-suffix",
+      "source": {
+        "path": "src/tokenizer/stop.rs",
+        "git_blob_sha": "1efda15b6447a4e8d126aa41d470e7974837c81a",
+        "sha256": "c22ef4a27ffab01bb6c345797cf4fbb86988970f33772090985808598eefa256",
+        "line_start": 191,
+        "line_end": 208,
+        "line_url": "https://github.com/vllm-project/router/blob/a0f46733bf63c0d57d5f710a47706aba43036b56/src/tokenizer/stop.rs#L191-L208",
+        "excerpt": "        // Check for partial matches at the end of check_text\n        let mut partial_match_len = 0;\n        for stop_seq in self\n            .config\n            .stop_sequences\n            .iter()\n            .chain(&self.config.visible_stop_sequences)\n        {\n            // Check all possible suffixes that could be a prefix of stop_seq\n            for i in 1..=check_text.len().min(stop_seq.len() - 1) {\n                let suffix = &check_text[check_text.len() - i..];\n                if stop_seq.starts_with(suffix) {\n                    partial_match_len = partial_match_len.max(i);\n                }\n            }\n        }\n\n        if partial_match_len > 0 {\n",
+        "excerpt_sha256": "ea56fe9b80d61a3a60ec09b8e6a62cdac1d637ecb0bd758129f8a7803295f051"
+      }
+    },
+    {
+      "id": "pr272-fixed",
+      "pair": "PR272",
+      "repository": "vllm-project/router",
+      "commit": "35efacc64ce4f501ada9227cc92809cfad7db9f7",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "severity_reason": "Only the named defect is absent; not whole-PR approval or runtime correctness.",
+      "route": {
+        "primary": "Exported tokenizer library / UTF-8 partial stop decoding"
+      },
+      "trigger": "An exported StopSequenceDecoder caller reaches the partial scan with check_text é and configured stop éx (or é🙂 and unrelated STOP), after no complete match.",
+      "consequence": "The named mechanism is corrected; other paths and hardware remain untested.",
+      "independent_reasoning": "char_indices supplies valid UTF-8 boundaries and suffix.len retains byte-count jail accounting.",
+      "test_reasoning": "Upstream local WordLevel/Fuse regressions cover hidden/visible completion, mismatch release, ASCII stops and Unicode text with unrelated ASCII stop; no model download is needed for those fixtures.",
+      "mechanism": "utf8-suffix",
+      "source": {
+        "path": "src/tokenizer/stop.rs",
+        "git_blob_sha": "f5c3607d932362e6de38b81e60c541f31c8c78a1",
+        "sha256": "621ed0e85ec764b222bb32c6366349909841e248e7e56da3aa394ce595a35789",
+        "line_start": 191,
+        "line_end": 211,
+        "line_url": "https://github.com/vllm-project/router/blob/35efacc64ce4f501ada9227cc92809cfad7db9f7/src/tokenizer/stop.rs#L191-L211",
+        "excerpt": "        // Check for partial matches at the end of check_text\n        let mut partial_match_len = 0;\n        for stop_seq in self\n            .config\n            .stop_sequences\n            .iter()\n            .chain(&self.config.visible_stop_sequences)\n        {\n            // Check suffixes at UTF-8 character boundaries, shortest first.\n            for (start, _) in check_text.char_indices().rev() {\n                let suffix = &check_text[start..];\n                if suffix.len() >= stop_seq.len() {\n                    break;\n                }\n                if stop_seq.starts_with(suffix) {\n                    partial_match_len = partial_match_len.max(suffix.len());\n                }\n            }\n        }\n\n        if partial_match_len > 0 {\n",
+        "excerpt_sha256": "9e76118f30d96e942830bd2f5afc5f8281c865ca98c5484d5d7045677991f11f"
+      }
+    }
+  ]
+}
