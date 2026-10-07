@@ -1,0 +1,340 @@
+{
+  "schema_version": 1,
+  "repository": "openJiuwen-ai/sciencediscovery",
+  "sample_size": {
+    "defect_families": 2,
+    "outcomes": 4,
+    "sampling": "Purposive historical defect/fix pairs, not independent accuracy samples."
+  },
+  "adjudication": {
+    "method": "Independent pinned-source, production-caller and regression-source inspection. Tests read, not executed; no reviewer-accuracy or scientific-validity claim.",
+    "severity": "Local bounded corpus adjudication, not upstream severity attribution.",
+    "limits": [
+      "The fixed outcome means only the named mechanism is absent in the cited source.",
+      "No full PR approval, live model, end-to-end timeout, permission bypass, data exfiltration, or sandbox-security conclusion follows.",
+      "Regression-source assertions are not runtime results."
+    ]
+  },
+  "source_baseline": {
+    "main_commit": "7a0324257eecb48b57f60b6a80ce2fff54e7dba7",
+    "draft_skill_pr": "https://github.com/openJiuwen-ai/sciencediscovery/pull/231",
+    "draft_skill_state": "open draft; unmerged at inspection",
+    "draft_skill_commit": "1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c",
+    "all_case_revisions_are_ancestors_of_main": true
+  },
+  "instruction_sources": [
+    {
+      "commit": "1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c",
+      "path": ".agents/skills/sciencediscovery-review/SKILL.md",
+      "git_blob_sha": "eab90983063839d3ab92abb63df87db85a859c67",
+      "sha256": "2bf261c60d527034b5fe90f2b5194d8e076e887e8a069515c17575a53d5a9dd1",
+      "line_start": 1,
+      "line_end": 32,
+      "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c/.agents/skills/sciencediscovery-review/SKILL.md#L1-L32",
+      "role": "full canonical draft skill read"
+    },
+    {
+      "commit": "1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c",
+      "path": ".agents/skills/sciencediscovery-review/references/repository-contracts.md",
+      "git_blob_sha": "11117a0cb6416c1da24e497cbf84c9cdf431f3e3",
+      "sha256": "2fc92758c2e0b426d6ab8217a8a81825c471a73d70b4cbc0e724d15bf90ca416",
+      "line_start": 1,
+      "line_end": 23,
+      "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c/.agents/skills/sciencediscovery-review/references/repository-contracts.md#L1-L23",
+      "role": "full canonical draft repository map read"
+    }
+  ],
+  "pairs": {
+    "artifact-pagination": {
+      "before_commit": "af8f0736c01116cd256925455f7fab330c6df4e2",
+      "implementation_fix_commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+      "fixed_commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+      "fix_url": "https://github.com/openJiuwen-ai/sciencediscovery/commit/31f724fae4843ec7c4508e5f2caf02640cad6f6e"
+    },
+    "child-authority-scope": {
+      "before_commit": "60626de259d947a552df54cbdd31f8821ac33dcc",
+      "implementation_fix_commit": "5270a55e5175d3a1c3b066ba1564978940b679fe",
+      "fixed_commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+      "fix_url": "https://github.com/openJiuwen-ai/sciencediscovery/commit/5270a55e5175d3a1c3b066ba1564978940b679fe",
+      "regression_correction": {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "url": "https://github.com/openJiuwen-ai/sciencediscovery/commit/070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "detail": "Immediate test-only follow-up changes the ExecutionRun fixture sandbox from invalid none to bubblewrap. This is a fixture enum correction, not evidence that Bubblewrap ran. Product code is identical to the implementation-fix commit."
+      }
+    }
+  },
+  "supporting_sources": {
+    "artifact-pagination": [
+      {
+        "commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+        "path": "packages/workspace/src/artifact-read.test.ts",
+        "git_blob_sha": "03bdc6b6a74f35ed4b538396d25ec26eac6882d7",
+        "sha256": "854d30374ea19fd78a79db34fb01783dcbf41f447df903a05e3406fb669f45f4",
+        "line_start": 78,
+        "line_end": 118,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/31f724fae4843ec7c4508e5f2caf02640cad6f6e/packages/workspace/src/artifact-read.test.ts#L78-L118",
+        "excerpt": "test(\"paging stops at the decodable text window instead of promising a page no offset can reach\", () => {\n  // 9500 lines of exactly 1000 bytes: larger than the 8 MiB text window, so the\n  // window ends part-way through a line and 1111 lines fall outside it.\n  const bytes = Buffer.from(`${\"x\".repeat(999)}\\n`.repeat(9_500), \"utf8\");\n  assert.ok(bytes.length > MAX_ARTIFACT_TEXT_BYTES);\n  const windowLines = 8_389;\n\n  const first = projectArtifactContent(bytes, \"text/csv\", { limit: 40 });\n  assert.equal(first.truncated, true, \"the version is larger than the text window\");\n  assert.equal(first.page?.totalLines, windowLines, \"totalLines counts the window, not the whole version\");\n  assert.match(String(first.note), /Only the first 8388608 bytes/);\n  assert.match(String(first.note), /offset cannot reach past line 8389/);\n\n  // Walking the protocol has to terminate: every nextOffset must advance.\n  let offset = 1;\n  let steps = 0;\n  let lastEndLine = 0;\n  while (steps < 1_000) {\n    steps += 1;\n    const page = projectArtifactContent(bytes, \"text/csv\", { limit: 40, offset }).page!;\n    assert.equal(page.startLine, offset);\n    if (!page.hasMore) {\n      lastEndLine = page.endLine;\n      assert.equal(page.nextOffset, undefined, \"a final page carries no next offset\");\n      break;\n    }\n    assert.ok(page.nextOffset! > offset, `nextOffset ${page.nextOffset} must advance past ${offset}`);\n    offset = page.nextOffset!;\n  }\n  assert.ok(steps < 1_000, \"paging terminated\");\n  assert.equal(lastEndLine, windowLines, \"paging reached the last line inside the window\");\n\n  // The reviewer's repro: offsets past the window used to return\n  // hasMore=true with nextOffset equal to the offset just used.\n  for (const beyond of [windowLines + 1, windowLines + 5, 11_500]) {\n    const projection = projectArtifactContent(bytes, \"text/csv\", { limit: 40, offset: beyond });\n    assert.equal(projection.content, \"\");\n    assert.equal(projection.page?.hasMore, false, `offset ${beyond} is past the window and cannot advance`);\n    assert.equal(projection.page?.nextOffset, undefined);\n  }\n});\n",
+        "excerpt_sha256": "dad3aa95b69bb4d9fad5db7627bbe9e85e78c591eca96a30877fb05847159402",
+        "role": "regression: finite paging and offsets beyond the 8 MiB window"
+      },
+      {
+        "commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+        "path": "services/api/src/runs/index.ts",
+        "git_blob_sha": "3ad2160b68e3a3caf2673f4b618d33c8586772b6",
+        "sha256": "51e0326c8a91f6dedf689dac1d12791f4540abcf6ba62a11f7fe7238af897869",
+        "line_start": 769,
+        "line_end": 788,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/31f724fae4843ec7c4508e5f2caf02640cad6f6e/services/api/src/runs/index.ts#L769-L788",
+        "excerpt": "    readArtifact: async (input) => {\n      const artifact = input.artifactId\n        ? store.getProjectArtifact(session.projectId, input.artifactId)\n        : input.name ? store.getArtifactByName(sessionId, input.name) : undefined;\n      if (!artifact) throw new Error(\"Artifact not found in this Project\");\n      const versions = store.listProjectArtifactVersions(session.projectId, artifact.id);\n      const version = input.version === undefined\n        ? versions.at(-1)\n        : versions.find((candidate) => candidate.version === input.version);\n      if (!version) throw new Error(\"Artifact version not found\");\n      const bytes = await provenanceRecorder.cas.read(version.content.hash);\n      return {\n        artifact,\n        ...projectArtifactContent(bytes, version.mediaType, {\n          ...(input.limit === undefined ? {} : { limit: input.limit }),\n          ...(input.offset === undefined ? {} : { offset: input.offset }),\n        }),\n        version,\n      };\n    },\n",
+        "excerpt_sha256": "66f3deccb029477de665e0f90324fde0134dc50c61f91444a7ad95a64c6936db",
+        "role": "production artifact read binding; unchanged from before commit"
+      },
+      {
+        "commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+        "path": "packages/tools/src/bounded-output.ts",
+        "git_blob_sha": "1a8aab66a6b9f336604ce6f29b6cbce78b99e3d1",
+        "sha256": "f40ac8642927922191421839fe4d776b32565f66bc4715f1d5cf1d7e646a8e8c",
+        "line_start": 85,
+        "line_end": 162,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/31f724fae4843ec7c4508e5f2caf02640cad6f6e/packages/tools/src/bounded-output.ts#L85-L162",
+        "excerpt": "  if (!text) return [];\n  const lines: string[] = [];\n  let start = 0;\n  for (let index = 0; index < text.length; index += 1) {\n    if (text[index] !== \"\\n\") continue;\n    lines.push(text.slice(start, index + 1));\n    start = index + 1;\n  }\n  if (start < text.length) lines.push(text.slice(start));\n  return lines;\n}\n\n/** Cut on a character boundary so a byte cap never emits a broken code point. */\nfunction sliceToBytes(text: string, maxBytes: number, keep: BoundedKeep): string {\n  const characters = [...text];\n  if (keep === \"tail\") characters.reverse();\n  const picked: string[] = [];\n  let bytes = 0;\n  for (const character of characters) {\n    const size = Buffer.byteLength(character, \"utf8\");\n    if (bytes + size > maxBytes) break;\n    picked.push(character);\n    bytes += size;\n  }\n  if (keep === \"tail\") picked.reverse();\n  return picked.join(\"\");\n}\n\n/** Keep at most `maxLines` lines and `maxBytes` bytes from one end of `text`. */\nexport function boundText(text: string, options: BoundTextOptions = {}): BoundedText {\n  const keep = options.keep ?? \"head\";\n  const maxLines = Math.max(1, options.maxLines ?? DEFAULT_TOOL_OUTPUT_MAX_LINES);\n  const maxBytes = Math.max(1, options.maxBytes ?? DEFAULT_TOOL_OUTPUT_MAX_BYTES);\n  const totalBytes = Buffer.byteLength(text, \"utf8\");\n  const lines = splitKeepingLineEndings(text);\n  const totalLines = lines.length;\n  if (totalLines <= maxLines && totalBytes <= maxBytes) {\n    return { keep, omittedBytes: 0, omittedLines: 0, partialLine: false, text, totalBytes, totalLines, truncated: false };\n  }\n\n  const ordered = keep === \"head\" ? lines : [...lines].reverse();\n  const kept: string[] = [];\n  let bytes = 0;\n  let partialLine = false;\n  for (const line of ordered) {\n    if (kept.length >= maxLines) break;\n    const size = Buffer.byteLength(line, \"utf8\");\n    if (bytes + size > maxBytes) {\n      // One line longer than the whole budget still has to yield a usable\n      // preview, so cut inside it rather than returning an empty page.\n      if (kept.length === 0) {\n        kept.push(sliceToBytes(line, maxBytes, keep));\n        partialLine = true;\n      }\n      break;\n    }\n    kept.push(line);\n    bytes += size;\n  }\n  if (keep === \"tail\") kept.reverse();\n  const preview = kept.join(\"\");\n  return {\n    keep,\n    omittedBytes: totalBytes - Buffer.byteLength(preview, \"utf8\"),\n    omittedLines: Math.max(0, totalLines - kept.length),\n    partialLine,\n    text: preview,\n    totalBytes,\n    totalLines,\n    truncated: true,\n  };\n}\n\nexport function formatByteSize(bytes: number): string {\n  if (bytes < 1_024) return `${bytes} B`;\n  if (bytes < 1_024 * 1_024) return `${(bytes / 1_024).toFixed(1)} KB`;\n  return `${(bytes / (1_024 * 1_024)).toFixed(1)} MB`;\n}\n",
+        "excerpt_sha256": "f45192266d32d6a03cc8d23c392fc792c2abc4bac688b7ea4a297a6f96cb5556",
+        "role": "exact line splitting and bounded-page implementation; unchanged from before commit"
+      }
+    ],
+    "child-authority-scope": [
+      {
+        "commit": "60626de259d947a552df54cbdd31f8821ac33dcc",
+        "path": "services/api/src/runs/index.ts",
+        "git_blob_sha": "5b039a10ea7b7c03a51941fd7bc8965f19354267",
+        "sha256": "54d79979c513c4b508b3a2fc00de83ddcc453978a0a0e79ff9a7d0ff7ecef41e",
+        "line_start": 1923,
+        "line_end": 1939,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/60626de259d947a552df54cbdd31f8821ac33dcc/services/api/src/runs/index.ts#L1923-L1939",
+        "excerpt": "        subagentRunHandle = runSubagentTask({\n          bindings: {\n            pluginSettings: settingsSnapshot.plugins,\n            abortSignal: childExecution.abortSignal,\n            observer: observeSubagentEvent,\n            recordEvent: async (event) => { finalizeMessageStep(); activeMessageStep = undefined; await emit(event); },\n            planStore: createRunPlanStore(`subagent:${subagent.id}`, () => subagent.turnCount),\n            readVersioningAuthorities: versioningAuthorities(store, sessionId, runId),\n            runIdleTimeoutMs: timeoutSettings.gatewayIdleTimeoutMs,\n            workspace: subagentWorkspace,\n          },\n          profile: subagentProfile,\n          history,\n          prompt: continuation ? modelContent : subagentExecutionPrompt,\n          requestExecutionId: childExecution.identity.executionId,\n          runContract: subagentExecutionPrompt,\n        });\n",
+        "excerpt_sha256": "89394508f78b7369f093655624ab1f0694f656f9c46ea4d1976f110ff3e5bb2f",
+        "role": "before production child binding passes parent runId despite child requestExecutionId"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/runs/index.ts",
+        "git_blob_sha": "701fb849d91143ab6a01ad97f4aee8db1bf9afd5",
+        "sha256": "a5bfb7e55f8401ebe3e9b44f663feaa8f042c55f19b2ef4a58dce0ac192486c8",
+        "line_start": 1923,
+        "line_end": 1941,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/runs/index.ts#L1923-L1941",
+        "excerpt": "        subagentRunHandle = runSubagentTask({\n          bindings: {\n            pluginSettings: settingsSnapshot.plugins,\n            abortSignal: childExecution.abortSignal,\n            observer: observeSubagentEvent,\n            recordEvent: async (event) => { finalizeMessageStep(); activeMessageStep = undefined; await emit(event); },\n            planStore: createRunPlanStore(`subagent:${subagent.id}`, () => subagent.turnCount),\n            readVersioningAuthorities: versioningAuthorities(store, {\n              sessionId, executionId: childExecution.identity.executionId, subagentId: subagent.id,\n            }),\n            runIdleTimeoutMs: timeoutSettings.gatewayIdleTimeoutMs,\n            workspace: subagentWorkspace,\n          },\n          profile: subagentProfile,\n          history,\n          prompt: continuation ? modelContent : subagentExecutionPrompt,\n          requestExecutionId: childExecution.identity.executionId,\n          runContract: subagentExecutionPrompt,\n        });\n",
+        "excerpt_sha256": "1e24a65b279f9c1d57c246c887f8f6c91a9039eea3861c493732d6beeb5e0eb5",
+        "role": "fixed production child binding passes child execution ID and subagent ID"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/store.ts",
+        "git_blob_sha": "d05299720059699c81c5aa327af33b4cf9bfa177",
+        "sha256": "a27fcc0554982baae032469cf672f2a7d56b88b093cf49240ba6d399d9394d9f",
+        "line_start": 2893,
+        "line_end": 2916,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/store.ts#L2893-L2916",
+        "excerpt": "  listSubagents(sessionId: string): Subagent[] {\n    if (!this.getSession(sessionId)) throw new Error(\"Session not found\");\n    return structuredClone(this.catalog.subagents.filter((subagent) => subagent.sessionId === sessionId))\n      .toSorted((left, right) => left.createdAt.localeCompare(right.createdAt));\n  }\n\n  /** Immutable audit references; filter before copying or serializing trajectories. */\n  async captureSubagentAuthorities(sessionId: string, subagentId?: string) {\n    if (!this.getSession(sessionId)) throw new Error(\"Session not found\");\n    const records = this.catalog.subagents.filter((child) => child.sessionId === sessionId\n      && (subagentId === undefined || child.id === subagentId))\n      .toSorted((left, right) => left.createdAt.localeCompare(right.createdAt));\n    if (subagentId !== undefined && records.length !== 1) throw new Error(\"Subagent not found in Session\");\n    const versions = new VersionStore(this.dataDir);\n    return Promise.all(records.map(async (child) => {\n      let record = this.subagentAuthorityRefs.get(child);\n      if (!record) {\n        record = versions.putRecord(\"SubagentAuthority\", JSON.parse(JSON.stringify(child)));\n        this.subagentAuthorityRefs.set(child, record);\n        void record.catch(() => this.subagentAuthorityRefs.delete(child));\n      }\n      return { id: child.id, parentTurnId: child.parentTurnId, status: child.status, record: await record };\n    }));\n  }\n",
+        "excerpt_sha256": "76a0aa018b012eec53e403b5f7e09f20295e9ea88177382a8870c9bb3679efac",
+        "role": "task capture filters by session and child before recording immutable authority references"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/agent-notifications.ts",
+        "git_blob_sha": "3eaaf754882e2f59de6d7d1aa126562461ee9c0e",
+        "sha256": "61ccd830f3c85b94f15c8691cd93934675c7cc5d4c9d203720f6832e4f8b4645",
+        "line_start": 125,
+        "line_end": 135,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/agent-notifications.ts#L125-L135",
+        "excerpt": "  /** Complete authority records for the existing turn-level State Pool, not a second version store. */\n  snapshot(sessionId: string, agentId?: string): unknown {\n    const where = agentId === undefined ? \"session = ?\" : \"session = ? AND agent = ?\";\n    const args = agentId === undefined ? [sessionId] : [sessionId, agentId];\n    return {\n      gate: this.gate(sessionId),\n      agents: this.db.prepare(`SELECT agent, stopped, epoch FROM agent_instance_wake_gates WHERE ${where} ORDER BY agent`).all(...args),\n      notifications: this.db.prepare(`SELECT * FROM agent_notifications WHERE ${where} ORDER BY created, id`).all(...args),\n      timers: this.db.prepare(`SELECT * FROM agent_timers WHERE ${where} ORDER BY due, id`).all(...args),\n    };\n  }\n",
+        "excerpt_sha256": "2b79847a3e4edf54ee7b33f6d140e10187a3b33d834f600544b15841b33a506a",
+        "role": "owner-filtered notification, gate and timer snapshot"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/shell-executions.ts",
+        "git_blob_sha": "e1172abb28535569695c6a8e8301947633e2998e",
+        "sha256": "03a860dfabf423770947a108195f39bd57e94e498cfe0b18ce7bf9585e8db3e1",
+        "line_start": 44,
+        "line_end": 49,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/shell-executions.ts#L44-L49",
+        "excerpt": "  snapshot(sessionId: string, agentId?: string): Record[] {\n    const where = agentId === undefined ? \"session = ?\" : \"session = ? AND agent = ?\";\n    const args = agentId === undefined ? [sessionId] : [sessionId, agentId];\n    return this.db.prepare(`SELECT record FROM shell_executions WHERE ${where} ORDER BY rowid`).all(...args)\n      .map((row) => JSON.parse(String(row.record)) as Record);\n  }\n",
+        "excerpt_sha256": "47a0d8153fd7c5ce0617668640b5cdf4d4dac1e109d357a8f2b7532afcd05cf7",
+        "role": "owner-filtered shell execution snapshot"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/workspace-transfers.ts",
+        "git_blob_sha": "270489eb347415edb65c6df7fd4503c585880f49",
+        "sha256": "5c39bf279681b7476c53dd8081d3b60a23d1de8999ae2ce15dfd0e8d1856e237",
+        "line_start": 46,
+        "line_end": 51,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/workspace-transfers.ts#L46-L51",
+        "excerpt": "  snapshot(sessionId: string, agentId?: string): WorkspaceTransfer[] {\n    const where = agentId === undefined ? \"session = ?\" : \"session = ? AND agent = ?\";\n    const args = agentId === undefined ? [sessionId] : [sessionId, agentId];\n    return this.db.prepare(`SELECT record FROM workspace_transfers WHERE ${where} ORDER BY id`).all(...args)\n      .map((row) => JSON.parse(String(row.record)) as WorkspaceTransfer);\n  }\n",
+        "excerpt_sha256": "0a18bf7677bbdd9191ef628e1963808ea0e9ce505952b95d051e5557b261e3be",
+        "role": "owner-filtered transfer snapshot"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/agent-run/versioning-authorities.test.ts",
+        "git_blob_sha": "0f439ec66493c3cd1ccbd84ada2a8e65ebcc2017",
+        "sha256": "cb41f77be1f17b91343809d5b8a019748a5c44d333c7226fda3d88dfd1db0475",
+        "line_start": 16,
+        "line_end": 89,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/agent-run/versioning-authorities.test.ts#L16-L89",
+        "excerpt": "async function fixture(t: TestContext) {\n  const root = await mkdtemp(join(tmpdir(), \"authority-scope-\"));\n  const store = new SessionStore(root);\n  await store.load();\n  t.after(async () => { store.close(); await rm(root, { recursive: true, force: true }); });\n  const project = await store.createProject(\"Snapshot isolation\");\n  const session = await store.createSession(project.id, \"Research\", {}, {}, { allowUnconfiguredModel: true });\n  const a = await store.createSubagent(session.id, \"parent-run\", { description: \"A\", prompt: \"Research A\" });\n  const b = await store.createSubagent(session.id, \"parent-run\", { description: \"B\", prompt: \"Research B\" });\n  const versions = new VersionStore(root);\n  const parent = versioningAuthorities(store, { sessionId: session.id, executionId: \"parent-run\" });\n  const child = versioningAuthorities(store, { sessionId: session.id, executionId: a.id, subagentId: a.id });\n  return { root, store, session, a, b, versions, parent, child };\n}\n\ntest(\"sibling trajectory growth leaves a child's authority snapshot identical and the parent's catalog bounded\", async (t) => {\n  const f = await fixture(t);\n  const before = await f.child();\n  const parentBefore = await f.parent();\n  const oldB = parentBefore.children.find((item) => item.id === f.b.id)!;\n  const oldRecord = (await f.versions.readRecord<Subagent>(oldB.record, \"SubagentAuthority\")).value;\n  const largeResult = \"sibling-only-tool-output\".repeat(100_000);\n  f.b.steps.push({ id: \"large\", createdAt: new Date().toISOString(), kind: \"tool\", content: largeResult });\n  f.b.status = \"completed\";\n  await f.store.updateSubagent(f.b);\n  // Snapshot collection must not clone the session-wide trajectories and filter afterwards.\n  const list = t.mock.method(f.store, \"listSubagents\", () => { throw new Error(\"unscoped trajectory read\"); });\n  assert.deepEqual(await f.child(), before);\n  const parentAfter = await f.parent();\n  assert.equal(parentAfter.children.length, 2);\n  assert.ok(JSON.stringify(parentAfter.children).length < 2_000);\n  assert.ok(!JSON.stringify(parentAfter).includes(\"sibling-only-tool-output\"));\n  const newB = parentAfter.children.find((item) => item.id === f.b.id)!;\n  assert.notDeepEqual(newB.record, oldB.record);\n  assert.equal(newB.status, \"completed\");\n  assert.deepEqual((await f.versions.readRecord<Subagent>(oldB.record)).value, oldRecord);\n  assert.equal((await f.versions.readRecord<Subagent>(newB.record)).value.steps.at(-1)!.content, largeResult);\n  assert.deepEqual((await f.parent()).children, parentAfter.children, \"unchanged revisions reuse their references\");\n  const audit = await f.versions.putRecord(\"AuthorityScopeTest\", parentAfter);\n  await f.versions.validateClosure(audit);\n  list.mock.restore();\n  assert.equal(f.store.listSubagents(f.session.id).find((item) => item.id === f.b.id)!.steps.at(-1)!.content, largeResult,\n    \"UI and native task readers retain the full trajectory\");\n  t.diagnostic(`sibling trajectory=${Buffer.byteLength(largeResult)} bytes; parent directory=${Buffer.byteLength(JSON.stringify(parentAfter.children))} bytes; child snapshot unchanged`);\n});\n\ntest(\"each execution captures its own provenance and inbox, including cancellation and timers\", async (t) => {\n  const f = await fixture(t);\n  const blob = await new CasStore(f.root).put(\"execution output\");\n  for (const [agentId, executionId] of [[\"main\", \"parent-run\"], [`subagent:${f.a.id}`, f.a.id], [`subagent:${f.b.id}`, f.b.id]]) {\n    const owner = { sessionId: f.session.id, agentId: agentId! };\n    f.store.notifications.complete(owner, executionId!, `result-${executionId}`);\n    f.store.notifications.createTimer(owner, { dueAt: Date.now() + 60_000, message: `timer-${executionId}` });\n    await f.store.appendExecutionRun({\n      id: executionId!, sessionId: f.session.id, turnId: executionId!, code: blob, stdout: blob, stderr: blob,\n      cgroupMode: \"none\", createdFiles: [], modifiedFiles: [], environmentRevisionId: null, exitCode: 0,\n      startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), kernelId: \"test\",\n      kernelMode: null, language: null, networkPolicy: \"none\", permissionEpochId: \"test\", runnerVersion: \"test\",\n      sandbox: \"bubblewrap\", status: \"succeeded\", tool: \"run_shell\", toolVersion: \"test\", workingDirectory: \"/workspace\",\n    } satisfies ExecutionRun);\n  }\n  f.store.notifications.stopAgent({ sessionId: f.session.id, agentId: `subagent:${f.a.id}` });\n  const child = await f.child();\n  const parent = await f.parent();\n  assert.deepEqual(child.executions.map((run) => run.id), [f.a.id]);\n  assert.deepEqual(parent.executions.map((run) => run.id), [\"parent-run\"]);\n  assert.equal(child.children.length, 0);\n  assert.equal(child.task!.id, f.a.id);\n  const inbox = child.notifications as { agents: { agent: string; stopped: number }[]; notifications: { agent: string }[]; timers: { state: string }[] };\n  assert.deepEqual(inbox.agents.map((gate) => [gate.agent, gate.stopped]), [[`subagent:${f.a.id}`, 1]]);\n  assert.deepEqual(inbox.notifications.map((notice) => notice.agent), [`subagent:${f.a.id}`]);\n  assert.deepEqual(inbox.timers.map((timer) => timer.state), [\"cancelled\"]);\n  await f.versions.validateClosure(await f.versions.putRecord(\"AuthorityScopeTest\", child));\n});\n",
+        "excerpt_sha256": "7cd043fc6c255c51ee477058dd695107d0e3ab8e6a783d36b5206e210df0757b",
+        "role": "corrected regression fixtures: sibling invariance and execution/inbox isolation"
+      },
+      {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/agent-run/versioning-authorities.test.ts",
+        "git_blob_sha": "0f439ec66493c3cd1ccbd84ada2a8e65ebcc2017",
+        "sha256": "cb41f77be1f17b91343809d5b8a019748a5c44d333c7226fda3d88dfd1db0475",
+        "line_start": 117,
+        "line_end": 150,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/agent-run/versioning-authorities.test.ts#L117-L150",
+        "excerpt": "test(\"an unknown or cross-session child cannot silently fall back to the global task catalog\", async (t) => {\n  const f = await fixture(t);\n  await assert.rejects(versioningAuthorities(f.store, { sessionId: f.session.id, executionId: \"foreign\", subagentId: \"foreign\" })(), /Subagent not found/);\n  const other = await f.store.createSession(f.session.projectId, \"Other\", {}, {}, { allowUnconfiguredModel: true });\n  await assert.rejects(versioningAuthorities(f.store, { sessionId: other.id, executionId: f.a.id, subagentId: f.a.id })(), /Subagent not found/);\n});\n\n\ntest(\"shell and transfer snapshots keep owner evidence without collecting sibling work\", async (t) => {\n  const f = await fixture(t);\n  const source = join(f.root, \"source\");\n  const target = join(f.root, \"target\");\n  await mkdir(source); await mkdir(target);\n  for (const agentId of [\"main\", `subagent:${f.a.id}`, `subagent:${f.b.id}`]) {\n    const owner = { sessionId: f.session.id, agentId };\n    await f.store.shellExecutions.start(owner, { runnerId: \"local\", workspaceId: \"test\", turnId: agentId },\n      () => { throw new Error(\"Runner must not be reached\"); },\n      async () => { throw new Error(\"Submission failed before acceptance\"); });\n    const transfer = f.store.transfers.start(owner, {\n      sourceWorkspaceId: \"source\", targetWorkspaceId: \"target\", files: [{ sourcePath: \"missing\", targetPath: \"result\" }],\n    }, { resolve: (id) => ({ id, root: id === \"source\" ? source : target }) });\n    await f.store.transfers.wait(transfer.id, owner);\n  }\n  const child = await f.child();\n  assert.deepEqual(child.shellExecutions.map((item) => item.agentId), [`subagent:${f.a.id}`]);\n  assert.deepEqual(child.transfers.map((item) => item.agentId), [`subagent:${f.a.id}`]);\n  assert.equal(child.shellExecutions[0]!.state, \"unknown\");\n  assert.equal(child.transfers[0]!.state, \"failed\");\n  const parent = await f.parent();\n  assert.deepEqual(parent.shellExecutions.map((item) => item.agentId), [\"main\"]);\n  assert.deepEqual(parent.transfers.map((item) => item.agentId), [\"main\"]);\n  assert.equal(f.store.shellExecutions.snapshot(f.session.id).length, 3, \"global audit remains available\");\n  assert.equal(f.store.transfers.snapshot(f.session.id).length, 3);\n});\n",
+        "excerpt_sha256": "584897e671e3a757e1e1a77a32c33c956b3b5dc8633bf125ea4ef483a0dec5ce",
+        "role": "regressions: foreign child rejection and owner-scoped shell/transfer snapshots"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "artifact-pagination-before",
+      "pair": "artifact-pagination",
+      "repository": "openJiuwen-ai/sciencediscovery",
+      "commit": "af8f0736c01116cd256925455f7fab330c6df4e2",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "severity_reason": "P2: conditional pagination/protocol failure on the production artifact-read path; no universal agent hang or scientific-validity claim.",
+      "route": {
+        "primary": "Artifact version reads / model-facing pagination",
+        "secondary": "Artifact provenance and bounded tool output"
+      },
+      "trigger": "readArtifact projects a text version larger than 8 MiB; the caller follows line offsets to or past the 8389-line decodable window of a 9500-by-1000-byte fixture.",
+      "consequence": "The truncated flag keeps hasMore true after the readable window ends. An empty page returns nextOffset equal to the requested offset, so a caller following that protocol can repeatedly request the same unreachable page.",
+      "independent_reasoning": "The exact before source computes hasMore as endLine < lines.length OR truncated OR partialLine. For an empty beyond-window page pageLines is zero, endLine is offset minus one and the true truncated flag produces nextOffset equal to offset.",
+      "test_reasoning": "The upstream regression constructs 9,500 lines of 1,000 bytes, verifies 8,389 readable lines, requires every nextOffset to advance, requires termination and checks three beyond-window offsets return no nextOffset. Source inspection only.",
+      "mechanism": "unreachable-next-offset",
+      "source": {
+        "commit": "af8f0736c01116cd256925455f7fab330c6df4e2",
+        "path": "packages/workspace/src/artifact-read.ts",
+        "git_blob_sha": "5f770cfa5f095eb6ad2a9b54076af0babef69aca",
+        "sha256": "b38641e9b9c5275a00871cc9b1fbdb78ff8cc071eca6f0256a65c4bb984a7f54",
+        "line_start": 60,
+        "line_end": 102,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/af8f0736c01116cd256925455f7fab330c6df4e2/packages/workspace/src/artifact-read.ts#L60-L102",
+        "excerpt": "export function projectArtifactContent(\n  bytes: Buffer,\n  mediaType: string,\n  options: { limit?: number; offset?: number } = {},\n): ArtifactContentProjection {\n  const sample = bytes.subarray(0, 8_192);\n  const binary = !isTextMediaType(mediaType) && isBinaryContent(sample, bytes.length > sample.length);\n  if (binary) {\n    return { binary: true, encoding: \"binary\", mediaType, size: bytes.length, truncated: false };\n  }\n\n  const truncated = bytes.length > MAX_ARTIFACT_TEXT_BYTES;\n  const text = bytes.subarray(0, MAX_ARTIFACT_TEXT_BYTES).toString(\"utf8\");\n  const lines = splitKeepingLineEndings(text);\n  const startLine = Math.max(1, Math.trunc(options.offset ?? 1));\n  const limit = Math.max(1, Math.trunc(options.limit ?? DEFAULT_TOOL_OUTPUT_MAX_LINES));\n\n  // Slice by line, then re-bound by bytes so a caller-chosen limit — or one\n  // very wide line, as in a single-line JSON artifact — cannot exceed the page\n  // budget.\n  const requested = lines.slice(startLine - 1, startLine - 1 + limit).join(\"\");\n  const page = boundText(requested, { keep: \"head\", maxBytes: DEFAULT_READ_PAGE_MAX_BYTES, maxLines: limit });\n  const pageLines = page.totalLines - page.omittedLines;\n  const endLine = startLine + pageLines - 1;\n  const hasMore = endLine < lines.length || truncated || page.partialLine;\n  return {\n    binary: false,\n    content: page.text,\n    encoding: \"utf8\",\n    mediaType,\n    page: {\n      bytes: Buffer.byteLength(page.text, \"utf8\"),\n      endLine,\n      hasMore,\n      ...(hasMore ? { nextOffset: endLine + 1 } : {}),\n      partialLine: page.partialLine,\n      startLine,\n      totalLines: lines.length,\n    },\n    size: bytes.length,\n    truncated,\n  };\n}\n",
+        "excerpt_sha256": "c3664cd5acfb0873700c2de52cee53f0af929feb0231fe2e3a1f571b62bd170b"
+      }
+    },
+    {
+      "id": "artifact-pagination-fixed",
+      "pair": "artifact-pagination",
+      "repository": "openJiuwen-ai/sciencediscovery",
+      "commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "severity_reason": "Only the named defect is absent; not whole-PR approval or runtime correctness.",
+      "route": {
+        "primary": "Artifact version reads / model-facing pagination",
+        "secondary": "Artifact provenance and bounded tool output"
+      },
+      "trigger": "readArtifact projects a text version larger than 8 MiB; the caller follows line offsets to or past the 8389-line decodable window of a 9500-by-1000-byte fixture.",
+      "consequence": "Paging terminates at the readable window, omits nextOffset once no line can be reached, and reports the remaining inaccessible bytes separately through truncated and note.",
+      "independent_reasoning": "The fixed predicate depends only on endLine < lines.length. Beyond-window offsets therefore have no nextOffset; truncated remains explicit and describeUnreachable explains the limit.",
+      "test_reasoning": "The upstream regression constructs 9,500 lines of 1,000 bytes, verifies 8,389 readable lines, requires every nextOffset to advance, requires termination and checks three beyond-window offsets return no nextOffset. Source inspection only.",
+      "mechanism": "unreachable-next-offset",
+      "source": {
+        "commit": "31f724fae4843ec7c4508e5f2caf02640cad6f6e",
+        "path": "packages/workspace/src/artifact-read.ts",
+        "git_blob_sha": "1c294d7a287c58f141e4d9b64d57061ae081ed89",
+        "sha256": "9baef0f45800d98f05df525a8f3bd528f429375b0d12d6b7eea1bc250d8bc9d9",
+        "line_start": 62,
+        "line_end": 138,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/31f724fae4843ec7c4508e5f2caf02640cad6f6e/packages/workspace/src/artifact-read.ts#L62-L138",
+        "excerpt": "export function projectArtifactContent(\n  bytes: Buffer,\n  mediaType: string,\n  options: { limit?: number; offset?: number } = {},\n): ArtifactContentProjection {\n  const sample = bytes.subarray(0, 8_192);\n  const binary = !isTextMediaType(mediaType) && isBinaryContent(sample, bytes.length > sample.length);\n  if (binary) {\n    return { binary: true, encoding: \"binary\", mediaType, size: bytes.length, truncated: false };\n  }\n\n  const truncated = bytes.length > MAX_ARTIFACT_TEXT_BYTES;\n  const text = bytes.subarray(0, MAX_ARTIFACT_TEXT_BYTES).toString(\"utf8\");\n  const lines = splitKeepingLineEndings(text);\n  const startLine = Math.max(1, Math.trunc(options.offset ?? 1));\n  const limit = Math.max(1, Math.trunc(options.limit ?? DEFAULT_TOOL_OUTPUT_MAX_LINES));\n\n  // Slice by line, then re-bound by bytes so a caller-chosen limit — or one\n  // very wide line, as in a single-line JSON artifact — cannot exceed the page\n  // budget.\n  const requested = lines.slice(startLine - 1, startLine - 1 + limit).join(\"\");\n  const page = boundText(requested, { keep: \"head\", maxBytes: DEFAULT_READ_PAGE_MAX_BYTES, maxLines: limit });\n  const pageLines = page.totalLines - page.omittedLines;\n  const endLine = startLine + pageLines - 1;\n  // `hasMore` states one thing only: that line paging can still advance inside\n  // the decodable window. Folding `truncated` or `partialLine` in here would\n  // promise a next page that no offset can reach — past the window `nextOffset`\n  // would equal the offset just used, and the model would page forever.\n  const hasMore = endLine < lines.length;\n  const note = describeUnreachable(lines.length, truncated, page.partialLine, startLine, bytes.length);\n  return {\n    binary: false,\n    content: page.text,\n    encoding: \"utf8\",\n    mediaType,\n    ...(note ? { note } : {}),\n    page: {\n      bytes: Buffer.byteLength(page.text, \"utf8\"),\n      endLine,\n      hasMore,\n      ...(hasMore ? { nextOffset: endLine + 1 } : {}),\n      partialLine: page.partialLine,\n      startLine,\n      totalLines: lines.length,\n    },\n    size: bytes.length,\n    truncated,\n  };\n}\n\n/**\n * Whatever the line protocol cannot address has to be said out loud, because\n * `hasMore: false` on its own reads as \"you have seen everything\".\n */\nfunction describeUnreachable(\n  windowLines: number,\n  truncated: boolean,\n  partialLine: boolean,\n  startLine: number,\n  size: number,\n): string | undefined {\n  const notes: string[] = [];\n  if (truncated) {\n    notes.push(\n      `Only the first ${MAX_ARTIFACT_TEXT_BYTES} bytes of this ${size}-byte version are readable as text,`\n      + ` which is ${windowLines} lines; offset cannot reach past line ${windowLines}.`\n      + \" Process the rest with run_python or run_shell.\",\n    );\n  }\n  if (partialLine) {\n    notes.push(\n      `Line ${startLine} is wider than one page and was cut. Line offsets cannot address the rest of that`\n      + \" line; read it with run_python or run_shell instead.\",\n    );\n  }\n  return notes.length ? notes.join(\" \") : undefined;\n}\n",
+        "excerpt_sha256": "0faed004919c1fdc0c41c3b9ea9e9bf9461a0495f75326318bdeab1df24c49e9"
+      }
+    },
+    {
+      "id": "child-authority-scope-before",
+      "pair": "child-authority-scope",
+      "repository": "openJiuwen-ai/sciencediscovery",
+      "commit": "60626de259d947a552df54cbdd31f8821ac33dcc",
+      "outcome": "defect-present",
+      "severity": "P2",
+      "severity_reason": "P2: conditional audit provenance and owner-scope correctness failure. This does not establish prompt leakage, an authorization-policy bypass, or an end-to-end timeout.",
+      "route": {
+        "primary": "Agent orchestration / child audit authority snapshots",
+        "secondary": "Execution provenance, notification inbox and immutable task references"
+      },
+      "trigger": "A native-dispatched child records an audit snapshot in a session with parent and sibling execution or task state. The before production binding gives versioningAuthorities the parent runId while requestExecutionId is the child execution ID.",
+      "consequence": "The child snapshot selects the parent execution provenance and includes the session-wide sibling task catalog, notification state, transfers and shell executions. Sibling changes can alter the child audit snapshot.",
+      "independent_reasoning": "The before caller passes runId, and the collector filters execution.turnId against that value. It also calls listSubagents and snapshot methods with sessionId only, so the output is not scoped to the child owner.",
+      "test_reasoning": "Corrected regression source at 070e90c asserts child provenance contains only the child execution, child.children is empty, child.task matches the child, only the child inbox and cancelled timer are captured, sibling growth leaves the child snapshot identical, and unknown/cross-session children reject. It also preserves full task history through immutable references. These source assertions were not executed.",
+      "mechanism": "child-audit-owner-scope",
+      "source": {
+        "commit": "60626de259d947a552df54cbdd31f8821ac33dcc",
+        "path": "services/api/src/agent-run/versioning-authorities.ts",
+        "git_blob_sha": "fe170a99571f223ec150699865a93da098bfffa2",
+        "sha256": "43f17f1e114e90c50c10b93fad0bc09e1806741dfbd2e78d2d9287d6eb0d8ceb",
+        "line_start": 8,
+        "line_end": 45,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/60626de259d947a552df54cbdd31f8821ac33dcc/services/api/src/agent-run/versioning-authorities.ts#L8-L45",
+        "excerpt": "/** Capture authoritative domain tables. Legacy execution blobs become strong State Pool refs. */\nexport function versioningAuthorities(store: SessionStore, sessionId: string, runId: string): () => Promise<unknown> {\n  const legacy = new CasStore(store.dataDir);\n  const retained = new Map<string, Promise<ObjectRef>>();\n  const retain = (ref: CasObjectRef, pool: Pool = \"agent-state\") => {\n    const key = `${pool}:${ref.hash}:${ref.size}`;\n    let saved = retained.get(key);\n    if (!saved) { saved = legacy.retain(ref, pool); retained.set(key, saved); }\n    return saved;\n  };\n  return async () => {\n    const session = store.getSession(sessionId);\n    const executions = await Promise.all((await store.listExecutionRuns(sessionId))\n      .filter((execution) => execution.turnId === runId).map(async (execution) => ({\n        ...execution,\n        code: await retain(execution.code), stdout: await retain(execution.stdout), stderr: await retain(execution.stderr),\n        envSnapshot: execution.envSnapshot ? await retain(execution.envSnapshot) : null,\n      })));\n    return {\n      session: session ? { id: session.id, projectId: session.projectId } : null,\n      permission: store.getSessionPermissionEpoch(sessionId) ?? null,\n      artifacts: await Promise.all(store.listArtifacts(sessionId).map(async (artifact) => ({\n        ...artifact, versions: await Promise.all(store.listArtifactVersions(sessionId, artifact.id).map(async (version) => ({\n          ...version, content: await retain(version.content, \"data\"),\n        }))),\n      }))),\n      environments: store.listEnvironments(),\n      environmentRevisions: store.listEnvironmentRevisions(),\n      children: store.listSubagents(sessionId),\n      notifications: store.notifications.snapshot(sessionId),\n      transfers: store.transfers.snapshot(sessionId),\n      shellExecutions: store.shellExecutions.snapshot(sessionId),\n      reviews: await store.listReviews(sessionId),\n      artifactReviews: await store.listArtifactReviews(sessionId),\n      executions,\n    };\n  };\n}\n",
+        "excerpt_sha256": "2711cbbcf73d0e64cad0e85e66d3f987b3dfacc00698dd4ed6def8b78827fea4"
+      }
+    },
+    {
+      "id": "child-authority-scope-fixed",
+      "pair": "child-authority-scope",
+      "repository": "openJiuwen-ai/sciencediscovery",
+      "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+      "outcome": "specific-defect-absent",
+      "severity": null,
+      "severity_reason": "Only the named defect is absent; not whole-PR approval or runtime correctness.",
+      "route": {
+        "primary": "Agent orchestration / child audit authority snapshots",
+        "secondary": "Execution provenance, notification inbox and immutable task references"
+      },
+      "trigger": "A native-dispatched child records an audit snapshot in a session with parent and sibling execution or task state. The before production binding gives versioningAuthorities the parent runId while requestExecutionId is the child execution ID.",
+      "consequence": "The binding supplies the child execution and task IDs, the collector selects that execution, captures only the child task reference, uses an empty child catalog and passes the child agent ID to owner-filtered snapshots.",
+      "independent_reasoning": "The corrected caller passes childExecution.identity.executionId and subagent.id. The collector uses executionId and subagent ID; the store rejects absent/cross-session children before serializing, and snapshot helpers constrain their SQL to session and agent.",
+      "test_reasoning": "Corrected regression source at 070e90c asserts child provenance contains only the child execution, child.children is empty, child.task matches the child, only the child inbox and cancelled timer are captured, sibling growth leaves the child snapshot identical, and unknown/cross-session children reject. It also preserves full task history through immutable references. These source assertions were not executed.",
+      "mechanism": "child-audit-owner-scope",
+      "source": {
+        "commit": "070e90cc737c76b2a3c91d46d41e2404ac681543",
+        "path": "services/api/src/agent-run/versioning-authorities.ts",
+        "git_blob_sha": "0ad80e81c38fd2f20b8e5a668981d85bcbe5845c",
+        "sha256": "2a6425ee3591258bbefff7842c01fae5afb7b6a030232f12a0a50df84b74ae95",
+        "line_start": 8,
+        "line_end": 60,
+        "line_url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/070e90cc737c76b2a3c91d46d41e2404ac681543/services/api/src/agent-run/versioning-authorities.ts#L8-L60",
+        "excerpt": "/** Native task ownership, independent of which executor runs the Agent. */\nexport interface AgentAuthorityScope {\n  sessionId: string;\n  executionId: string;\n  /** Absent for the session's main Agent; native tasks currently form one level. */\n  subagentId?: string;\n}\n\n/** Capture shared resources and only this Agent's execution authorities. */\nexport function versioningAuthorities(store: SessionStore, scope: AgentAuthorityScope) {\n  const { sessionId, executionId, subagentId } = scope;\n  const agentId = subagentId === undefined ? \"main\" : `subagent:${subagentId}`;\n  const legacy = new CasStore(store.dataDir);\n  const retained = new Map<string, Promise<ObjectRef>>();\n  const retain = (ref: CasObjectRef, pool: Pool = \"agent-state\") => {\n    const key = `${pool}:${ref.hash}:${ref.size}`;\n    let saved = retained.get(key);\n    if (!saved) { saved = legacy.retain(ref, pool); retained.set(key, saved); }\n    return saved;\n  };\n  return async () => {\n    const session = store.getSession(sessionId);\n    const executions = await Promise.all((await store.listExecutionRuns(sessionId))\n      .filter((execution) => execution.turnId === executionId).map(async (execution) => ({\n        ...execution,\n        code: await retain(execution.code), stdout: await retain(execution.stdout), stderr: await retain(execution.stderr),\n        envSnapshot: execution.envSnapshot ? await retain(execution.envSnapshot) : null,\n      })));\n    const subagents = await store.captureSubagentAuthorities(sessionId, subagentId);\n    return {\n      scope: { ...scope, agentId },\n      session: session ? { id: session.id, projectId: session.projectId } : null,\n      permission: store.getSessionPermissionEpoch(sessionId) ?? null,\n      artifacts: await Promise.all(store.listArtifacts(sessionId).map(async (artifact) => ({\n        ...artifact, versions: await Promise.all(store.listArtifactVersions(sessionId, artifact.id).map(async (version) => ({\n          ...version, content: await retain(version.content, \"data\"),\n        }))),\n      }))),\n      environments: store.listEnvironments(),\n      environmentRevisions: store.listEnvironmentRevisions(),\n      // The native parent owns the task catalog. A child records its own task,\n      // never the session-wide sibling catalog. Full records remain auditable.\n      children: subagentId === undefined ? subagents : [],\n      task: subagentId === undefined ? null : subagents[0],\n      notifications: store.notifications.snapshot(sessionId, agentId),\n      transfers: store.transfers.snapshot(sessionId, agentId),\n      shellExecutions: store.shellExecutions.snapshot(sessionId, agentId),\n      reviews: await store.listReviews(sessionId),\n      artifactReviews: await store.listArtifactReviews(sessionId),\n      executions,\n    };\n  };\n}\n",
+        "excerpt_sha256": "2a9510bb017664a7779c8a1200848d028796f7e17720f5f8557301516a1c3356"
+      }
+    }
+  ],
+  "validation": {
+    "upstream_tests_run": false,
+    "source_integrity": "Git blob identifiers, complete-file SHA-256, exact excerpt SHA-256 and line ranges computed directly from pinned Git objects.",
+    "not_run": [
+      "ScienceDiscovery UT/ST/E2E",
+      "Typecheck and full build",
+      "Browser or public API/CLI journeys",
+      "Live models, JiuwenSwarm stack or scientific research",
+      "Sandbox, Docker and release-binary gates"
+    ]
+  },
+  "source_license": {
+    "name": "Apache-2.0",
+    "url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/7a0324257eecb48b57f60b6a80ce2fff54e7dba7/LICENSE",
+    "scope": "Quoted upstream source excerpts retain their original license; corpus adjudications are separate.",
+    "local_copy": "LICENSE.sciencediscovery.txt",
+    "attribution": "Source excerpts from openJiuwen-ai/sciencediscovery; Copyright (C) 2026 Huawei Technologies Co., Ltd, where stated by source files. Excerpts omit surrounding code; source links identify the originals."
+  }
+}
