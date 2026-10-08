@@ -14,6 +14,8 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
   evidence-backed CUDA optimization plans, with B200/sm_100 references and helpers.
 - `skills/product-deep-dive/`: research a product and create two editable,
   source-backed PowerPoint slides covering its business and technical views.
+- [skills/formal-slides/](skills/formal-slides/SKILL.md): create editable presentations
+  using ten bundled layouts, adapting or adding matching templates when needed.
 - `skills/setup-server-project/`: prepare `repos/`, `models/`, `llm_wiki/`, and
   `envs/` in an existing server account, clone repositories, install dependencies, and verify
   the setup without expanding into account or machine administration.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Formal Slides"
+  short_description: "Create editable PPT slides with reusable formal templates"
+  default_prompt: "Use $formal-slides to create editable PowerPoint slides with my established templates, adapting or creating a matching layout when needed."
