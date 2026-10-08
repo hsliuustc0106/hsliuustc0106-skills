@@ -1,0 +1,527 @@
+{
+  "schema_version": 1,
+  "repository": "ThinkFlowLab/nanodot",
+  "purpose": "Bounded source-pinned evidence for a personal adapter that defers nanodot review guidance and corpus ownership to the upstream repository.",
+  "canonical_owner": {
+    "directory": ".agents/skills/nanodot-review",
+    "head_sha": "80c6feec31dc423f7efdcea12e854eab394dad9e",
+    "skill_url": "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/SKILL.md",
+    "inputs": {
+      "path": ".agents/skills/nanodot-review/tests/fixtures/nanodot-review/inputs.json",
+      "url": "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/tests/fixtures/nanodot-review/inputs.json",
+      "sha256": "2a09e7cad3e914a785c0b99faa66380d6a11ffd9a6ac0322a8f1319957844dc1",
+      "git_blob_oid": "6ee17d7f937be1ec3d753b7658cb7e8f085787f7"
+    },
+    "adjudication": {
+      "path": ".agents/skills/nanodot-review/tests/fixtures/nanodot-review/adjudication.json",
+      "url": "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/tests/fixtures/nanodot-review/adjudication.json",
+      "sha256": "cb8191ed0959c311786e13423ffbe522073c6255db2187d110977c8c490a97ba",
+      "git_blob_oid": "3bb1446edd75a2b0b5b7fb285ff96fd15d8d6790"
+    },
+    "fixture_resolution": "All fixture paths in samples are relative to the upstream canonical tests/fixtures/nanodot-review directory; no executable corpus is duplicated here."
+  },
+  "snapshot": {
+    "main_sha": "80c6feec31dc423f7efdcea12e854eab394dad9e",
+    "architecture_map_sha": "711b45c77988df70837bc45126072f4a8d0ac0c2",
+    "v0_2_1_tag_sha": "a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2",
+    "declared_package_version": "0.2.1",
+    "publication_claim": "Public tag and package declarations only; tag existence is not proof of package or release publication.",
+    "v0_2_0_tag_sha": "328302996e19082966aeb9c6630744bbb67e6ff8"
+  },
+  "source_drift": [
+    {
+      "summary": "Canonical architecture map still pins 711b45c. Routing and test-quality prose incorrectly describe main as scaffold-only; these are stale guidance claims, not runtime findings.",
+      "sources": [
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/references/architecture.md#L19-L30",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/references/review-routing.md#L3-L6",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.agents/skills/nanodot-review/references/test-quality-evaluation.md#L31-L34"
+      ]
+    },
+    {
+      "summary": "Main implements comment writes, content-bound capabilities, gated/auto/readonly modes, intent-first recovery and daily write quota. AUTO is default; absent standing grants skip writes.",
+      "sources": [
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/permissions.py#L1-L13",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/write_flow.py#L91-L207",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/write_flow.py#L274-L445",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/quota.py#L1-L32",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/native/github_writer.py#L123-L178"
+      ]
+    },
+    {
+      "summary": "Main adds provider registry, retry and token-usage persistence, plus digest/stale/flaky watches, task-row quarantine and operational tuning.",
+      "sources": [
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/native/providers/__init__.py",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/native/providers/retry.py",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/model_usage.py",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/runner.py#L379-L523",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/tasks.py#L335-L358",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/tasks.py#L490-L528"
+      ]
+    },
+    {
+      "summary": "DSH integration is a standalone-CLI adapter. Current UI is a loopback shell and /api/health only; screen names are placeholders. CI now declares Python 3.11 and 3.12.",
+      "sources": [
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/integrations/dsh/nanodot-tools.cjs#L1-L11",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/ui/server.py#L22-L62",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/ui/server.py#L77-L92",
+        "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/.github/workflows/ci.yml#L8-L22"
+      ]
+    }
+  ],
+  "post_tag_merges": [
+    {
+      "pr": 103,
+      "merge_sha": "a7b32690cf9b810ecb0b772f079d43d0e78d4257",
+      "summary": "Compressed 3000-tick soak test; generous health tripwires, not a benchmark."
+    },
+    {
+      "pr": 106,
+      "merge_sha": "819317e42ab1ebd164d08ffc397a71a2e6a3a20d",
+      "summary": "AUTO adversarial tests."
+    },
+    {
+      "pr": 107,
+      "merge_sha": "f8aff694a8a51d539e701f382e27b97926723672",
+      "summary": "Malformed provider-response corpus, era-jump migration test, non-dict payload usage-accounting fixes in both providers."
+    },
+    {
+      "pr": 114,
+      "merge_sha": "80c6feec31dc423f7efdcea12e854eab394dad9e",
+      "summary": "Loopback UI skeleton and handler-level tests."
+    }
+  ],
+  "verification": {
+    "canonical_skill_tests": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s .agents/skills/nanodot-review/tests -v",
+      "head_sha": "80c6feec31dc423f7efdcea12e854eab394dad9e",
+      "status": "passed",
+      "tests": 44,
+      "python": "3.12.14",
+      "elapsed_seconds": 0.341,
+      "network_boundary": "Both-case HTTP/HTTPS/ALL proxy variables pointed to 127.0.0.1:9; NO_PROXY empty. Tests were inspected first; live gh transport mocked and CLI offline fixture paths used."
+    },
+    "historical_source_verification": {
+      "status": "passed",
+      "source_items": 24,
+      "method": "Compared all canonical fixture excerpt bytes and full evaluator bytes against local git show at each exact historical SHA/path; checked original SHA256 values.",
+      "mismatches": 0
+    },
+    "affected_runtime_tests": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider tests/test_provider_corpus.py tests/test_auto_adversarial.py tests/test_soak.py tests/test_ui_server.py",
+      "status": "blocked_before_collection",
+      "blocker": "No module named pytest; no installation attempted. Both available Python interpreters lacked pytest.",
+      "tests_executed": 0
+    },
+    "upstream_worktree": "clean before and after audit; no upstream edits or publication performed"
+  },
+  "historical_pairs": [
+    {
+      "family": "optional-failure-required-pending",
+      "samples": [
+        {
+          "id": "n04",
+          "head_sha": "a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+          "historical_scope": "Pinned integration-era source snapshot; clean labels apply only to the stated scenario.",
+          "scenario": "A complete current-head listing has one known required check still pending and an optional check failed. Review failure reporting; also consider the neighboring case where all required checks succeed.",
+          "has_defect": true,
+          "expected_severity": "P2",
+          "adjudication": "With nonempty known required checks pending or missing, failure of an optional current-head check is omitted because evaluation considers only required contexts.",
+          "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/661f4bae106e9f9718137812a803020b8954acc8",
+          "sources": [
+            {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "evaluate_checks",
+              "start_line": 57,
+              "end_line": 106,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/core/github_eval.py#L57-L106",
+              "fixture": "n04/src__nanodot__core__github_eval.py__evaluate_checks.txt",
+              "sha256": "9fdbfd7b6e89c7e5fc198bff98e2c8120e127b3652e41b539fc97afc107d5e70"
+            },
+            {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "failing_checks_on_current_commit",
+              "start_line": 41,
+              "end_line": 54,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/core/github_eval.py#L41-L54",
+              "fixture": "n04/src__nanodot__core__github_eval.py__failing_checks_on_current_commit.txt",
+              "sha256": "9e21ad266bab8aaf73878d3596ea562a6aba730d69b4e7172d312f3028760795"
+            }
+          ],
+          "behavior_source": {
+            "fixture": "n04/github_eval.py.txt",
+            "sha256": "d824b2b4f158f7061a2f1ba2b37291cfdc5112325da8cabd225c0cafb13cffce",
+            "path": "src/nanodot/core/github_eval.py",
+            "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/core/github_eval.py"
+          },
+          "regression_tests": [
+            {
+              "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_optional_failure_while_required_checks_pending",
+              "start": 124,
+              "end": 165,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L124-L165"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_notifies_until_required_success_is_confirmed",
+              "start": 344,
+              "end": 348,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L344-L348"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_does_not_block_required_success",
+              "start": 327,
+              "end": 329,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L327-L329"
+            },
+            {
+              "test": "tests/test_github.py::test_pending_required_checks_ignore_unconfirmed_optional_failures",
+              "start": 355,
+              "end": 357,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L355-L357"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_with_pending_requirements_uses_latest_rerun",
+              "start": 362,
+              "end": 366,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L362-L366"
+            }
+          ],
+          "grounding": {
+            "trigger": "A complete current-head listing has one known required check still pending and an optional check failed. Review failure reporting; also consider the neighboring case where all required checks succeed.",
+            "observable_outcome": "With nonempty known required checks pending or missing, failure of an optional current-head check is omitted because evaluation considers only required contexts.",
+            "expected_finding_count": 1,
+            "correction_or_preserved_contract": "Report observed complete current-head failures while requirements remain pending; confirmed required success retains precedence and incomplete evidence stays pending.",
+            "source_anchor": {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "evaluate_checks",
+              "start_line": 57,
+              "end_line": 106,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/core/github_eval.py#L57-L106",
+              "sha256": "9fdbfd7b6e89c7e5fc198bff98e2c8120e127b3652e41b539fc97afc107d5e70"
+            },
+            "scope": "Historical scenario classification only. A live PR finding additionally needs actual changed diff coordinates and refreshed head/state/discussion/check evidence."
+          }
+        },
+        {
+          "id": "n08",
+          "head_sha": "661f4bae106e9f9718137812a803020b8954acc8",
+          "historical_scope": "Pinned integration-era source snapshot; clean labels apply only to the stated scenario.",
+          "scenario": "A complete current-head listing has one known required check still pending and an optional check failed. Review failure reporting; also consider the neighboring case where all required checks succeed.",
+          "has_defect": false,
+          "expected_severity": null,
+          "adjudication": "Confirmed required success has precedence, otherwise observed current-head failures (including optional checks) yield FAILING. Optional failures must not block an actual required-check pass.",
+          "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/661f4bae106e9f9718137812a803020b8954acc8",
+          "sources": [
+            {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "evaluate_checks",
+              "start_line": 57,
+              "end_line": 67,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/src/nanodot/core/github_eval.py#L57-L67",
+              "fixture": "n08/src__nanodot__core__github_eval.py__evaluate_checks.txt",
+              "sha256": "d364c17997a909dfb6ce1a711daadd658c1ffcb622cbb523becab0b104a0bade"
+            },
+            {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "_evaluate_required_checks",
+              "start_line": 70,
+              "end_line": 115,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/src/nanodot/core/github_eval.py#L70-L115",
+              "fixture": "n08/src__nanodot__core__github_eval.py___evaluate_required_checks.txt",
+              "sha256": "03a69239feab7cd6fc07275761b1f1fee051d796fe3b13dc0474455bb4acf43f"
+            },
+            {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "failing_checks_on_current_commit",
+              "start_line": 41,
+              "end_line": 54,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/src/nanodot/core/github_eval.py#L41-L54",
+              "fixture": "n08/src__nanodot__core__github_eval.py__failing_checks_on_current_commit.txt",
+              "sha256": "9e21ad266bab8aaf73878d3596ea562a6aba730d69b4e7172d312f3028760795"
+            }
+          ],
+          "behavior_source": {
+            "fixture": "n08/github_eval.py.txt",
+            "sha256": "b170fb2514616ffec334ae20b48adc7033776c70640ba07b2be26da265d499f6",
+            "path": "src/nanodot/core/github_eval.py",
+            "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/src/nanodot/core/github_eval.py"
+          },
+          "regression_tests": [
+            {
+              "test": "tests/test_first_use_demo.py::test_anonymous_cli_alerts_optional_failure_while_required_checks_pending",
+              "start": 124,
+              "end": 165,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L124-L165"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_notifies_until_required_success_is_confirmed",
+              "start": 344,
+              "end": 348,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L344-L348"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_does_not_block_required_success",
+              "start": 327,
+              "end": 329,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L327-L329"
+            },
+            {
+              "test": "tests/test_github.py::test_pending_required_checks_ignore_unconfirmed_optional_failures",
+              "start": 355,
+              "end": 357,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L355-L357"
+            },
+            {
+              "test": "tests/test_github.py::test_optional_failure_with_pending_requirements_uses_latest_rerun",
+              "start": 362,
+              "end": 366,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_github.py#L362-L366"
+            }
+          ],
+          "grounding": {
+            "trigger": "A complete current-head listing has one known required check still pending and an optional check failed. Review failure reporting; also consider the neighboring case where all required checks succeed.",
+            "observable_outcome": "Confirmed required success has precedence, otherwise observed current-head failures (including optional checks) yield FAILING. Optional failures must not block an actual required-check pass.",
+            "expected_finding_count": 0,
+            "correction_or_preserved_contract": "Report observed complete current-head failures while requirements remain pending; confirmed required success retains precedence and incomplete evidence stays pending.",
+            "source_anchor": {
+              "path": "src/nanodot/core/github_eval.py",
+              "symbol": "evaluate_checks",
+              "start_line": 57,
+              "end_line": 67,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/src/nanodot/core/github_eval.py#L57-L67",
+              "sha256": "d364c17997a909dfb6ce1a711daadd658c1ffcb622cbb523becab0b104a0bade"
+            },
+            "scope": "Historical scenario classification only. A live PR finding additionally needs actual changed diff coordinates and refreshed head/state/discussion/check evidence."
+          }
+        }
+      ],
+      "expected_routes": [
+        "watch-state"
+      ],
+      "route_paths": [
+        "src/nanodot/core/github_eval.py"
+      ],
+      "severity_rationale": "P2 for the defective sample: a complete current-head optional failure is suppressed while known required checks remain pending, producing a bounded watcher-notification correctness regression. This is not a claim of mergeability, a broad permission violation or a universal release blocker; the neighboring required-success control must stay clean."
+    },
+    {
+      "family": "crash-replay-notification-identity",
+      "samples": [
+        {
+          "id": "n07",
+          "head_sha": "c1e03dedd42e78b86229f8aeb1daf6ebc9020e05",
+          "historical_scope": "Pinned integration-era source snapshot; clean labels apply only to the stated scenario.",
+          "scenario": "The process crashes after the inbox insert but before checkpointing task state. It replays the same sequenced occurrence with changed optional-check evidence/text/time. Review durable inbox duplication and preservation of distinct occurrences; OS popup guarantees are outside scope.",
+          "has_defect": true,
+          "expected_severity": "P2",
+          "adjudication": "Crash after inbox commit but before task checkpoint replays the same occurrence. If optional evidence/text changed, the content-based key changes and produces a duplicate durable inbox notification.",
+          "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+          "sources": [
+            {
+              "path": "src/nanodot/native/notifier.py",
+              "symbol": "event_key",
+              "start_line": 39,
+              "end_line": 51,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/c1e03dedd42e78b86229f8aeb1daf6ebc9020e05/src/nanodot/native/notifier.py#L39-L51",
+              "fixture": "n07/src__nanodot__native__notifier.py__event_key.txt",
+              "sha256": "31508470df342aa0e96ff1aa52dc136bbba7f3a94171c414d48405513c5fa96e"
+            }
+          ],
+          "regression_tests": [
+            {
+              "test": "tests/test_first_use_demo.py::test_crash_replay_with_changed_optional_status",
+              "start": 68,
+              "end": 97,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L68-L97"
+            },
+            {
+              "test": "tests/test_notifier.py::test_sequenced_replay_ignores_changed_evidence_and_text",
+              "start": 196,
+              "end": 209,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L196-L209"
+            },
+            {
+              "test": "tests/test_notifier.py::test_transition_identity_does_not_hide_distinct_events",
+              "start": 218,
+              "end": 222,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L218-L222"
+            },
+            {
+              "test": "tests/test_notifier.py::test_same_sha_failure_recurrence_delivered_once_per_occurrence_after_restart",
+              "start": 149,
+              "end": 192,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L149-L192"
+            }
+          ],
+          "grounding": {
+            "trigger": "The process crashes after the inbox insert but before checkpointing task state. It replays the same sequenced occurrence with changed optional-check evidence/text/time. Review durable inbox duplication and preservation of distinct occurrences; OS popup guarantees are outside scope.",
+            "observable_outcome": "Crash after inbox commit but before task checkpoint replays the same occurrence. If optional evidence/text changed, the content-based key changes and produces a duplicate durable inbox notification.",
+            "expected_finding_count": 1,
+            "correction_or_preserved_contract": "Key sequenced events by task_id, occurrence, kind and head_sha; ignore mutable evidence/text/time for replay identity while retaining distinct occurrences.",
+            "source_anchor": {
+              "path": "src/nanodot/native/notifier.py",
+              "symbol": "event_key",
+              "start_line": 39,
+              "end_line": 51,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/c1e03dedd42e78b86229f8aeb1daf6ebc9020e05/src/nanodot/native/notifier.py#L39-L51",
+              "sha256": "31508470df342aa0e96ff1aa52dc136bbba7f3a94171c414d48405513c5fa96e"
+            },
+            "scope": "Historical scenario classification only. A live PR finding additionally needs actual changed diff coordinates and refreshed head/state/discussion/check evidence."
+          }
+        },
+        {
+          "id": "n03",
+          "head_sha": "a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+          "historical_scope": "Pinned integration-era source snapshot; clean labels apply only to the stated scenario.",
+          "scenario": "The process crashes after the inbox insert but before checkpointing task state. It replays the same sequenced occurrence with changed optional-check evidence/text/time. Review durable inbox duplication and preservation of distinct occurrences; OS popup guarantees are outside scope.",
+          "has_defect": false,
+          "expected_severity": null,
+          "adjudication": "For sequenced events identity is task_id, occurrence, kind, head_sha; mutable text/evidence/time excluded. Different occurrence/task/kind/head remain distinct. Unsequenced events keep legacy content fallback. No exactly-once OS-popup guarantee.",
+          "fix_url": "https://github.com/ThinkFlowLab/nanodot/commit/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9",
+          "sources": [
+            {
+              "path": "src/nanodot/native/notifier.py",
+              "symbol": "event_key",
+              "start_line": 39,
+              "end_line": 64,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/native/notifier.py#L39-L64",
+              "fixture": "n03/src__nanodot__native__notifier.py__event_key.txt",
+              "sha256": "7929d3e8e085b930c6d0ca2af48768f5f0f9fdcf4f839e73748224b8c5e5ef2c"
+            }
+          ],
+          "regression_tests": [
+            {
+              "test": "tests/test_first_use_demo.py::test_crash_replay_with_changed_optional_status",
+              "start": 68,
+              "end": 97,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_first_use_demo.py#L68-L97"
+            },
+            {
+              "test": "tests/test_notifier.py::test_sequenced_replay_ignores_changed_evidence_and_text",
+              "start": 196,
+              "end": 209,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L196-L209"
+            },
+            {
+              "test": "tests/test_notifier.py::test_transition_identity_does_not_hide_distinct_events",
+              "start": 218,
+              "end": 222,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L218-L222"
+            },
+            {
+              "test": "tests/test_notifier.py::test_same_sha_failure_recurrence_delivered_once_per_occurrence_after_restart",
+              "start": 149,
+              "end": 192,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/661f4bae106e9f9718137812a803020b8954acc8/tests/test_notifier.py#L149-L192"
+            }
+          ],
+          "grounding": {
+            "trigger": "The process crashes after the inbox insert but before checkpointing task state. It replays the same sequenced occurrence with changed optional-check evidence/text/time. Review durable inbox duplication and preservation of distinct occurrences; OS popup guarantees are outside scope.",
+            "observable_outcome": "For sequenced events identity is task_id, occurrence, kind, head_sha; mutable text/evidence/time excluded. Different occurrence/task/kind/head remain distinct. Unsequenced events keep legacy content fallback. No exactly-once OS-popup guarantee.",
+            "expected_finding_count": 0,
+            "correction_or_preserved_contract": "Key sequenced events by task_id, occurrence, kind and head_sha; ignore mutable evidence/text/time for replay identity while retaining distinct occurrences.",
+            "source_anchor": {
+              "path": "src/nanodot/native/notifier.py",
+              "symbol": "event_key",
+              "start_line": 39,
+              "end_line": 64,
+              "url": "https://github.com/ThinkFlowLab/nanodot/blob/a8c704e2b6390e14c7ff5eae810ec8d210faa2d9/src/nanodot/native/notifier.py#L39-L64",
+              "sha256": "7929d3e8e085b930c6d0ca2af48768f5f0f9fdcf4f839e73748224b8c5e5ef2c"
+            },
+            "scope": "Historical scenario classification only. A live PR finding additionally needs actual changed diff coordinates and refreshed head/state/discussion/check evidence."
+          }
+        }
+      ],
+      "expected_routes": [
+        "persistence-delivery"
+      ],
+      "route_paths": [
+        "src/nanodot/native/notifier.py"
+      ],
+      "severity_rationale": "P2 for the defective sample: a crash/replay with changed optional evidence or text duplicates one durable inbox occurrence, a bounded persistence/delivery reliability regression. This does not establish lost terminal notification, a privacy violation or exactly-once OS-popup behavior; distinct occurrences must remain deliverable."
+    }
+  ],
+  "coverage_limits": [
+    "The complete canonical corpus has eight samples in four historical families. The two referenced pairs above are curated and unblinded, not a generalized precision/recall evaluation.",
+    "Clean labels cover the stated scenario only, not an entire commit or file. Source-hash consistency and exact git-blob matching do not independently establish all adjudication claims.",
+    "Historical executable checks use pure excerpts and minimal doubles. CLI stop forwarding is structural; no actual CLI process is executed by the historical corpus.",
+    "No full runtime suite, live GitHub/provider calls, OS notification delivery, personal-machine installation, npm bootstrap, browser/server integration, release publication verification or performance benchmark was executed.",
+    "UI source tests are handler-level and AST/structural checks. They do not establish actual socket binding or browser operation.",
+    "New source paths fall back to inspect-context in the canonical router; passing route tests do not establish dedicated review coverage for writes, quotas, provider registry, DSH or UI."
+  ],
+  "test_quality_observation": {
+    "summary": "The AUTO derived-capability scope-change test does not establish the claimed race: its standing grant uses watch:s1 while WriteFlow derives watch, no capability is explicitly derived, and the pending-capability loop can be empty. This is a source-inspected coverage gap, not a demonstrated runtime defect.",
+    "sources": [
+      "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/tests/test_auto_adversarial.py#L139-L154",
+      "https://github.com/ThinkFlowLab/nanodot/blob/80c6feec31dc423f7efdcea12e854eab394dad9e/src/nanodot/core/write_flow.py#L175-L185"
+    ]
+  },
+  "tag_tree_capabilities": {
+    "method": "Read exact git tag trees and first-parent merge histories; do not infer capabilities from release prose or package version strings.",
+    "present_at_v0_2_0": [
+      {
+        "capability": "DSH standalone-CLI adapter",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/integrations/dsh/nanodot-tools.cjs",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/integrations/dsh/index.ts"
+        ]
+      },
+      {
+        "capability": "Comment-write port/native adapter, content-bound capabilities, AUTO/gated/readonly modes, separate write credential, intent-first write flow",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/ports/github_writer.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/native/github_writer.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/core/permissions.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/core/write_flow.py"
+        ]
+      },
+      {
+        "capability": "Daily write quota and quota observability",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/core/quota.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/tests/test_quota_observability.py"
+        ]
+      },
+      {
+        "capability": "Provider registry with OpenAI-compatible, Anthropic, GLM and DeepSeek adapters/presets",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/native/providers/__init__.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/native/providers/anthropic.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/328302996e19082966aeb9c6630744bbb67e6ff8/src/nanodot/native/providers/openai_compat.py"
+        ]
+      }
+    ],
+    "added_between_v0_2_0_and_v0_2_1": [
+      {
+        "capability": "Model token-usage persistence/budgets and provider retry",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/src/nanodot/core/model_usage.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/src/nanodot/native/providers/retry.py"
+        ]
+      },
+      {
+        "capability": "Digest/stale/flaky watch dimensions and evidence-keyed flaky refire correction",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/src/nanodot/core/runner.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/src/nanodot/core/tasks.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/tests/test_digest_watch.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/tests/test_stale_watch.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/tests/test_flaky_watch.py"
+        ]
+      },
+      {
+        "capability": "Operational watch tuning without grant invalidation, stronger corrupt-row quarantine and timestamped runner logs",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/tests/test_watch_update.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/tests/test_quarantine_robustness.py",
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/src/nanodot/cli.py"
+        ]
+      },
+      {
+        "capability": "Python 3.11/3.12 CI matrix",
+        "sources": [
+          "https://github.com/ThinkFlowLab/nanodot/blob/a4a2ec5f572a703392de3518ce9f1f4a1e5ebfd2/.github/workflows/ci.yml"
+        ]
+      }
+    ],
+    "added_after_v0_2_1": "See post_tag_merges: soak/AUTO/provider corpus plus malformed-payload accounting fix and UI skeleton."
+  }
+}
