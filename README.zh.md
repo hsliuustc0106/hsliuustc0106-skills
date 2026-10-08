@@ -10,6 +10,8 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
+- [skills/formal-slides/](skills/formal-slides/SKILL.md)：基于十种内置版式创建
+  可编辑演示文稿；现有模板不适用时，调整或新增同风格模板。
 - `skills/ncu-report-skill/`：Nsight Compute CUDA 性能分析、瓶颈诊断与优化报告，
   包含 B200/sm_100 参考文档、辅助脚本和上游 MIT 许可证。
   固定版本与运行要求见 [来源说明](external/ncu-report-skill.md)。
