@@ -32,9 +32,9 @@ different arrangement:
 
 Create all four directories for a fresh workspace. Creating the layout does not
 require repository URLs or model identifiers; ask for those only when cloning
-or downloading is requested. Leave unspecified content empty. Do not infer that
-`llm_wiki` names a particular remote repository, generate wiki content, or download
-models merely because their directories exist.
+or downloading is requested. Bootstrap `llm_wiki` as described below for normal
+workspace setup; directory-only requests leave it empty. Do not infer a wiki
+remote repository, invent research content, or download unspecified models.
 
 Group organization repositories under `repos/<org>/<repo-name>`, preserving the
 organization's spelling. Keep the skills checkout directly under `repos/`.
@@ -103,6 +103,29 @@ returned clone URLs and default branches; do not assume every repository uses
 switching branches. Track individual clone failures, continue independent
 clones, and report successful and unresolved repositories. Empty repositories
 have no HEAD; report them as empty instead of treating that as clone failure.
+
+## Bootstrap the LLM Wiki
+
+Use the bundled [wiki scaffold](assets/llm-wiki/AGENTS.md), inspired by
+[Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
+Our concrete layout is `llm_wiki/raw/assets/`, `llm_wiki/wiki/index.md`,
+`llm_wiki/wiki/log.md`, and root `AGENTS.md`, `CLAUDE.md`, and `README.md`.
+
+Inspect the destination first. Copy missing files from `assets/llm-wiki/` and
+create `raw/assets/`. Never replace existing instructions, pages, or logs with
+template versions. If conventions conflict, preserve them and resolve only the
+incompatible setup step with the user. Repeat runs must not reset the wiki.
+
+Initialize a local Git repository only when the wiki is not already in a Git
+worktree; do not create nested repositories, a remote, or a commit implicitly.
+Append a dated setup entry to `wiki/log.md` only when setup changes something,
+listing the actual changes. Do not insert a fake ingest record or import the
+cloned project repositories without a request.
+
+No dependencies are needed for this scaffold. Obsidian and search services are
+optional additions, not bootstrap requirements. Verify local Markdown links,
+the expected directories, and preservation of any existing content. Report the
+wiki path and show how to request an ingest, query, or lint using its schema.
 
 ## Establish the Target
 
