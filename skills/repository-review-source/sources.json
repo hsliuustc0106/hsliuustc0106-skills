@@ -21,8 +21,7 @@
   },
   "system1-omni": {
     "repository": "ThinkFlowLab/system1-omni",
-    "path": ".agents/skills/system1-omni-review/SKILL.md",
-    "proposed_source": "https://github.com/ThinkFlowLab/system1-omni/pull/62"
+    "path": ".agents/skills/system1-omni-review/SKILL.md"
   },
   "nanodot": {
     "repository": "ThinkFlowLab/nanodot",

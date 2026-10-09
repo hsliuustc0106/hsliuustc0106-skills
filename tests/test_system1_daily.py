@@ -28,6 +28,18 @@ class SelectionTests(unittest.TestCase):
     def test_old_pr_new_commit_is_eligible(self):
         self.assertEqual(len(daily.select(snapshot())["selected"]), 1)
 
+    def test_creation_date_and_review_history_are_not_filters(self):
+        for created_at in ("2020-01-01", "2026-10-03"):
+            for ever_reviewed in (True, False):
+                s = snapshot()
+                s["pr_pages"][0][0].update(created_at=created_at, ever_reviewed=ever_reviewed)
+                self.assertEqual(len(daily.select(s)["selected"]), 1)
+
+    def test_changed_state_blocks_final_snapshot(self):
+        s = snapshot(); s["pr_pages"][0][0]["current"]["state"] = "closed"
+        self.assertTrue(daily.select(s)["blocked"])
+        self.assertFalse(daily.select(s)["selected"])
+
     def test_ready_from_later_catalog_page_is_required(self):
         s = snapshot(); s["pr_pages"] = [[pr(labels=["high priority"])]]
         self.assertEqual(daily.select(s)["selected"], [])
@@ -129,6 +141,25 @@ class SelectionTests(unittest.TestCase):
         self.assertTrue(daily.select(s)["blocked"])
 
 class EvidenceTests(unittest.TestCase):
+    def test_canonical_source_routes_to_merged_main(self):
+        import json
+        sources = json.loads((ROOT / 'skills/repository-review-source/sources.json').read_text())
+        self.assertEqual(sources['system1-omni'], {
+            'repository': 'ThinkFlowLab/system1-omni',
+            'path': '.agents/skills/system1-omni-review/SKILL.md',
+        })
+        skill = (ROOT / 'skills/system1-omni-review/SKILL.md').read_text()
+        self.assertTrue(skill.startswith('---\nname: system1-omni-review\ndescription: '))
+        self.assertIn('/blob/main/.agents/skills/system1-omni-review/SKILL.md', skill)
+
+    def test_clean_cases_have_fixed_side_adjudication(self):
+        import json
+        cases = json.loads((ROOT / 'skills/system1-omni-review/references/adjudicated-cases.json').read_text())
+        for case in cases:
+            if case['status'] == 'clean-for-this-finding':
+                self.assertEqual(case['evidence'],
+                    'https://github.com/ThinkFlowLab/system1-omni/pull/30#issuecomment-5952020258')
+
     def test_pinned_grounding_severity_and_component_routing(self):
         import json
         import re
