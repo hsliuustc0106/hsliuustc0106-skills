@@ -17,6 +17,8 @@ Missing checkout, wrong origin, missing skill, or stale checkout is a blocker to
 
 For a local mapping use JSON `{"alias": {"repository": "owner/repository", "path": ".agents/skills/project-review/SKILL.md"}}`. Keep it outside tracked files or use `review-sources.local.json` (ignored). Repository-owned instructions are the only maintained review policy; this loader contains none of their domain rules.
 
+The project installer excludes `review-sources.local.json` at every depth and leaves existing destination mappings untouched, including with `--force`. Keep differently named private mappings outside the skills repository. The loader's output also contains source text, repository identity, paths, and provenance: retain private-source results only in the authorized private review context, never public logs, fixtures, or artifacts.
+
 ## Connected GitHub (no checkout required)
 
 1. Read the alias entry from `sources.json` for the repository and canonical path. For a private source, use the privately supplied mapping, never copy it into a public file or comment. Repository access is required; stop on denied or unavailable reads.

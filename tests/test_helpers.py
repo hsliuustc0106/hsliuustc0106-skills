@@ -66,7 +66,8 @@ class InstallerTests(unittest.TestCase):
             "vllm-omni-cookbook-guidelines",
         ):
             for source in (ROOT / "skills" / skill).rglob("*"):
-                if source.is_file():
+                if (source.is_file() and source.name != "review-sources.local.json"
+                        and source.suffix != ".pyc" and "__pycache__" not in source.parts):
                     self.assertEqual(
                         (target / source.relative_to(ROOT)).read_bytes(),
                         source.read_bytes(),

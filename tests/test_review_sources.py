@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -93,6 +94,56 @@ class SourceTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertFalse((target / 'AGENTS.md').exists())
             self.assertEqual(list(outside.iterdir()), [])
+
+    def test_installer_keeps_runtime_local_mappings_out_of_packages(self):
+        source = Path(self.temp.name) / 'public-source'
+        shutil.copytree(ROOT, source, ignore=shutil.ignore_patterns(
+            '.git', '__pycache__', '*.pyc', 'review-sources.local.json'))
+        mapping = json.dumps({'local-example': {
+            'repository': 'example/private-project',
+            'path': '.agents/skills/example-review/SKILL.md',
+        }})
+        paths = (
+            'skills/repository-review-source/review-sources.local.json',
+            'skills/router-review/references/review-sources.local.json',
+            'skills/vllm-omni-guidelines/review-sources.local.json',
+        )
+        for relative in paths:
+            (source / relative).write_text(mapping)
+        for tool in ('codex', 'claude', 'cursor'):
+            with self.subTest(tool=tool):
+                target = Path(self.temp.name) / ('private-config-' + tool)
+                command = ['bash', str(source / 'scripts/sync-project.sh'), '--project', 'router',
+                           '--tools', tool, '--target', str(target)]
+                subprocess.run(command, check=True, capture_output=True)
+                for relative in paths:
+                    self.assertFalse((target / relative).exists())
+                installed = target / 'skills/repository-review-source'
+                self.assertEqual((installed / 'sources.json').read_bytes(),
+                                 (SOURCE / 'sources.json').read_bytes())
+                # Local mappings remain usable when explicitly supplied at runtime.
+                config = Path(self.temp.name) / 'review-sources.local.json'
+                config.write_text(json.dumps({'local-example': {
+                    'repository': 'ThinkFlowLab/nanodot',
+                    'path': self.file.relative_to(self.root).as_posix(),
+                }}))
+                result = subprocess.run(['python3', str(installed / 'scripts/load_source.py'),
+                                         'local-example', '--checkout', str(self.root),
+                                         '--config', str(config)], check=True,
+                                        capture_output=True, text=True)
+                self.assertEqual(json.loads(result.stdout)['skill'], self.file.read_text())
+
+                # An existing destination mapping is neither overwritten nor a conflict,
+                # including during an explicitly forced reinstall.
+                for relative in paths:
+                    (target / relative).write_text('existing local mapping\n')
+                for extra in ([], ['--force']):
+                    subprocess.run(command + extra, check=True, capture_output=True)
+                    for relative in paths:
+                        self.assertEqual((target / relative).read_text(), 'existing local mapping\n')
+        # Package-integrity checks must accept valid runtime-local inputs too.
+        subprocess.run(['python3', '-m', 'unittest', 'discover', '-s', 'tests',
+                        '-p', 'test_helpers.py'], cwd=source, check=True, capture_output=True)
 
     def test_cursor_discovery_points_to_project_loader(self):
         for project in ('router', 'sciencediscovery', 'system1-omni', 'afd-plugin', 'vllm-omni', 'nanodot'):

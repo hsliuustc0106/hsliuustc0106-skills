@@ -109,9 +109,10 @@ done
 if [ "$COPY_SKILLS" = true ]; then
   # Copy every skill referenced by AGENTS.md, including review resources.
   for skill in repository-review-source router-review sciencediscovery-review system1-omni-review afd-plugin-review personal-skills-review nanodot-review vllm-guidelines vllm-omni-guidelines vllm-omni-review afd-plugin-guidelines vllm-omni-cookbook-guidelines; do
+    # Runtime-local source mappings are private inputs, not installable resources.
     while IFS= read -r -d '' source; do
       FILES+=("${source#"$ROOT/"}")
-    done < <(find "$ROOT/skills/$skill" -type f ! -name '*.pyc' ! -path '*/__pycache__/*' -print0)
+    done < <(find "$ROOT/skills/$skill" -type f ! -name 'review-sources.local.json' ! -name '*.pyc' ! -path '*/__pycache__/*' -print0)
   done
 fi
 
