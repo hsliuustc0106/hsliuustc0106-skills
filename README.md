@@ -25,6 +25,13 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `skills/nanodot-review/`: thin loader for the canonical nanodot repository review skill.
 - `skills/vllm-omni-review/`: thin loader for the canonical vLLM Omni repository review skill.
 
+## Contributing
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md) and its
+[contributor pre-PR check](skills/precheck-pr/SKILL.md) before implementation.
+The skill is discoverable through the existing plugin's `./skills/` directory;
+this change does not add it to project-rule sync installations.
+
 ## Core Principles
 
 1. Think before coding.
