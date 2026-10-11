@@ -134,6 +134,20 @@ class SelectionTests(unittest.TestCase):
             value = snapshot(); value["pr_pages"][0][0]["new_commits_verified"] = delta
             self.assertTrue(daily.select(value)["blocked"])
 
+    def test_rewound_ancestor_covered_by_older_policy_is_not_new_code(self):
+        # The collector has proved that current A was already included in B.
+        # Latest completed C alone would not establish that ancestry coverage.
+        # This normalized fixture tests consuming that proof, not Git traversal.
+        value = snapshot()
+        value["delivered"] = [delivered(head="b" * 40, policy="older"),
+                              delivered(head="c" * 40, policy="previous")]
+        value["pr_pages"][0][0]["new_commits_verified"] = False
+        result = daily.select(value)
+        self.assertFalse(result["selected"])
+        self.assertFalse(result["blocked"])
+        self.assertEqual(result["excluded"], [
+            {"number": 30, "reason": "no unreviewed head commits"}])
+
     def test_same_head_is_covered_across_policies(self):
         for policy in (daily.POLICY, "previous"):
             value = snapshot(); value["delivered"] = [delivered(policy=policy)]

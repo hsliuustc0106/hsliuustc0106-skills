@@ -31,8 +31,12 @@ An unknown or malformed result has nonempty `blocked` and CLI exit status 2;
 verified results, including no eligible candidates, exit 0. Inspect both output
 and status; a blocked run must not be recorded as a successful empty review.
 
-New commit evidence must compare the current head with the last completed review,
-including ancestry or commit-set analysis after history rewrites. Comment times,
+New commit evidence must preserve coverage across all completed review heads and
+policies, including ancestry or commit-set analysis after history rewrites. A
+previously covered ancestor can have a different SHA from every recorded head;
+comparing only with the latest completed head is insufficient after a rewind or
+branch switch. Keep the last successfully reviewed head and the earlier coverage
+needed to prove the delta; unresolved history is unknown, not new code. Comment times,
 creation dates, a changed label, or a new policy version do not prove new code.
 The first run requires an explicit baseline or first-run authorization. Missing
 checkpoint history is unknown. See `tests/test_omni_daily.py` for executable
@@ -44,6 +48,70 @@ across confirmed deliveries and policy versions. A new head on an already counte
 PR does not consume another distinct-PR slot. Preserve deferred heads as pending.
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
+
+## Current bounded audit, 2026-10-12 Asia/Shanghai
+
+Personal main was `6a601ccdac242143ee67b12008653dbc2e7969c1` before this update.
+Upstream main is frozen at
+[198c2105930bd1bac0b0966ffd0997cdd84d4790](https://github.com/vllm-project/vllm-omni/commit/198c2105930bd1bac0b0966ffd0997cdd84d4790).
+The [133-commit delta](https://github.com/vllm-project/vllm-omni/compare/c9bee166fb0f0b250eb227df5d1455c03a0509a1...198c2105930bd1bac0b0966ffd0997cdd84d4790)
+from the prior audited main was enumerated in two commit pages (100 + 33).
+The compare file list was capped at 300; this is a targeted audit, not full
+coverage of every changed file or all architecture/platform combinations.
+
+### Source selection and version boundaries
+
+The [canonical main skill](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/.claude/skills/review-pr/SKILL.md)
+was read in full: Git blob `5907e13f31245ac7063519108348ca6804d949cd`,
+exact-byte SHA-256 `acdee5a45961d5f7b715a0d2f046f382dfa40d6607639d139863f405bf12566a`.
+Its routing, runtime-stage and test-evidence references were read at the same
+commit. PR8410 is still draft/open at `d29a35bb659a19eef5b520e85c449421a932b605`;
+its proposed helpers/backend additions are not evidence that the existing main
+skill is missing. Prefer the maintained main skill for ordinary reviews.
+PR6 and PR17 remain open at the same heads recorded below; no proposal content
+was imported or overwritten. All 12 open personal-repository PRs were enumerated,
+with a following empty page; no overlapping branch was changed.
+
+Latest published stable release is still [v0.30.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.30.0),
+published 2026-09-25. Main's [CUDA container](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/docker/Dockerfile.cuda#L1-L2)
+now bases on vLLM 0.31.0 following [#8459](https://github.com/vllm-project/vllm-omni/commit/0b0d2d70090e1df820de95ef599e109981bf06d0).
+Do not extrapolate main-only behavior into the released v0.30.0 package.
+Read target metadata and hardware requirements again rather than treating any
+prior audit's dependency versions or CPU test selectors as current.
+
+### Newly sampled ownership boundaries
+
+These pointers supplement source discovery, not the canonical review checklist:
+
+- [Ray diffusion executor](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/vllm_omni/diffusion/executor/ray_executor.py)
+  and [its tests](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/tests/diffusion/test_ray_executor.py),
+  introduced by #7938: Ray owns actor placement/lifecycle while PyTorch owns
+  collectives. Review both boundaries, including owned versus caller-provided
+  placement-group cleanup. Mock actor tests do not prove multi-node execution.
+- [Serving route matrix](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/docs/serving/README.md#L147-L165),
+  [connection implementation](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/vllm_omni/entrypoints/openai/realtime/connection.py)
+  and [Qwen3 turn-based tests](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/tests/entrypoints/openai_api/test_qwen3_omni_realtime_websocket.py):
+  generalized turn-based realtime (#8339) is distinct from continuous duplex.
+  Resolve deployment mode, route/query and live handler together; the endpoint
+  name alone does not establish duplex behavior.
+- [MiniCPM-o duplex MRv2 profile](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/vllm_omni/deploy/minicpmo_4_5_duplex_mrv2.yaml)
+  and [configuration tests](https://github.com/vllm-project/vllm-omni/blob/198c2105930bd1bac0b0966ffd0997cdd84d4790/tests/config/test_minicpmo_4_5_duplex_mrv2_deploy.py),
+  from #8536: explicitly opt-in CUDA profile, all three stages use V2, and listed
+  non-CUDA platform overrides retain V1. Do not infer a global/default MRv2 switch
+  or GPU correctness from configuration tests.
+
+Validation: 20 current instruction/code/test/document files were materialized and
+matched against the frozen Git tree; 12 unique historical corpus files were
+re-fetched and matched against both stored Git blob and SHA-256 identities.
+The same two historical defect families/four outcomes remain; no new accuracy
+sample or performance result is claimed. All 224 personal-repository offline
+unittests pass, including 31 selection tests, three corpus checks and one Omni
+packaging test. The added fixture consumes a collector-proven covered ancestor
+across older policies; it does not implement ancestry discovery. Frontmatter,
+local/pinned links, routing, installability, Python syntax, shell syntax and diff
+whitespace were checked. No upstream tests, inference, distributed actors,
+GPU/NPU execution or live daily-selection collector were run. Hosted checks are
+reported separately after publication, not inferred from these local tests.
 
 ## Sources and overlap, inspected 2026-10-05 Asia/Shanghai
 
