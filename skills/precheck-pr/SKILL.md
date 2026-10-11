@@ -34,6 +34,16 @@ of a failure that already happened.
 
 ## Before submission
 
+Use the [PR template](../../.github/pull_request_template.md). Verify that all
+four required human-answer fields and the PR-necessity decision are complete,
+either directly or through precise, audience-appropriate references to explicit
+human answers. Empty fields, unchecked placeholders, agent-written guesses, and
+unexplained N/A are not answers; ask and wait rather than submitting a draft.
+Do not mark a PR ready for review until the human answers and decision are
+complete and the repository's applicable pre-review checks are satisfied.
+The Markdown template makes this a contributor obligation, not a server-enforced
+GitHub required-field check.
+
 - Make the human-provided intent and PR-necessity decision traceable in the issue
   or PR. Do not copy private conversations, customer data, or restricted evidence
   into a broader audience; obtain an authorized summary or scoped reference.
