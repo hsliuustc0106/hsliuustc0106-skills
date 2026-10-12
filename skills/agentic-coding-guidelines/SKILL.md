@@ -45,3 +45,11 @@ Use this skill for general coding-agent behavior across repositories.
 - Prefer existing helpers and project conventions.
 - Use `rg` for search when available.
 - Summarize changed files and verification clearly at handoff.
+
+### Before-and-After Desktop Screenshots
+
+- For new features or bug fixes that affect the visible desktop app, offer before-and-after screenshots before implementation. Ask whether the user wants the visual comparison; reuse an existing answer for the task.
+- If accepted, capture the affected view before editing. For a new feature, capture the current view where it will appear; for a bug fix, reproduce the visible problem when practical.
+- After implementation and verification, capture the same view with comparable window size, inputs, and app state. Show labeled before/after images and briefly explain the visible change.
+- If no preference was given earlier, offer the screenshots again at handoff. Never reconstruct a missing baseline and present it as an actual before capture.
+- A declined or unanswered offer does not block development. Report unavailable captures or desktop access clearly, and keep functional verification separate from visual evidence. Skip this offer for changes with no visible desktop effect.
