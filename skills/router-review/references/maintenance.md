@@ -4,6 +4,100 @@ The repository-owned review skill remains canonical. This supplement covers the
 explicitly configured personal daily queue and dated source-inspection results;
 it does not authorize upstream reviews, labels, merges, or code changes.
 
+## Freshness update, inspected 2026-10-14 Asia/Shanghai
+
+This bounded update supersedes the historical release and L0 reachability
+statements below; it does not replace the repository-owned checklist.
+
+- Personal main inspected: `836a88e8e75d02292e996b817116d1b5f4c0a6ad`.
+  Router main inspected: [442b8bb74fba09052428cf3af0513916a4f92b43](https://github.com/vllm-project/router/commit/442b8bb74fba09052428cf3af0513916a4f92b43),
+  20 commits after the previous `10340964` snapshot. Commit metadata and the
+  complete changed-file inventory were checked; this is not a full audit of
+  those 20 commits. Main has no AGENTS.md or canonical review skill yet.
+- [PR336](https://github.com/vllm-project/router/pull/336) remains open/draft at
+  `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`; its actual skill bytes retain the
+  Git blob and SHA-256 recorded below. It predates these 20 main commits.
+  Read current implementation and this dated delta rather than treating that
+  draft's architecture map as a complete description of current main.
+- [v0.1.16](https://github.com/vllm-project/router/releases/tag/v0.1.16) was
+  published on 2026-10-09 at 07:14 UTC, resolving through its annotated tag to
+  `db02f358da401b60d4ae14eb286163763a0705cc`. Main is ten commits ahead.
+  The release includes the initial multi-tier KV index and the L0 library,
+  but not the subsequent gRPC L0 integration, EPD prototype, or KV segment
+  contract below. Release notes describe Docker `v0.1.16.1` as a smoke-test
+  CI correction with unchanged router code; registry artifacts were not tested.
+- Open personal PR6 and PR17 retain the heads recorded below. Their full
+  changed-file lists do not touch this supplement. The other open personal PRs
+  were enumerated; no Router-specific competing skill update was identified.
+  No shared routing, installer, human edits or open PRs were changed.
+
+### Main-only contract deltas
+
+- [gRPC L0 integration](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/src/backend/encode_cache.rs)
+  is now reachable through `EngineFrontend`, model loading and chat encoding
+  ([PR340](https://github.com/vllm-project/router/pull/340)). It remains off by
+  default; `VLLM_ROUTER_L0_CACHE` enables it. Distinguish the per-model loaded
+  frontend cache from the shared encoding cache. Exact keys include tokenizer
+  instance, rendered text, special-token option and cache salt. Token IDs bypass
+  encoding; unknown or stochastic tokenizer configurations bypass caching.
+  Only successful encodings are retained. Rendering/validation still occur for
+  each request, retries reuse prepared requests, and estimated bytes are not RSS.
+  Review source and [fixture-backed parity tests](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/tests/grpc_frontend_l0.rs)
+  together; they are not live-model performance or production qualification.
+- [Experimental EPD](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/docs/epd.md)
+  adds native Rust CLI JSON-metadata orchestration for static HTTP E+PD or E/P/D,
+  DP=1, without IGW or Python-launcher configuration. Embeddings move through
+  engine EC connectors; the router handles metadata and transfer handles, not
+  tensors. Verify selected P/PD destination, media order, independent transfer
+  IDs for repeated media, raw-media fallback and EC cleanup. Encoder failures
+  must not forward partially prepared requests. There is no automatic EPD
+  replay; abandoned Mooncake pushes use best-effort cancellation, with backend
+  expiry as fallback. After successful consumer response headers, completion
+  cleanup belongs to the consumer. Image evidence does not prove audio/video
+  coverage. See [implementation and regression source](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/src/routers/http/epd.rs).
+- KV indexing landed in the release, but main subsequently fixes partial-edge
+  traversal ([PR366](https://github.com/vllm-project/router/pull/366)) and shared
+  path hash aliases ([PR357](https://github.com/vllm-project/router/pull/357)).
+  [PR370](https://github.com/vllm-project/router/pull/370) replaces scalar tier
+  depth with maximal half-open held-block segments, retaining tails after gaps.
+  Read the [current match type and aggregation](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/src/kv_index/indexer.rs#L22-L38),
+  owner identity, holes and prefix-contiguity tests before policy/cost reasoning.
+  An index/API change does not establish an enabled end-to-end KV-aware policy.
+- Current [contribution instructions](https://github.com/vllm-project/router/blob/442b8bb74fba09052428cf3af0513916a4f92b43/CONTRIBUTING.md)
+  require human contributor intent and evidence before contributor implementation
+  or PR submission. They explicitly do not alter independent-review eligibility;
+  retain the configured daily label/new-head policy below.
+
+### Validation and limits of this update
+
+The two historical defect families/four bounded outcomes below are retained;
+no new accuracy sample or runtime verdict is claimed. Existing offline selector,
+corpus, grounding, severity, routing and installation checks remain applicable.
+The canonical skill has no linked reference bundle or executable helper to run.
+Cargo/rustc are unavailable here, so Rust suites, live serving, tokenizer/model
+parity, GPU/ROCm/RDMA, EPD backend cleanup and performance were not executed.
+Focused commands for a capable isolated environment include:
+
+- `cargo test --test grpc_frontend_l0`
+- `cargo test --lib backend::encode_cache`
+- `cargo test --lib routers::http::epd::tests`
+- `cargo test --test test_pd_routing test_epd_handoff`
+- `cargo test --test kv_index_prefix_contiguity`
+- `cargo test --test kv_index_sequence_lifecycle`
+
+These are suggested checks, not reported passes. Re-resolve source revisions on the next
+review; this update does not advance a live PR-review or delivery checkpoint.
+
+The personal-repository unittest suite passed 224 network-free tests. All 22
+skill entrypoints passed frontmatter checks; scoped local links, JSON manifests,
+Python parsing, shell syntax and diff whitespace passed. The suite exercises
+Router installation/routing for Codex, Claude and Cursor in temporary folders,
+including repeat installs and preservation of human edits. Eight historical
+source records were re-fetched and matched their full Git blob/SHA-256 and
+excerpt pins. The canonical draft bytes matched their recorded identities.
+An independent source-inspection pass checked release/main separation, L0
+reachability and KV-index evolution; neither pass executed upstream Rust.
+
 ## Selection contract
 
 Require the exact label `high priority`. If the complete current label catalog
@@ -47,7 +141,7 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
-## Sources and overlap, inspected 2026-10-07 Asia/Shanghai
+## Historical sources and overlap, inspected 2026-10-07 Asia/Shanghai
 
 - Personal main baseline: `563a25235f295eb10f52783ff7eadb4aa32cccef`
 - Router main: [10340964bd8c64a25fcd36458c43edf924dfe2e0](https://github.com/vllm-project/router/commit/10340964bd8c64a25fcd36458c43edf924dfe2e0)
@@ -72,7 +166,7 @@ does not enforce a cross-process cap. No delivery ledger belongs here.
   Their changed-file lists concern Omni review/maintenance and shared discovery.
   This Router-only supplement leaves those files, human edits and PRs untouched
 
-## Bounded freshness and calibration observations
+## Historical bounded observations (2026-10-07)
 
 Read actual target metadata, instructions, callers and fixtures before applying
 these dated observations. The canonical draft already covers the landed NIXL
