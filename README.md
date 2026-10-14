@@ -10,6 +10,7 @@ This repo is based on the compact skills layout popularized by the Karpathy-insp
 - `CLAUDE.md`: thin Claude Code wrapper that imports `AGENTS.md`.
 - `.cursor/rules/*.mdc`: Cursor project rules for shared and project-specific guidance.
 - `skills/*/SKILL.md`: reusable skills for general coding and specific repositories.
+- [skills/repository-loop-bootstrap/](skills/repository-loop-bootstrap/SKILL.md): initialize or audit a repository's evidence-backed development loop while preserving existing conventions.
 - `skills/ncu-report-skill/`: Nsight Compute profiling, report analysis, and
   evidence-backed CUDA optimization plans, with B200/sm_100 references and helpers.
 - `skills/product-deep-dive/`: research a product and create two editable,
