@@ -2,6 +2,10 @@
 
 Use this when PR/issue monitoring or resumable review is needed. Reuse an existing tracker and storage format if it preserves these invariants. For a bootstrap without remote access, propose the record shape and test it locally; do not create watchers or webhooks automatically.
 
+## State implementation and completion
+
+Record the actual level: design/schema only; manual durable records with tested read/write/restart behavior; or an installed runner with observed reconciliation and delivery behavior. These levels are not interchangeable. A schema or documented scenario does not implement persistent monitoring. A manual workflow can satisfy a deliberately manual scope, but cannot satisfy a requested automated runner. For a full bootstrap, explicitly report a missing required runner as blocked/deferred with its authorization and deployment prerequisites; never hide the gap behind a successful documentation test. Do not install hooks, webhooks, schedules, permissions, or external runners without their required target-specific authorization.
+
 ## Minimal adaptable record
 
 A plain local JSON file is sufficient for a small workflow; an established database may be better for concurrent writers. A record should retain:
