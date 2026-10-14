@@ -32,17 +32,22 @@ A short X-ready draft that includes:
 3. **Find media (when asked or useful)**
    - Search PRs merged since the previous tag for demo/gif/video/mp4/webm/showcase mentions.
    - Also check common asset paths (`docs/assets/demos/`, `docs/results/`, recipe folders).
-   - Rank short showcase GIFs first; note path/URL, PR number, and what it shows.
-   - Present 2–4 candidates and let the user pick before attaching.
+   - Prefer public raw/release URLs over GitHub user-attachments (those often 403 anonymously).
+   - Rank for **eye-catching first**: dense motion / multi-panel / clear on-screen action beats a quiet CLI terminal. Small demo clips that tell a product story are second. Skip aggregate re-score / log replays unless nothing else fits.
+   - Prefer short showcase GIFs and small mp4s (under ~5 MB) that survive X compression.
+   - Present 2–4 ranked candidates with links and a clear recommendation; let the user pick before attaching.
 
 4. **Draft the post**
    - Lead with the version ship line, then highlights, then the release link on its own line.
-   - Do not invent stats or claims; only use changelog/PR/release facts.
-   - Show the full draft in chat for approval.
+   - Name the media briefly in the copy when helpful (e.g. what the GIF shows); do not invent stats or claims.
+   - Show the full draft plus chosen media URLs in chat for approval.
 
 5. **Publish**
    - The X connector does **not** post tweets. After approval: either hand the draft to the user to paste, or post via the signed-in browser if they asked for that.
    - Never post without an explicit yes on the final text (and media choice if any).
+
+6. **Keep the skill in sync (when this lives in a personal skills repo)**
+   - If the user maintains a personal skills GitHub repo, mirror `SKILL.md` there under `skills/<id>/` after meaningful recipe changes (PR or direct push as they prefer).
 
 ## Done when
 
