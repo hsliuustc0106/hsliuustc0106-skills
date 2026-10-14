@@ -15,9 +15,13 @@ A plain local JSON file is sufficient for a small workflow; an established datab
 - Check identities, run/attempt IDs, status/conclusion, checked SHA, timestamps, platform, and evidence links. Store review decisions with their actual scope and revision where available.
 - Requirements and owners separately from author evidence; missing or blocked checks and unresolved authority.
 - Linked issues/PRs, dependencies, next action, and last reconciled state.
+- For issue-resolution work, acceptance conditions and their individual evidence/status, including residual scope, owner, and follow-up. Keep source issue claims separate from verified behavior.
+- Reusable evidence references: artifact identity, source revision, relevant base/merge revision, command/check and inputs, environment, result, and applicability limits. Several consumers may cite one artifact; citations are not independent executions.
 - An action ledger: stable dedup key, target, purpose, evidence version, status (planned/in-flight/confirmed/uncertain), external result ID if available, and timestamps.
 
 Issues have no inherent head SHA. Link them to PRs and the relevant revisions without manufacturing an issue head. A closed issue or merged PR is not evidence that all linked tasks are complete.
+
+Reuse evidence only while its relevant inputs and scope still match. Preserve old artifacts as history; invalidate affected applicability when code, base/merge context, check inputs, or environment changes. Immutable test evidence does not replace refreshing mutable approval, CI, or permission state. Do not create a second ledger solely to connect implementation, review, and issue triage.
 
 ## Reconciliation rules
 

@@ -13,6 +13,8 @@ Create a complete, minimally duplicated initialization that lets a contributor f
 - **Full bootstrap (default for “initialize”, “bootstrap”, or “apply this skill”):** implement all applicable foundations in the authorized workspace, including root AGENTS.md and a discoverable lessons.md by default. Reuse equivalent canonical content through these entrypoints. A narrow fix is not a completed full bootstrap.
 - **Targeted update:** limit edits to the explicitly requested subset and label that scope.
 
+Initialization establishes the repository's guidance and evidence contracts; continuous operation uses them for actual changes. When asked to initialize or audit that operational process, read [operating-cycle guidance](references/operations.md). This does not activate a coding runner, watcher, or recurring review; deployment and subsequent actions need their own authorized scope.
+
 ## Scope and discovery
 
 Default to a plan and local files in the authorized workspace. Reading a repository or drafting a workflow does not authorize pushing, opening PRs, posting comments, merging, changing protections or permissions, installing hooks, scheduling jobs, or starting paid/external runs. Obtain target-specific authorization before deployment. Do not invent owner identities or approval authority.
@@ -48,6 +50,7 @@ For a full bootstrap, verify root AGENTS.md and lessons.md (or an explicitly agr
 - Verify local links including anchors, and commands against the repository; check syntax using already available tools. Reconcile historical review guides with current source and CI, surfacing contradictions rather than copying stale instructions. Never label a command tested if it was only found in source.
 - Exercise one representative change through the matrix. Show which checks apply, who owns unresolved validation, and which established merge requirements remain unmet, if any. If execution is unavailable or costly, report the missing evidence rather than fabricating a pass.
 - If state tracking is included, exercise a head change, a same-head CI change, and a repeated observation. The first invalidates head-bound evidence; the second refreshes CI without hiding the change; the third must not duplicate an action.
+- If operational guidance is included, replay a real available change through its evidence, action authority, and linked-issue completion decisions. Supplement missing cases with clearly labeled isolated fixtures; never present simulated results as observed repository behavior.
 - Run only authorized, proportionate checks. Report exact commands, environment/platform, exit status, and untested limits. Check that generated content introduces no conflicting authority, duplicated canonical guidance, credentials, or deployment side effects.
 - Start from root AGENTS.md and the human contributor entrypoint and traverse the required links, including lessons; verify applicable existing agent/tool instructions do not bypass or contradict them. A missing required entrypoint or unreachable lessons fails full-bootstrap acceptance.
 - Re-read the result as a new contributor: can they locate the implementation, select checks, distinguish evidence from obligations, and resume the next action?

@@ -33,6 +33,8 @@ With no verified incidents, create an honest empty structure: purpose, active li
 
 Count independent failures, not observations: reruns, retries, duplicate issue reports, and multiple alerts from one incident count once. Record a stable incident key, provenance, suspected failure mechanism, and confidence; investigate uncertain identity before incrementing recurrence. Use an existing repository escalation policy if one is established; otherwise leave the trigger for human policy selection rather than inventing a numeric default. When the selected policy applies, propose a proportionate regression test, invariant, tooling check, or design repair with an owner. Label an unapproved escalation policy as proposed; do not adopt it as binding merely because it appears in this skill. Preserve existing human approval for resulting policy or consequential changes. Do not automatically change permissions, policies, or infrastructure. Keep an unresolved incident visible if archival would hide ongoing risk.
 
+Prefer the narrowest prevention supported by the failure: a focused regression check or local clarification before a shared rule, and a shared rule before new infrastructure when those remedies fit. A confirmed first incident can justify a local fix; broader escalation needs evidence of its scope or consequence, not an invented recurrence threshold. Retire or consolidate guidance that no longer prevents a demonstrated failure.
+
 ## Reliable execution and measurements
 
 Prefer the repository's established scripts and CI. Capture revision, command, relevant tool versions/platform, start/end time, result, and artifact links. Checkpoint durable task state before handoff. Resume by reconciling current external state, not replaying prior writes.
