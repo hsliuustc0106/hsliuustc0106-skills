@@ -136,6 +136,27 @@ class SelectionTests(unittest.TestCase):
             "head": "new", "policy": "previous", "day": "2026-10-02"}]
         self.assertFalse(daily.select(s)["selected"])
 
+    def test_later_pr_page_api_error_blocks_entire_snapshot(self):
+        s = snapshot(); s["pr_pages"].append({"message": "API error"})
+        self.assertFalse(daily.select(s)["selected"])
+        self.assertTrue(daily.select(s)["blocked"])
+
+    def test_missing_new_commit_evidence_blocks(self):
+        s = snapshot(); del s["pr_pages"][0][0]["new_commits_verified"]
+        self.assertFalse(daily.select(s)["selected"])
+        self.assertTrue(daily.select(s)["blocked"])
+
+    def test_new_head_on_counted_pr_does_not_consume_another_daily_slot(self):
+        s = snapshot(); s["pr_pages"] = [[pr(1)]]
+        s["delivered"] = [{"repository": daily.REPOSITORY, "number": n,
+            "head": "old", "policy": daily.POLICY, "day": s["day"]} for n in range(1, 11)]
+        self.assertEqual([p["number"] for p in daily.select(s)["selected"]], [1])
+
+    def test_other_repository_delivery_does_not_cover_this_head(self):
+        s = snapshot(); s["delivered"] = [{"repository": "other/repo", "number": 30,
+            "head": "new", "policy": daily.POLICY, "day": s["day"]}]
+        self.assertEqual(len(daily.select(s)["selected"]), 1)
+
     def test_wrong_repository_blocks(self):
         s = snapshot(); s["repository"] = "other/repo"
         self.assertTrue(daily.select(s)["blocked"])

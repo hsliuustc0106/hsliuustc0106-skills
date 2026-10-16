@@ -37,6 +37,82 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-10-17 Asia/Shanghai
+
+Public repository visibility was verified before inspecting or publishing source
+information. Personal baseline: `76697726e8a93d1a02633bbbaf3da8fc72410308`.
+The new [upstream snapshot](https://github.com/ThinkFlowLab/system1-omni/commit/e66ff34996760a84ad56690f0ae4cf434e669e65)
+is 156 commits beyond the October 10 audit and 223 beyond the unchanged
+`release/v0.1.0` tag. The release API still lists only that October 6 release.
+This is a bounded maintenance pass, not a correctness audit of those 156 commits.
+
+Canonical SKILL SHA-256 is
+`ae2dfac116376ae2ec41f65122cc1bf5aea10751b8b907198a56154e5d67230e`,
+Git blob `392df4c8881624ad8b9670101d51869562f6c68a`. Both canonical references
+retain the hashes recorded below. All three were read at the new snapshot.
+The source-owned checklist remains canonical; this wrapper needs no copied
+checklist or source-registry change.
+
+Material routing changes since the prior snapshot:
+
+- [Contributor validation matrix](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/CONTRIBUTING.md#choose-validation-by-changed-area)
+  and canonical review routing now point to current CI. Rust Clippy, workspace
+  tests and release build use `--features omni-laya/serve`; the explicit frontend
+  target remains. The human contributor-intent gate does not block independent
+  read-only reviews or alter automated daily selection.
+- [CI](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/.github/workflows/ci.yml)
+  adds Decider Python helper checks and text-only CUDA backend/contract checks.
+  The contract-checker steps are conditional on checker files being present;
+  a skipped step is not proof the checker ran. Strict MkDocs remains separate.
+- [Frontend in-process transport](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/src/frontend/src/engine.rs)
+  now serves the runtime Engine interface as well as the existing forwarding
+  path. Route changes through root `tests/frontend/in_process.rs` and
+  `tests/runtime/engine.rs`; an architecture paragraph describing only forwarding
+  is no longer a complete implementation inventory.
+- [Decider packing](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/src/models/decider/native/src/batching.rs)
+  is bounded within one admitted request: one row by default, configurable up to
+  four rows and 4096 tokens, retaining order and running over-budget rows alone.
+  This does not establish cross-request dynamic batching. The native manifest
+  routes contract/config/batching and separately hardware-dependent GPU tests.
+- [OmniJev](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/src/models/omnijev/README.md)
+  currently supplies CPU contract/preparation/heads/finishing; its vision/language
+  execution and worker integration remain future work. Do not infer a working
+  native multimodal server from workspace membership.
+- [Native multimodal Graph regressions](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/tests/qwen3_5/README.md)
+  now include three ignored device cases and a runner requiring exactly three
+  passes plus capture-failure diagnostics. Default CPU Cargo success cannot
+  qualify them. The [serving matrix](https://github.com/ThinkFlowLab/system1-omni/blob/e66ff34996760a84ad56690f0ae4cf434e669e65/benchmarks/serving_matrix.md)
+  is a frozen-oracle HTTP client, not a model launcher or GPU allocator; metadata
+  presence does not independently prove hardware execution.
+
+Other merged areas were discovered but not exhaustively audited: Laya graph/cache
+changes, CLM serving, D3 and LFM2 reference integrations. Their complete source,
+model-quality and performance qualification are outside this maintenance pass.
+PR127 remains open, now non-draft at
+`03b111ce3f97dd97c57cc6a9023de2aa7ee56be6`, targeting `codex/qwen-vision-27b`.
+Its updated author-reported GPU evidence does not make it main/released behavior
+or a personally rerun measurement. The October 10 draft/head statement below is
+historical. Personal PR6 and PR17 still have the recorded heads and remain open;
+neither was merged, closed or overwritten.
+
+Selection remains unchanged: exact `high priority`, conditional `ready`, verified
+new code, ten distinct PRs per repository/day, and delivered-head deduplication.
+Four additional offline cases cover a later-page API error, unknown new-code
+status, a new head on an already-counted PR at the daily cap, and delivery-history
+repository isolation. Historical calibration remains four rows from two related
+PR30 defect/fix pairs, not an independent accuracy sample. All five pinned source
+files/companion entries were checked against Git blobs, SHA-256 and exact lines.
+
+Validation: all 228 repository tests passed with bytecode disabled, including
+31 System1 tests (27 selection and four evidence/install tests). Temporary Codex,
+Claude and Cursor installs passed their resource/link checks. Skill frontmatter,
+plugin directory discovery, eight pinned source links, five calibration source
+entries, Bash syntax and whitespace checks passed. The three public adjudication
+comments were re-read. These deterministic checks do not measure review accuracy.
+No live candidate selection, upstream Rust/model/GPU tests, benchmark campaign,
+paid execution or personal installation is part of this pass. The earlier audit
+below retains its original date, counts and scope.
+
 ## Audited sources, 2026-10-10 Asia/Shanghai
 
 - Personal repository baseline: `c8bb06da269adcf8c39eb1c61f2b576ae4f70fb0`
@@ -55,7 +131,7 @@ ancestry validation, persistence, or dispatch.
   repository-contracts `b6ace00bf8a7486cd20b0ed2e5d19515ef6d1ef0`;
   daily-selection `e28e81b1696c1a93817eb27384cc5ebc3d8919c1`
 
-## Release boundary and current routing
+## October 10 release boundary and routing
 
 [Release `release/v0.1.0`](https://github.com/ThinkFlowLab/system1-omni/releases/tag/release/v0.1.0)
 was published October 6 at `7f39ac40902c374803992407bb26eeba29c8a588`. Audited
