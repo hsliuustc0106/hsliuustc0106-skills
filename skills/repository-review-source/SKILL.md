@@ -28,3 +28,10 @@ The project installer excludes `review-sources.local.json` at every depth and le
 5. Review the target PR at its separately resolved current head. Keep review-target revision distinct from skill-source revision. Follow the loaded project instructions, including daily eligibility and evidence limits. Scripts require a supported execution environment; reading a script is not running its tests. Report unavailable execution honestly, without silently weakening required checks.
 
 API reads do not copy canonical policy into this personal repository. Missing skill or reference, access errors, and unresolved draft provenance block claiming the project skill was applied. Do not substitute older bundled content or a generic checklist. Recheck relevant source/target heads before posting when the canonical workflow requires it; posting still needs its own authorization.
+
+## Separately authorized private queues
+
+For an explicitly opted-in label/new-head queue only, see the
+[runtime-local selector contract](references/private-queue.md). It accepts private
+identity and checkpoints at runtime and has network-free synthetic tests. It is
+not a default policy and must not replace a separately configured review workflow.
