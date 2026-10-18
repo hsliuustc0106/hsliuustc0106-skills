@@ -49,7 +49,68 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Current bounded audit, 2026-10-12 Asia/Shanghai
+## Current bounded audit, 2026-10-19 Asia/Shanghai
+
+Personal main before this update: `8a8d071ffef45b3242d61c648f18b714a1a6c99e`.
+Upstream main was frozen at
+[1c0bde507dfbffd25b32f6092dbe4526c945b7dd](https://github.com/vllm-project/vllm-omni/commit/1c0bde507dfbffd25b32f6092dbe4526c945b7dd).
+The [153-commit delta](https://github.com/vllm-project/vllm-omni/compare/198c2105930bd1bac0b0966ffd0997cdd84d4790...1c0bde507dfbffd25b32f6092dbe4526c945b7dd)
+was enumerated in two pages (100 + 53); source inspection below is targeted,
+not a review of all changed code. Latest published stable remains
+[v0.30.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.30.0)
+(2026-09-25). The following main-only observations do not establish release behavior.
+
+The [canonical skill](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/.claude/skills/review-pr/SKILL.md)
+was read in full: Git blob `96e9116e1c902e7197130d44fdfe9584ca1d4c34`,
+exact-byte SHA-256 `23ff085a2e6e00bcae644217adb43c94432d773e78d13e124f33b3283af77a53`.
+Current AGENTS, contribution instructions, lessons, routing, runtime-stage and
+test-evidence references were read at this same revision. All 13 open personal
+repository PRs were enumerated, followed by an empty page. PR6 and PR17 remain
+at their previously recorded heads; their file scopes were inspected, but no
+proposal content or human edits were imported or overwritten.
+
+### Changed defaults and ownership to rediscover at the target
+
+- [Event-driven orchestration](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/vllm_omni/engine/orchestrator.py#L89-L109)
+  is now the default; `VLLM_OMNI_EVENT_DRIVEN_ORCH=0` selects the legacy polling
+  loop. The [focused tests](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/tests/engine/test_orchestrator_event_driven.py#L74-L100)
+  cover unset/opt-out dispatch. For related changes, inspect reader reconciliation,
+  output draining and shutdown as well as both loop paths. This inspection did
+  not run those upstream tests or measure latency.
+- Prefix-cache ownership is split between the
+  [manager](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/vllm_omni/core/prefix_cache/manager.py#L3-L14)
+  (request/slot identity, scheduling and state lock) and the
+  [controller](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/vllm_omni/core/prefix_cache/controller.py#L3-L20)
+  (staging, byte budget, copy queues and CPU-pool committer). Trace the live write
+  handle and release path across both; do not treat a manager-only diff as proof
+  that asynchronous copy ownership is unchanged. CPU eager checks cannot prove
+  CUDA transfer ordering or device-memory cleanup.
+- [Local replica pinning](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/vllm_omni/engine/stage_pool.py#L482-L501)
+  explicitly rejects unavailable/conflicting pins rather than selecting a fallback;
+  session reservations belong to the duplex placement owner, not the per-request
+  affinity ledger. Keep these lifetimes distinct when routing a session change.
+
+### Operating-guide boundaries and validation
+
+The new [maintainer operations guide](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/docs/contributing/ci/pr_merge_loop.md)
+and [lessons](https://github.com/vllm-project/vllm-omni/blob/1c0bde507dfbffd25b32f6092dbe4526c945b7dd/docs/contributing/ci/lessons.md)
+distinguish contributor local repair evidence from maintainer CUDA admission.
+They are not a replacement for this explicitly configured ten-PR selection
+contract, a live authorization, or a reason to change another loop's cadence,
+quotas or permissions. Resolve current explicit owner settings separately from
+dated operating-guide defaults; do not copy those settings into this loader.
+
+All 249 personal-repository offline unittests passed, including the existing
+31 selection fixtures, three corpus checks and Omni packaging test. Twelve
+unique historical corpus sources were re-fetched and matched to their stored
+Git blob and SHA-256 identities. The two defect families/four bounded outcomes
+are unchanged: no additional accuracy sample or reviewer-quality claim.
+Frontmatter, local links, source pins, manifests/routing, installer behavior,
+Python/shell syntax and diff whitespace were checked. No upstream hardware,
+model, serving, performance tests or live daily-selection collector ran. Hosted
+checks are recorded separately after publication, never inferred from offline tests.
+
+## Previous bounded audit, 2026-10-12 Asia/Shanghai
 
 Personal main was `6a601ccdac242143ee67b12008653dbc2e7969c1` before this update.
 Upstream main is frozen at
