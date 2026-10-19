@@ -47,6 +47,104 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
+## Current bounded refresh, 2026-10-20 Asia/Shanghai
+
+This section supersedes the dated runtime assumptions below, not the canonical
+review skill. The earlier audit and defect/fixed-clean corpus remain historical
+records; do not apply their old runner paths to a current deployment.
+[Source identities](audit-2026-10-20.json) pin 15 reference/implementation files
+by commit, Git blob, SHA-256, and byte length. Byte verification is not full
+semantic coverage of every file or an upstream execution result.
+
+### Release boundary and overlap
+
+- Personal repository main inspected: `2a42d199ab94316023661d9d5309a1b818dc671b`.
+- AFD main inspected: [0fff229b592bc489c8857cdabc39f247687acaf5](https://github.com/vllm-project/afd-plugin/commit/0fff229b592bc489c8857cdabc39f247687acaf5),
+  27 commits after the previous audit. The full comparison's 27 commit entries
+  were enumerated; only the runtime, review-guidance and test-contract surfaces
+  described here were inspected in depth, not every changed line.
+- [v0.30.0rc1](https://github.com/vllm-project/afd-plugin/releases/tag/v0.30.0rc1)
+  was published 2026-10-19 08:05:42 UTC with `prerelease: true`, no attached
+  release assets, and tag commit `9fcdbd1ff64698785fa0dcf2c61a817fd60f9f06`.
+  This RC includes the GPU/NPU MRV2 migration. Main is four commits beyond it:
+  removal of unused PP adaptations (#469), test conventions (#470), unit-test
+  consolidation (#467), and backend-aware sequence-parallel tests (#472).
+  Do not describe these four changes as part of that released tag.
+- PR420 remains open at `fbd0e5eb47128771994e0e9530fc230693d97b0a`.
+  Canonical review content already exists on main; the proposed branch is not
+  a mandatory replacement. The main checklist still says vLLM 0.26.0, asks for
+  V1/V2 parity and says GPU V2 is gated off. Those statements conflict with
+  current implementation. Resolve current compatibility from code and target
+  dependency pins; do not reject a valid MRV2-only change using stale prose.
+- Personal PR6 and PR17 remain open at the heads recorded below. All 13 open
+  personal PRs were enumerated; PR6's four files and PR17's 19 files were
+  inspected for path overlap. Neither touches this AFD supplement or selector.
+  No existing PR, human edit, manifest or other project's policy is replaced.
+
+### Runtime facts to revalidate at the review target
+
+- [Dependency metadata](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/pyproject.toml)
+  pins optional runtime `vllm==0.30.0`.
+  [Installation evidence](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/README.md)
+  names vLLM `ced6857afa0ea7b2e3f0846a62e1394e90f15607` and vLLM-Ascend
+  `8d4409d6256d8a6729140ddcc0d1889e3f96cdd6`. A supported source pair is not
+  proof of a released Ascend wheel/container or compatibility with arbitrary
+  versions.
+- [Deployment validators](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/afd_plugin/validation.py)
+  reject non-V2 GPU and NPU configurations. Both roles require the paired MRV2
+  deployment, but GPU FFN remains an AFD-owned connector-driven runner, not
+  native scheduler-driven MRV2 execution. PP/PCP/DCP sizes remain one; role
+  ranks must equal DP times TP. Deleted V1 paths are not current fallback tests.
+- [CUDA graph policy](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/afd_plugin/v1/worker/cuda_graph.py)
+  permits eager or FULL_DECODE_ONLY, with exactly two ubatches when enabled.
+  NPU synchronous CAMP2P accepts eager/FULL/FULL_DECODE_ONLY; native DBO needs
+  two ubatches, Attention DP greater than one, and no speculative decoding.
+  [NPU feature validation](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/afd_plugin/compat/npu/feature_validation.py)
+  further requires FULL_DECODE_ONLY for plain MLA graph plus DBO. Do not
+  flatten these model/connector-specific constraints into one platform matrix.
+- Async CAM requires eager Attention with Attention-side gating and async DP.
+  Its native DBO is Attention-only with two ubatches, including DP1. Independent
+  FFN FULL is a separate, narrow W4A8 runtime contract, not blanket Async CAM
+  graph support. Model, topology, device operator and cleanup evidence remain
+  necessary; source acceptance of a flag is not proof of working hardware.
+- PR421's Kubernetes recipes are now merged and included in v0.30.0rc1, unlike
+  their open-proposal status in the earlier audit. This does not establish that
+  every deployment variant has an executed Kubernetes acceptance test.
+
+### Current testing guidance and limits
+
+[Current AGENTS.md](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/AGENTS.md)
+requires behavior/seam tests, shared fakes, mirrored source layout, and CPU-only
+unit collection without torch/vLLM using guarded runtime imports. It forbids
+production-Python substring assertions; test-line budgets and ownership also
+apply. Historical AST/excerpt fixtures in this personal repository adjudicate
+old defects only and are not a substitute for upstream behavior tests.
+
+[Ready CI](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/.buildkite/cuda/test-ready.yml)
+selects non-GPU/non-runtime unit tests plus seven named DeepSeek-V2-Lite cases
+in the GPU V2 job, including `baseline-graph` and six `afd-v2-*` cases. [NPU testing](https://github.com/vllm-project/afd-plugin/blob/0fff229b592bc489c8857cdabc39f247687acaf5/docs/npu/TESTING.md)
+distinguishes real stream/event contract tests from transport and checkpoint
+accuracy. Completed nonempty two-stage replays during actual requests, not
+capture/profile/padded-only execution, qualify the stated graph+DBO gate.
+DSV4 synchronous profiles with `check_answer=False` establish liveness, not
+output correctness. Test #472's reported Ascend suite totals are author evidence,
+not tests executed by this maintenance pass.
+
+The existing two purposively selected defect/fixed-clean pairs (four correlated
+outcomes), selection policy, ten-PR cap, and delivery ledger contract are
+unchanged. No upstream PR review or daily queue execution was performed. No
+GPU/NPU execution, model accuracy/performance measurement, distributed teardown,
+Kubernetes deployment, or private project audit was performed.
+
+Validation: the full personal-repository suite passed 250 network-free tests,
+including 30 AFD selector cases, four AFD corpus/audit metadata checks, and the
+AFD temporary-directory install/idempotence/conflict test. All 24 skill
+frontmatters, JSON/Python parsing, affected local links, manifest/routing tests,
+shell syntax and diff whitespace passed. Fifteen current-source files and eight
+historical corpus files were byte-verified against Git blob and SHA-256 pins.
+These fixture and packaging checks are not upstream runtime tests or accuracy
+measurements. Installation occurred only in temporary test directories.
+
 ## Sources and overlap, inspected 2026-10-06 Asia/Shanghai
 
 - Personal main baseline: `874421b1c16a14de54e497b29c33959353f067cd`
@@ -75,7 +173,7 @@ does not enforce a cross-process cap. No delivery ledger belongs here.
   This AFD-only supplement neither replaces their human edits nor imports their
   Omni checklist or maintenance workflow
 
-## Bounded freshness observations
+## Historical observations at the 2026-10-06 pin
 
 Read the actual target's compatibility pins, dependency metadata, CI commands,
 markers, fixtures, and module status before applying these dated observations.

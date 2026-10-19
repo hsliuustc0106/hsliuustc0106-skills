@@ -205,7 +205,7 @@ class PackagingTests(unittest.TestCase):
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
             installed = Path(target) / "skills/afd-plugin-review"
-            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json"):
+            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-20.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
                                     input=json.dumps(snapshot()), text=True, capture_output=True)
@@ -257,6 +257,25 @@ class EvidenceTests(unittest.TestCase):
             else:
                 self.assertIn("worker", str(case["route"]).lower())
                 self.assertIn("graph", str(case["route"]).lower())
+
+    def test_freshness_audit_pins_and_release_boundary(self):
+        data = json.loads((SKILL / "references/audit-2026-10-20.json").read_text())
+        self.assertEqual(data["repository"], daily.REPOSITORY)
+        self.assertRegex(data["main"], r"^[0-9a-f]{40}$")
+        self.assertNotEqual(data["main"], data["previous_audit"])
+        self.assertTrue(data["release"]["prerelease"])
+        self.assertNotEqual(data["release"]["commit"], data["main"])
+        self.assertEqual(data["release"]["main_commits_after_release"], 4)
+        paths = [source["path"] for source in data["sources"]]
+        self.assertEqual(len(paths), len(set(paths)))
+        self.assertIn("afd_plugin/validation.py", paths)
+        self.assertIn("AGENTS.md", paths)
+        for source in data["sources"]:
+            self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
+            self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+            self.assertGreater(source["bytes"], 0)
+            self.assertEqual(source["url"], "https://github.com/" + daily.REPOSITORY
+                             + "/blob/" + data["main"] + "/" + source["path"])
 
     def test_pinned_mechanisms(self):
         import ast
