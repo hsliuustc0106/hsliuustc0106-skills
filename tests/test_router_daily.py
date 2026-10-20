@@ -205,7 +205,7 @@ class PackagingTests(unittest.TestCase):
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
             installed = Path(target) / "skills/router-review"
-            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json"):
+            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
                                     input=json.dumps(snapshot()), text=True, capture_output=True)
@@ -220,6 +220,28 @@ class EvidenceTests(unittest.TestCase):
     def setUp(self):
         self.data = json.loads((SKILL / "references/adjudicated-cases.json").read_text())
         self.cases = {case["id"]: case for case in self.data["cases"]}
+
+    def test_freshness_audit_has_distinct_release_and_source_pins(self):
+        data = json.loads((SKILL / "references/audit-2026-10-21.json").read_text())
+        self.assertEqual(data["repository"], daily.REPOSITORY)
+        for key in ("main", "previous_audit"):
+            self.assertRegex(data[key], r"^[0-9a-f]{40}$")
+        self.assertNotEqual(data["main"], data["previous_audit"])
+        self.assertNotEqual(data["main"], data["release"]["commit"])
+        self.assertEqual(data["commits_since_previous_audit"], 11)
+        self.assertEqual(data["release"]["main_commits_after_release"], 21)
+        paths = [source["path"] for source in data["sources"]]
+        self.assertEqual(len(paths), len(set(paths)))
+        for required in ("src/policies/kv_aware.rs", "src/kv_index/decode.rs",
+                         "src/kv_index/admit.rs", "src/kv_index/subscriber.rs",
+                         ".buildkite/pipeline.yml"):
+            self.assertIn(required, paths)
+        for source in data["sources"]:
+            self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
+            self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+            self.assertGreater(source["bytes"], 0)
+            self.assertEqual(source["url"], "https://github.com/" + daily.REPOSITORY
+                             + "/blob/" + data["main"] + "/" + source["path"])
 
     def test_source_hashes_lines_and_adjudication_are_bounded(self):
         import hashlib

@@ -4,7 +4,101 @@ The repository-owned review skill remains canonical. This supplement covers the
 explicitly configured personal daily queue and dated source-inspection results;
 it does not authorize upstream reviews, labels, merges, or code changes.
 
-## Freshness update, inspected 2026-10-14 Asia/Shanghai
+## Freshness update, inspected 2026-10-21 Asia/Shanghai
+
+This bounded refresh supersedes the dated main-only reachability and CI facts
+below, not the repository-owned review checklist. [Source identities](audit-2026-10-21.json)
+pin 19 current implementation, documentation and test files by commit, Git blob,
+SHA-256 and byte length. Byte verification is not full semantic coverage.
+
+- Personal main inspected: `d741ca228e29d01f9b4a61e68e69b4ab43ad5e9e`.
+  Router main: [5a840370e054dc3c4615be2d5a7a9e6a304ca354](https://github.com/vllm-project/router/commit/5a840370e054dc3c4615be2d5a7a9e6a304ca354),
+  11 commits after the October 14 pin. The complete commit and changed-file
+  inventories were enumerated; this is not a full audit of every changed line.
+- The latest published release remains [v0.1.16](https://github.com/vllm-project/router/releases/tag/v0.1.16),
+  at `db02f358da401b60d4ae14eb286163763a0705cc`; main is 21 commits ahead.
+  The changes below are main-only, not additions to that released artifact.
+- Main still has no AGENTS.md or canonical review skill. PR336 remains
+  open/draft at `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`; its skill bytes
+  match the Git blob and SHA-256 recorded below. Its architecture snapshot
+  predates the new policy; resolve implementation at the actual review target.
+- All 13 open personal PRs were enumerated. PR6 and PR17 retain the heads
+  recorded below; their complete four-file and 19-file inventories do not
+  overlap this Router supplement or its tests. No PR, human edit, shared
+  installer, manifest or other project's review policy is replaced.
+
+### Main-only contracts to revalidate
+
+- [KV-aware selection](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/src/policies/kv_aware.rs)
+  is now reachable through the regular/co-located router, superseding the
+  earlier index-only state. Effective P/D policies reject `kv_aware`.
+  The gRPC chat path supplies prepared token IDs; HTTP falls back to load-only
+  scoring, not observed KV reuse. Discovery failure likewise loses placement
+  credit rather than proving an empty backend cache. Follow cache identity,
+  worker/rank binding and per-request LoRA hashing; nonempty cache salt disables
+  placement credit because event identity cannot establish that namespace.
+- The scorer includes remaining prefill work plus active prefill work, times
+  the projected request count (the maximum observed count plus this request).
+  Device reuse starts at a contiguous prefix; transfer credit uses a compatible
+  continuation, not a sum of overlapping tiers or disconnected tails. Preserve
+  last-token logits work and round fractional remaining work up. Temperature
+  zero minimizes cost; positive temperature samples. These are source
+  contracts, not latency, throughput or cache-hit measurements.
+- [Request accounting](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/src/routers/http/router.rs)
+  uses selection receipts and shared guards across dispatch, response
+  consumption, cancellation and body drop. Selection alone must not reserve a
+  slot. gRPC's first model output, rather than any SSE role frame, transitions
+  prefill accounting; HTTP uses its first body frame. Check retry/failure,
+  buffering, stream completion and disconnect paths for exactly-once release.
+- [Strict structural decoding](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/src/kv_index/decode.rs)
+  rejects malformed MessagePack, trailing bytes, invalid UTF-8, duplicate or
+  unknown fields and unsupported events atomically. Its payload, depth and
+  event-count limits do not establish a hard decoded-heap budget. The live
+  subscriber uses this shared decoder and remains multi-tier/ownership aware.
+  Do not conflate it with [separate device admission](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/src/kv_index/admit.rs):
+  the narrow GPU/group-0/local, complete-block, 32-byte-hash checks preserve
+  batch rank and do not establish publisher identity, freshness or independently
+  addressable/native-DP routing. Shape acceptance is not routing eligibility.
+- [Endpoint validation](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/src/kv_index/endpoints.rs)
+  rejects duplicate/shared publishers and unspecified connect hosts, including
+  IPv4-mapped IPv6 aliases. It retains exact registry ownership strings;
+  syntactic canonicalization is not DNS resolution or publisher authentication.
+- Other landed fixes need target-specific regression checks: PR360 forces
+  prefill `min_tokens=1` as well as `max_tokens=1`; PR319 excludes unhealthy
+  workers from cache-aware imbalance statistics; PR232 skips unhealthy workers
+  for proxy GET endpoints. PR281 adds token-bucket-derived, upward-rounded,
+  minimum-one-second `Retry-After` hints to queue-full and no-queue/no-token
+  429 paths, not every error response. A hint is not
+  a reservation or a guarantee that a retry will be admitted.
+- [The MoRI XGMI lane](https://github.com/vllm-project/router/blob/5a840370e054dc3c4615be2d5a7a9e6a304ca354/.buildkite/pipeline.yml)
+  is temporarily disabled for automatic builds while the MI300X host-image
+  issue is unresolved; trusted manual UI/API runs with `RUN_ROCM_XGMI=1`
+  remain configured. A missing automatic lane is not passing ROCm evidence.
+
+### Validation and limits
+
+The two historical defect/fix families and four correlated outcomes remain
+unchanged. Eight historical source records were re-fetched and matched full
+Git blob/SHA-256 and excerpt pins. No new accuracy sample is claimed.
+The label/new-head policy, ten-distinct-PR daily cap and delivery deduplication
+are unchanged; no live review queue or delivery checkpoint was advanced.
+
+The personal-repository suite passed 251 network-free tests, including the
+Router selector, corpus grounding/severity, source manifests and temporary-folder
+installation checks. Frontmatter, affected links, JSON/Python parsing, routing,
+shell syntax and diff whitespace passed. These tests exercise normalized
+collector snapshots, not live API pagination or ancestry verification.
+
+Cargo and rustc are unavailable. No upstream Rust/Python suites, live serving,
+model/tokenizer parity, GPU/ROCm/RDMA, performance or distributed cleanup ran.
+Suggested focused checks in a capable isolated environment are
+`cargo test --lib policies::kv_aware`, `cargo test --lib kv_index::decode`,
+`cargo test --test kv_device_consumer`, `cargo test --test kv_endpoint_worker_hosts`,
+and the relevant HTTP-router, prefill, cache-aware and rate-limit regression
+tests. These commands are suggestions, not reported passes. The canonical
+draft contains no linked helper/reference bundle to execute.
+
+## Historical freshness update, inspected 2026-10-14 Asia/Shanghai
 
 This bounded update supersedes the historical release and L0 reachability
 statements below; it does not replace the repository-owned checklist.
