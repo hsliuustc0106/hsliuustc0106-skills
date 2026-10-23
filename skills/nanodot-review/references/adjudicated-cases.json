@@ -96,23 +96,28 @@
       "head_sha": "80c6feec31dc423f7efdcea12e854eab394dad9e",
       "status": "passed",
       "tests": 44,
-      "python": "3.12.14",
-      "elapsed_seconds": 0.341,
-      "network_boundary": "Both-case HTTP/HTTPS/ALL proxy variables pointed to 127.0.0.1:9; NO_PROXY empty. Tests were inspected first; live gh transport mocked and CLI offline fixture paths used."
+      "python": "3.13.5",
+      "elapsed_seconds": 0.344,
+      "network_boundary": "Both-case HTTP/HTTPS/ALL proxy variables pointed to 127.0.0.1:9; NO_PROXY empty. Tests were inspected first; live gh transport mocked and CLI offline fixture paths used.",
+      "reverified_on": "2026-10-23 Asia/Shanghai",
+      "note": "Re-run on frozen main identical to head_sha; historical_source_verification not repeated this pass because fixture trees and main were unchanged."
     },
     "historical_source_verification": {
       "status": "passed",
       "source_items": 24,
       "method": "Compared all canonical fixture excerpt bytes and full evaluator bytes against local git show at each exact historical SHA/path; checked original SHA256 values.",
-      "mismatches": 0
+      "mismatches": 0,
+      "reverified_on_this_pass": false,
+      "reason": "main and fixture trees identical to prior pin; prior 24/24 exact-object match retained."
     },
     "affected_runtime_tests": {
       "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider tests/test_provider_corpus.py tests/test_auto_adversarial.py tests/test_soak.py tests/test_ui_server.py",
       "status": "blocked_before_collection",
-      "blocker": "No module named pytest; no installation attempted. Both available Python interpreters lacked pytest.",
-      "tests_executed": 0
+      "blocker": "No module named pytest; no installation attempted. Available Python 3.13.5 lacked pytest.",
+      "tests_executed": 0,
+      "rechecked_on": "2026-10-23 Asia/Shanghai"
     },
-    "upstream_worktree": "clean before and after audit; no upstream edits or publication performed"
+    "upstream_worktree": "read-only shallow clone at 80c6feec31dc423f7efdcea12e854eab394dad9e; no upstream edits or publication performed"
   },
   "historical_pairs": [
     {
