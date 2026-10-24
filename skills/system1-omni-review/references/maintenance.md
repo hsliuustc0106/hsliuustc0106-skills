@@ -37,6 +37,105 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-10-24 Asia/Shanghai
+
+Public repository visibility was verified before inspecting or publishing source
+information. Personal baseline: `fd9a96460492efe2084a7216963a7f640cc21dfc`.
+The new [upstream snapshot](https://github.com/ThinkFlowLab/system1-omni/commit/a893f0cf55135623fb093f401d8ce4713330d801)
+is 92 commits beyond the October 17 pin
+[`e66ff34996760a84ad56690f0ae4cf434e669e65`](https://github.com/ThinkFlowLab/system1-omni/commit/e66ff34996760a84ad56690f0ae4cf434e669e65)
+and 315 beyond the unchanged `release/v0.1.0` tag. The release API still lists
+only that October 6 release at `7f39ac40902c374803992407bb26eeba29c8a588`.
+This is a bounded maintenance pass, not a correctness audit of those 92 commits.
+
+Canonical SKILL SHA-256 remains
+`ae2dfac116376ae2ec41f65122cc1bf5aea10751b8b907198a56154e5d67230e`,
+Git blob `392df4c8881624ad8b9670101d51869562f6c68a`. Both canonical references
+retain the October 10 blob IDs (`repository-contracts`
+`b6ace00bf8a7486cd20b0ed2e5d19515ef6d1ef0`, `daily-selection`
+`e28e81b1696c1a93817eb27384cc5ebc3d8919c1`). The canonical skill tree was
+byte-identical at the prior and current pins. The source-owned checklist remains
+canonical; this wrapper needs no copied checklist or SKILL.md text change.
+
+Material routing changes since the October 17 snapshot:
+
+- [CONTRIBUTING validation matrix](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/CONTRIBUTING.md)
+  and [CI](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/.github/workflows/ci.yml)
+  are unchanged at the pinned blobs from October 17. Prior notes about
+  `--features omni-laya/serve`, Decider Python helpers, and conditional CUDA
+  contract-checker steps still apply.
+- [Architecture](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/docs/architecture.md)
+  now inventories [JEMM](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/src/models/jemm/README.md)
+  on the shared Qwen executor with separate unmerged FP32 adapters: selected BF16
+  label-head logits on CUDA, typed calibration on CPU, one complete text or
+  1–4-image request, both streams synchronized before release. Cua-S1 unmerged
+  text finishing rounds answer-letter logits to the tied `lm_head` BF16 output
+  dtype before FP64-normalized FP32 probabilities; legacy merged text and
+  screenshot readouts retain FP32 logits. Do not treat an architecture paragraph
+  that omits JEMM as a complete implementation inventory.
+- Root [Cargo workspace](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/Cargo.toml)
+  adds `src/models/jemm/native`. Workspace membership alone is not GPU or
+  released-behavior proof.
+- [Supported models](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/docs/supported-models.md)
+  adds the JEMM native worker row (A800 frozen text/1–4-image corpus; host checks
+  only on CPU) and a Cua-S1 native screenshot worker row; the experimental
+  JEV-VL row now requires rebuilt ABI 9. [MkDocs](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/mkdocs.yml)
+  surfaces JEMM, native screenshots, and Cua text-parity docs.
+- [CUDA contract](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/src/backends/cuda/contract.md)
+  is no longer marked proposed-only: the `cuda-contract` CI job runs checker,
+  backend and metadata tests on CPU. Those steps do not compile CUDA or prove
+  device numerical parity. Current `CS1_ABI_VERSION` in
+  [`ops.h`](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/src/backends/cuda/qwen3_5/ops.h)
+  is **9**; historical PR ABI numbers are not the current build requirement.
+- [Benchmarks README](https://github.com/ThinkFlowLab/system1-omni/blob/a893f0cf55135623fb093f401d8ce4713330d801/benchmarks/README.md)
+  documents Score wire precision (`--score-decimals`), Decider's two-decimal
+  Score versus four-decimal probabilities, JEV-VL `--protocol jev-vl`, strict
+  UTF-8 body bytes, and warmup. The serving-matrix client remains a frozen-oracle
+  HTTP client, not a model launcher. Default four-decimal Score validation can
+  reject valid Decider responses.
+
+Notable merges in range (partial inventory, not a full correctness review):
+[#117](https://github.com/ThinkFlowLab/system1-omni/pull/117) Qwen 27B vision,
+[#118](https://github.com/ThinkFlowLab/system1-omni/pull/118)/[#122](https://github.com/ThinkFlowLab/system1-omni/pull/122)/[#123](https://github.com/ThinkFlowLab/system1-omni/pull/123)/[#155](https://github.com/ThinkFlowLab/system1-omni/pull/155)
+JEMM native stack, [#135](https://github.com/ThinkFlowLab/system1-omni/pull/135)
+Cua execution pipeline, [#143](https://github.com/ThinkFlowLab/system1-omni/pull/143)
+Cua text parity, [#93](https://github.com/ThinkFlowLab/system1-omni/pull/93)
+bench Score wire rounding, [#100](https://github.com/ThinkFlowLab/system1-omni/pull/100)
+Laya TileLang target pin, [#131](https://github.com/ThinkFlowLab/system1-omni/pull/131)
+decision-latency evidence. Other areas touched but not exhaustively audited
+include qwen3_5 shared vision/CUDA Graph work, Cua resident features, and
+benchmark protocol hardening. Their complete source, model-quality and
+performance qualification are outside this maintenance pass.
+
+Open high-priority proposals remain proposal-only. Label catalog was fully
+enumerated (15 names across the Labels API; exact `high priority` present; no
+`ready` and no `high-priority`). Personal daily selection therefore still
+requires exact `high priority` alone. Nineteen open PRs currently carry that
+label (numbers 156, 152, 151, 149, 148, 147, 146, 140, 139, 134, 129, 127, 124,
+113, 112, 109, 101, 99, and draft 82). No verified collector snapshot with
+affirmative completeness flags, delivery history and new-commit ancestry was
+built in this pass, so `scripts/select_daily.py` was not run against live data.
+Listing labeled open PRs is not a daily-queue delivery and does not authorize
+reviews. Personal [PR6](https://github.com/hsliuustc0106/hsliuustc0106-skills/pull/6)
+(`68d7b38df04c382e9e51c9fde28428181d3bc5a8`) and
+[PR17](https://github.com/hsliuustc0106/hsliuustc0106-skills/pull/17)
+(`f01a5df38f337e65d80f420e6b22e0b30a5237af`) remain open at the same heads;
+neither was merged, closed or overwritten.
+
+Selection contract, offline adapter and historical calibration are unchanged.
+All four pinned adjudication rows (two PR30 defect/fix pairs) were re-fetched
+and matched exact lines, full-file SHA-256 and Git blob IDs. Four rows remain two
+related pairs from one historical PR, not four independent accuracy samples.
+No accuracy percentage is claimed.
+
+Validation for this pass is recorded in the commit message and the Saturday
+maintenance report: repository unit tests with bytecode disabled, skill
+frontmatter/link/pin checks as covered by existing System1 tests, and Bash
+syntax for `scripts/select_daily.py`. No live candidate selection, upstream
+Rust/model/GPU tests, benchmark campaign, paid execution or personal installation
+is part of this pass. The October 17 and October 10 sections below retain their
+original dates, counts and scope.
+
 ## Bounded update, 2026-10-17 Asia/Shanghai
 
 Public repository visibility was verified before inspecting or publishing source
