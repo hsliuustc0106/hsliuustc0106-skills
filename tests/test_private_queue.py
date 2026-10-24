@@ -107,6 +107,16 @@ class QueueTests(unittest.TestCase):
                                          policy='previous-policy', completed=True, published=False)]
         self.assertFalse(self.run_queue()['selected'])
 
+    def test_malformed_history_repository_blocks_all_outcomes(self):
+        for completed in (False, True):
+            with self.subTest(completed=completed):
+                self.snapshot['reviews'] = [dict(repository='not-a-repository', number=1,
+                                                 head='b'*40, policy='previous-policy',
+                                                 completed=completed, published=False)]
+                result = self.run_queue()
+                self.assertFalse(result['selected'])
+                self.assertTrue(result['blocked'])
+
     def test_incomplete_review_stays_pending(self):
         self.snapshot['reviews'] = [dict(repository=REPO, number=1, head='a'*40,
                                          policy=queue.POLICY, completed=False, published=False)]

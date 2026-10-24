@@ -58,12 +58,13 @@ def _select(snapshot, config):
     covered, used = set(), set()
     for item in history:
         require(isinstance(item['repository'], str) and item['repository'] and number(item['number']) and sha(item['head']), 'invalid review identity')
+        review_repository = repo(item['repository'])
         require(isinstance(item['policy'], str) and item['policy'], 'unknown prior policy')
         require(type(item['completed']) is bool and type(item['published']) is bool, 'unknown review outcome')
         # A completed review is deduplicated even when publication failed or the
         # policy changed. Publication recovery is a separate authorized workflow.
         if item['completed']:
-            covered.add((repo(item['repository']), item['number'], item['head']))
+            covered.add((review_repository, item['number'], item['head']))
     for item in charges:
         require(isinstance(item['repository'], str) and item['repository'] and number(item['number']) and day(item['day']), 'invalid daily charge')
         require(item['day'] <= snapshot['day'], 'future daily charge')
