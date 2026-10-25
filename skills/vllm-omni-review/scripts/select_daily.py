@@ -5,6 +5,7 @@ The collector owns complete pagination, commit-delta proof, and final refetches.
 """
 import datetime
 import json
+import re
 import sys
 
 REPOSITORY = "vllm-project/vllm-omni"
@@ -52,15 +53,18 @@ def _select(snapshot):
         raise ValueError("unknown delivery history")
     covered, keys, used = set(), set(), set()
     for item in history:
-        if (not isinstance(item["repository"], str) or not item["repository"]
+        repository = item["repository"]
+        if (not isinstance(repository, str)
+                or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository)
                 or not _number(item["number"]) or not _sha(item["head"])
                 or not isinstance(item["policy"], str) or not item["policy"]
                 or not _day(item["day"])):
             raise ValueError("invalid delivery history")
-        key = (item["repository"], item["number"], item["head"], item["policy"])
+        repository = repository.lower()
+        key = (repository, item["number"], item["head"], item["policy"])
         keys.add(key)
         covered.add(key[:3])
-        if item["repository"] == REPOSITORY and item["day"] == snapshot["day"]:
+        if repository == REPOSITORY and item["day"] == snapshot["day"]:
             used.add(item["number"])
 
     # Validate the entire collection before yielding any candidate. Conflicting

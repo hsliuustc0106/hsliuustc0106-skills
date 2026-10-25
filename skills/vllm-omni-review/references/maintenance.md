@@ -42,6 +42,10 @@ The first run requires an explicit baseline or first-run authorization. Missing
 checkpoint history is unknown. See `tests/test_omni_daily.py` for executable
 normalized snapshots; this helper does not implement the evidence collector.
 
+Validate delivered repository identities as owner/name and compare them case-insensitively,
+so a collector spelling change cannot reset coverage or the daily cap. Malformed
+identities are unknown, not evidence of another repository.
+
 Deduplicate repository/PR/head/policy, and keep a head already reviewed under an
 older policy covered. Cap at ten distinct PRs per repository/Asia/Shanghai day
 across confirmed deliveries and policy versions. A new head on an already counted
@@ -49,7 +53,85 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Current bounded audit, 2026-10-19 Asia/Shanghai
+## Current bounded audit, 2026-10-26 Asia/Shanghai
+
+Upstream main was frozen at [f7d012bf3c2f63468a76b86acef5e5033872f7f5](https://github.com/vllm-project/vllm-omni/commit/f7d012bf3c2f63468a76b86acef5e5033872f7f5).
+The [155-commit delta](https://github.com/vllm-project/vllm-omni/compare/1c0bde507dfbffd25b32f6092dbe4526c945b7dd...f7d012bf3c2f63468a76b86acef5e5033872f7f5)
+was enumerated in pages of 100 + 55, followed by an empty page. The compare file
+list is capped at 300; the observations below are targeted source inspection,
+not a review of all changed code. The 31 published release entries were read:
+latest stable remains [v0.30.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.30.0)
+(2026-09-25); [v0.32.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0rc1)
+(2026-10-19) is a prerelease. Its tag resolves to
+`da572cddb38383deae9caef33b8d490e292ef071`; ancestry comparisons place all three
+changes below after that tag. Treat these as main-only observations.
+
+The [canonical skill](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/.claude/skills/review-pr/SKILL.md)
+was read in full and remains unchanged: Git blob
+`96e9116e1c902e7197130d44fdfe9584ca1d4c34`, exact-byte SHA-256
+`23ff085a2e6e00bcae644217adb43c94432d773e78d13e124f33b3283af77a53`.
+[AGENTS](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/AGENTS.md),
+[contribution instructions](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/CONTRIBUTING.md),
+[lessons](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/docs/contributing/ci/lessons.md), and the canonical AR-runtime,
+cache-management, runtime-stage-execution and test-evidence references were read
+at this same revision. These pointers supplement, not replace, the live
+canonical contracts.
+
+### Changed contracts to rediscover at the target
+
+- Thinker CPU offload uses opt-in LMCache to store KV **and hidden states**,
+  not vLLM's OffloadingConnector; the same stage's GPU prefix cache must be off.
+  The [recipe and limitation](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/docs/configuration/kv_offload.md#L94-L112)
+  explicitly warn that independent HS eviction can leave a KV hit without its
+  prefix conditioning. The [restore implementation](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/worker/lmcache_model_runner_mixin.py#L263-L338)
+  checks every required layer, logs and skips all HS prepend on an incomplete
+  hit; this is not a scheduler fallback that recomputes the prefix. Increasing
+  the HS pool is a mitigation, not a correctness guarantee. Trace both tiers
+  and the pooler consumer; do not treat successful KV restoration as proof of
+  complete downstream input. The [hit/cold test](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/tests/engine/test_kv_offload_hit_vs_cold.py#L61-L105)
+  is hardware-dependent and explicitly delegates waveform assertions elsewhere;
+  it was inspected, not executed here.
+- Native AR stages declaring `recompute_preemption="fail"` now
+  [finish once with ERROR and free request/KV state](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/core/sched/omni_scheduler_mixin.py#L559-L621)
+  instead of replaying decode state that token IDs cannot reconstruct. Explicit
+  prefix-cache reset retains a scoped resume exception; the shared stale-output
+  flag alone is not that exception. The [production-scheduler tests](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/tests/core/sched/test_omni_recompute_preemption.py#L104-L179)
+  cover terminal cleanup, auxiliary-output notification, allow-mode requeue,
+  reset resume and reset-scope cleanup. These are source-inspected tests, not
+  executed results.
+- Thinker prefix caching now defaults on for the
+  [Qwen3 CUDA V1 turn profile](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/deploy/qwen3_omni_moe.yaml#L32-L40)
+  and [MiniCPM-o CUDA V1 turn profile](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/deploy/minicpmo_4_5_turn.yaml#L5-L25),
+  not universally. Inspect platform overrides and the separate
+  [MRv2](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/deploy/qwen3_omni_moe_mrv2.yaml#L35-L39)
+  and [duplex](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/vllm_omni/deploy/qwen3_omni_duplex.yaml#L1-L7)
+  profiles, which retain disabled defaults. The [startup-projection assertion](https://github.com/vllm-project/vllm-omni/blob/f7d012bf3c2f63468a76b86acef5e5033872f7f5/tests/e2e/offline_inference/test_qwen3_omni.py#L109-L117)
+  compares resolved platform configuration rather than assuming every platform
+  enables the cache. No CUDA, model, serving, performance or waveform validation
+  ran in this maintenance audit.
+
+### Local maintenance validation and boundaries
+
+Personal main was `5092324859dea6f75e1a689a076665ba52928ca8`.
+All 13 open personal-skill PRs were enumerated (13 + empty page); PR6 at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8` and PR17 at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af` were inspected for overlap.
+Their proposed entrypoint/routing changes were not imported or overwritten.
+
+This pass corrects case-sensitive repository history accounting in the Omni-only
+selection adapter. The new regression methods fail on the prior helper and pass
+on the candidate; 33 selection, three corpus and one packaging tests pass, with
+254 tests passing in the full offline personal-repository suite. An independent
+read-only pass reran both suites. Frontmatter, scoped local links, source pins,
+JSON manifests, Python/shell syntax, install routing and diff whitespace were
+checked. The existing two adjudicated defect/fix pairs retain four bounded
+outcomes; all 12 unique pinned corpus source files were re-fetched and checked
+against Git blob and SHA-256 identities. No new reviewer accuracy measurement
+is claimed. No live PR queue, delivery checkpoint, active approval-loop quota,
+review cadence, or upstream repository was changed; source-inspected upstream
+tests were not executed.
+
+## Previous bounded audit, 2026-10-19 Asia/Shanghai
 
 Personal main before this update: `8a8d071ffef45b3242d61c648f18b714a1a6c99e`.
 Upstream main was frozen at
