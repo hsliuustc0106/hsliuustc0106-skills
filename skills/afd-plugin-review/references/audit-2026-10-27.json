@@ -1,0 +1,114 @@
+{
+  "repository": "vllm-project/afd-plugin",
+  "audited_at_utc": "2026-10-26T16:10:44Z",
+  "previous_audit": "0fff229b592bc489c8857cdabc39f247687acaf5",
+  "main": "2bcd76fcf318dda123124f4cfb1d08302f8a1ec9",
+  "coverage": "Complete 12-commit metadata comparison; targeted source inspection and 14 source-byte identities. No upstream tests, model inference, GPU/NPU execution, cluster deployment, production savings, or reviewer-accuracy measurement.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "git_blob_sha": "6b689f3cb0f7cbce046f673fdfa3fd9cc7a70777",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/AGENTS.md",
+      "sha256": "f8f56918947daf71ae3a4b04e16d6feecbebec021354c68d6595027aecc0c76a",
+      "bytes": 8721
+    },
+    {
+      "path": "afd_plugin/config.py",
+      "git_blob_sha": "2e004e572f9ad7cc7d0fc297ee6a63edc2a2ae7b",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/afd_plugin/config.py",
+      "sha256": "7d5ddf5d88c633c34fb42b66bd600b027646b8cd7abce440d877c1625cfa2cdf",
+      "bytes": 12016
+    },
+    {
+      "path": "afd_plugin/compat/npu/feature_validation.py",
+      "git_blob_sha": "3b7976acc04f44c5cf535efdeefedbdeb36ab885",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/afd_plugin/compat/npu/feature_validation.py",
+      "sha256": "cd641f58eb547ab7f3e79662e2e83aa40f19e858d4dbac3301a2388cad99e2b3",
+      "bytes": 13957
+    },
+    {
+      "path": "afd_plugin/v1/worker/npu/async_ffn_two_stream.py",
+      "git_blob_sha": "8dbf9b38f145a62755e6bc4a5e28e51220b647f3",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/afd_plugin/v1/worker/npu/async_ffn_two_stream.py",
+      "sha256": "0407b0a361b9dc41fe9fa1576e120a203a152490a48d3faa1802e4ca1b2dfd64",
+      "bytes": 7817
+    },
+    {
+      "path": "docs/npu/ASYNC_FFN_RUNTIME.md",
+      "git_blob_sha": "a065ec948e3dc53063fe81538424aaf6ac00c329",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/docs/npu/ASYNC_FFN_RUNTIME.md",
+      "sha256": "f270c507e22859de688a56b0d818811d9aa5bc0c2b92549bd7dcd576eacf2cd0",
+      "bytes": 10769
+    },
+    {
+      "path": "docs/design/module/e2e_testing.md",
+      "git_blob_sha": "d68ededbb856d04598178662f2d08136b4cd8ece",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/docs/design/module/e2e_testing.md",
+      "sha256": "b0a39877f35314c32f6d76c553a9c552e2f50879f055deee58be73be30336182",
+      "bytes": 15840
+    },
+    {
+      "path": "afd_plugin/connectors/gpu/p2p.py",
+      "git_blob_sha": "418825e7b5bb03b7ffbcd9fd3fac15fb4757aa10",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/afd_plugin/connectors/gpu/p2p.py",
+      "sha256": "744d25ece2ea00294c84d58c4536532414262ba3ac26432546bee16fe832a0f6",
+      "bytes": 44803
+    },
+    {
+      "path": "tests/e2e/multi_pod/runner.py",
+      "git_blob_sha": "aa3c7420fd8a5536ec5d93e73113a1c64364b7f3",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/tests/e2e/multi_pod/runner.py",
+      "sha256": "6ab5ccc2f7b5ba2dd68c4610f9f3ab04f6a98e834492e1bbd7f1b85de951b327",
+      "bytes": 17738
+    },
+    {
+      "path": "afd_plugin/connectors/npu/async_cam.py",
+      "git_blob_sha": "107a91632af7f0c7c15c8603dccede05f8a25406",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/afd_plugin/connectors/npu/async_cam.py",
+      "sha256": "747a9e321bbd40822421a59c95a1c314d375ea513d8de00ef05dcdc48f1e605b",
+      "bytes": 38646
+    },
+    {
+      "path": "docs/npu/LAYERED_W2_MDL_VALIDATION.md",
+      "git_blob_sha": "bd293fe872ac0d358e5abde50581ae223f52fbed",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/docs/npu/LAYERED_W2_MDL_VALIDATION.md",
+      "sha256": "2889b046dfd85d3c7f7f4a4c07dbbc7f54f5b83401fea2c245f8ae30e22b4535",
+      "bytes": 12027
+    },
+    {
+      "path": "tests/e2e/multi_pod/README.md",
+      "git_blob_sha": "07b3bcb2d9b5a9e1c3913ebfc026dc04981b2f3d",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/tests/e2e/multi_pod/README.md",
+      "sha256": "b662e9da0a6be1abde61dbbfbf49e3cae7417d1491da6848efe2656449e6d9fd",
+      "bytes": 21096
+    },
+    {
+      "path": ".agents/skills/review-pr/SKILL.md",
+      "git_blob_sha": "81d94c95de61d37931111e770a791d1c0a2e5663",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/.agents/skills/review-pr/SKILL.md",
+      "sha256": "bb5adbcfcec5910fd56220b822db4c88c8dfaec713aef86c119e8741c849359b",
+      "bytes": 13885
+    },
+    {
+      "path": "pyproject.toml",
+      "git_blob_sha": "750dadf236fa72465c97d3242dc07734e7339be7",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/pyproject.toml",
+      "sha256": "078aed5530ac6e5c8dc90d00cadfb4c257929f62b63e038918e26974e5e2c7b2",
+      "bytes": 5397
+    },
+    {
+      "path": ".buildkite/cuda/test-ready.yml",
+      "git_blob_sha": "bfca7151c258e7cf466c98f3593a2b14179f9252",
+      "url": "https://raw.githubusercontent.com/vllm-project/afd-plugin/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9/.buildkite/cuda/test-ready.yml",
+      "sha256": "f144e56521bccd1a8332fefee12a9c79c36d92de1b630b457ae54da060eeaefc",
+      "bytes": 1476
+    }
+  ],
+  "release": {
+    "tag": "v0.30.0rc1",
+    "commit": "9fcdbd1ff64698785fa0dcf2c61a817fd60f9f06",
+    "prerelease": true,
+    "published_at": "2026-10-19T08:05:42Z",
+    "commit_evidence": "Retained October 20 audited tag pin; not freshly resolved in this pass."
+  }
+}

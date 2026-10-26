@@ -38,6 +38,8 @@ The first run requires an explicit baseline or first-run authorization. Missing
 checkpoint history is unknown. See `tests/test_afd_daily.py` for executable
 normalized snapshots; this helper does not implement the evidence collector.
 
+Normalize valid GitHub owner/repository identities case-insensitively before
+consulting history; malformed identities make the checkpoint unknown.
 Deduplicate repository/PR/head/policy, and keep a head already reviewed under an
 older policy covered. Cap at ten distinct PRs per repository/Asia/Shanghai day
 across confirmed deliveries and policy versions. A new head on an already counted
@@ -47,7 +49,58 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
-## Current bounded refresh, 2026-10-20 Asia/Shanghai
+## Current bounded refresh, 2026-10-27 Asia/Shanghai
+
+This section supersedes older dated runtime assumptions below; it does not
+replace the canonical review skill. [Source identities](audit-2026-10-27.json)
+record this bounded inspection. Personal skills main was
+`93563df3abba4849ac60489e4bef05da14d1a1c3`; upstream main was
+[2bcd76fcf318dda123124f4cfb1d08302f8a1ec9](https://github.com/vllm-project/afd-plugin/commit/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9).
+The complete comparison contains 12 commits after the October 20 pin. Targeted
+contracts were inspected, not every changed line. Latest release remains
+[v0.30.0rc1](https://github.com/vllm-project/afd-plugin/releases/tag/v0.30.0rc1)
+(October 19); the new changes below are **main-only**, not released guarantees.
+
+- The canonical review skill's blob is unchanged. Migration PR #420 is closed
+  unmerged; use current main rather than treating its branch as a fallback.
+- Current `AGENTS.md` removed test-line budgets and the supporting baseline/hook.
+  Earlier audit statements that those budgets apply are no longer current.
+- Experimental FFN two-stream is off by default. Host ordering/lifetime tests do
+  not establish native device safety, graph execution, overlap, or performance;
+  the runtime documentation still requires device qualification. Keep this
+  distinction when checking two-slot/two-stream and four-FULL-graph claims.
+- Legacy `async_moe_ubatching`, `async_moe_num_ubatches`, and `async_moe_split`
+  connector extras were removed. Native Attention DBO owns splitting; unknown
+  extras are rejected. Connector extras now participate in configuration hashing.
+- GPU P2P FFN peer exchanges use grouped NCCL receives/sends, including a single
+  peer. Check peer wire order, stable buffers and output slicing rather than
+  treating grouping as independently verified performance improvement.
+- Multi-pod E2E explicitly disables MRV2 execution-evidence collection. Its
+  accuracy-only success does not demonstrate graph replay or DBO execution.
+- Layered W2/W13 validation is a supplied operator-only A3 report with three
+  independent ABBA groups, not our execution. The rebased checkout was not
+  separately rebuilt; do not sum cross-node gains or infer full-model throughput
+  or long-running memory safety.
+
+### Local selector repair and validation limits
+
+The previously case-sensitive delivered-history identity could treat uppercase
+GitHub owner/repository spelling as a different repository, bypassing covered-head
+deduplication and the ten-distinct-PR daily cap. Normalize valid identities and
+reject malformed ones as unknown. Two added test methods cover mixed-case
+covered heads/cap history and malformed identities. On the old helper, the same
+37-test suite produced three failures; on the repaired helper all 37 pass.
+The full network-free repository suite passes 256 tests. These are helper and
+packaging results, not production savings or review-accuracy measurements.
+
+The existing corpus remains two adjudicated defect families / four defect-clean
+outcomes; eight unique full source artifacts were reread and matched their pinned
+Git blobs and SHA-256 hashes. No new adjudicated cases, upstream tests, model
+inference, GPU/NPU execution or cluster deployment were performed. Complete
+skills open-PR enumeration found 13 PRs; PR #6 and #17 file sets do not overlap
+these AFD changes. Shared manifests/routing and other projects remain untouched.
+
+## Historical bounded refresh, 2026-10-20 Asia/Shanghai
 
 This section supersedes the dated runtime assumptions below, not the canonical
 review skill. The earlier audit and defect/fixed-clean corpus remain historical

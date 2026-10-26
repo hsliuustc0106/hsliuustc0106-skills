@@ -153,6 +153,27 @@ class SelectionTests(unittest.TestCase):
         value["delivered"].pop()
         self.assertEqual(len(daily.select(value)["selected"]), 1)
 
+    def test_repository_case_does_not_reset_covered_head_or_daily_cap(self):
+        # GitHub owner/repository identities are case-insensitive. Collector
+        # spelling changes must not discard successful delivery coverage.
+        value = snapshot()
+        value["delivered"] = [delivered(repo="VLLM-PROJECT/AFD-PLUGIN")]
+        with self.subTest(boundary="covered head"):
+            self.assertFalse(daily.select(value)["selected"])
+        value["delivered"] = [delivered(n, day=value["day"], repo="Vllm-Project/Afd-Plugin")
+                              for n in range(1, 11)]
+        with self.subTest(boundary="daily cap"):
+            self.assertFalse(daily.select(value)["selected"])
+            self.assertFalse(daily.select(value)["blocked"])
+
+    def test_malformed_repository_history_is_unknown(self):
+        for repo in ("vllm-project", " vllm-project/afd-plugin", "a/b/c", "a/", "a/../b",
+                     "../afd-plugin", "./afd-plugin", "vllm-project/..", "vllm-project/."):
+            value = snapshot(); value["delivered"] = [delivered(repo=repo)]
+            result = daily.select(value)
+            self.assertTrue(result["blocked"])
+            self.assertFalse(result["selected"])
+
     def test_new_revision_of_already_counted_pr_does_not_consume_extra_slot(self):
         value = snapshot(); value["pr_pages"] = [[pr(1, head="b" * 40)]]
         value["delivered"] = [delivered(n, day=value["day"]) for n in range(1, 11)]
