@@ -55,6 +55,89 @@ reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
 ## Current bounded audit, 2026-10-26 Asia/Shanghai
 
+Upstream main was frozen at [f97686a9c33a5a2c3a16ee137878999cd4d78746](https://github.com/vllm-project/vllm-omni/commit/f97686a9c33a5a2c3a16ee137878999cd4d78746).
+The [9-commit delta](https://github.com/vllm-project/vllm-omni/compare/f7d012bf3c2f63468a76b86acef5e5033872f7f5...f97686a9c33a5a2c3a16ee137878999cd4d78746)
+was enumerated as one page of 9 commits followed by an empty page (71 files).
+Targeted source inspection below is not a review of all changed code. The
+published release set was re-read: latest stable remains
+[v0.30.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.30.0)
+(tag `a8576ccb725c4e21cd13c3eb5f9a546b21149d2b`); latest prerelease remains
+[v0.32.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0rc1)
+(tag `da572cddb38383deae9caef33b8d490e292ef071`). Ancestry comparisons place all
+nine commits after that prerelease tag. Treat these as main-only observations.
+
+The [canonical skill](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/.claude/skills/review-pr/SKILL.md)
+was re-resolved at this tip and remains unchanged: Git blob
+`96e9116e1c902e7197130d44fdfe9584ca1d4c34`. AGENTS, CONTRIBUTING, lessons, and
+`.claude/skills/review-pr/` paths are absent from the 71-file delta. CosyVoice3
+benchmark voice lists, ROCm/AMD nightly CI filters, and the WeChat QR asset are
+out of scope for rediscovery pointers here.
+
+### Changed contracts to rediscover at the target
+
+- Generation-stage post-warmup memory (#5180): at readiness and on remote
+  replica attachment the orchestrator
+  [RPCs `get_stage_post_warmup_memory_stats` and publishes](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/engine/orchestrator.py#L568-L618)
+  static rank-0 PyTorch allocator bytes into
+  `vllm_omni:stage_post_warmup_memory_{allocated,reserved}_bytes`. Qwen3-TTS
+  Code2Wav supplies the snapshot; NPU workers return `None`. Values are captured
+  after decoder graph warmup during load, before KV allocation, and do not track
+  request-time use. Membership install was renamed to
+  [`install_membership_handlers`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/engine/membership_controller.py#L296-L308)
+  with a `replica_added_callback`; detachment/shutdown removes process-local
+  series while multiprocess Prometheus storage can retain removed labels. See the
+  [design section](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/docs/design/metrics.md#L278-L341).
+  Do not treat a scrape after attach as proof of request-time memory, and do not
+  treat process-local removal as multiprocess cleanup.
+- Diffusion speech request contracts (#8685, #8882):
+  [`num_inference_steps` must be a positive integer](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/entrypoints/openai/serving_speech.py#L2643-L2662)
+  (bool/non-integral float rejected) and `guidance_scale` must be a finite
+  number. Diffusion serving now tracks
+  [`served_model_names`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/entrypoints/openai/serving_speech.py#L586-L601)
+  and returns
+  [404 `NotFoundError`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/entrypoints/openai/serving_speech.py#L2789-L2793)
+  for an unknown `request.model`. Trace factory wiring together with the create
+  path; a 400 validation failure is not interchangeable with model-not-found.
+- MiniCPM-o Code2Wav Stage-2 diagnostics (#9370): opt-in
+  [`VLLM_OMNI_CODE2WAV_WATCHDOG_TIMEOUT_S`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/docs/configuration/environment_variables.md#L97)
+  enables a
+  [daemon watchdog](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/model_executor/models/minicpmo_4_5/code2wav_watchdog.py#L90-L140)
+  that reports phase, bounded details, and the owner-thread stack once per
+  stalled operation and **never interrupts** it. Unset or `<=0` disables; invalid
+  values raise at model startup. A watchdog log is diagnostic evidence, not a
+  correctness fix or a substitute for resolving the hang.
+- MiniMax-H3 / chunked MP4 output metadata (#9074): video metadata may carry
+  [`frame_counts`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/outputs/output_metadata.py#L124-L127);
+  [`valid_frame_counts`](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/outputs/output_metadata.py#L221-L228)
+  requires a list/tuple of builtin positive `int`s aligned to the encoded batch
+  (numpy ints, bools, and scalars fail). Chunked sessions can
+  [`start` encoders before the first video chunk](https://github.com/vllm-project/vllm-omni/blob/f97686a9c33a5a2c3a16ee137878999cd4d78746/vllm_omni/diffusion/utils/chunked_video.py)
+  and optionally encode AAC first. Do not treat shape alone as encoded frame
+  counts, and do not assume eager-start changes timestamps without checking the
+  session tests. No CUDA, model, serving, performance or waveform validation ran
+  in this maintenance audit.
+
+### Local maintenance validation and boundaries
+
+Personal main before this update: `554f2b207243c1edb681626d81f9924b9495ba79`.
+All 13 open personal-skill PRs were enumerated; PR6 at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8` and PR17 at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af` remain open and untouched. Their
+proposed entrypoint/routing changes were not imported or overwritten.
+
+Selection scripts and fixtures are unchanged on this pass. Offline unittests:
+37 Omni selection/corpus/packaging tests and 254 tests in the full personal-
+repository suite pass under `PYTHONDONTWRITEBYTECODE=1`. Frontmatter, scoped
+local links, source pins, JSON manifests, Python syntax, install routing and
+diff whitespace were checked. The existing two adjudicated defect/fix pairs
+retain four bounded outcomes; all 12 unique pinned corpus source files were
+re-fetched and matched against Git blob and SHA-256 identities. No new reviewer
+accuracy measurement is claimed. No live PR queue, delivery checkpoint, active
+approval-loop quota, review cadence, or upstream repository was changed;
+source-inspected upstream tests were not executed.
+
+## Previous bounded audit, 2026-10-26 Asia/Shanghai
+
 Upstream main was frozen at [f7d012bf3c2f63468a76b86acef5e5033872f7f5](https://github.com/vllm-project/vllm-omni/commit/f7d012bf3c2f63468a76b86acef5e5033872f7f5).
 The [155-commit delta](https://github.com/vllm-project/vllm-omni/compare/1c0bde507dfbffd25b32f6092dbe4526c945b7dd...f7d012bf3c2f63468a76b86acef5e5033872f7f5)
 was enumerated in pages of 100 + 55, followed by an empty page. The compare file
