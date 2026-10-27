@@ -1,0 +1,184 @@
+{
+  "repository": "vllm-project/router",
+  "audited_at_utc": "2026-10-27T16:05:00Z",
+  "previous_audit": "5a840370e054dc3c4615be2d5a7a9e6a304ca354",
+  "main": "9e58176e8a8325508efd00bf1158e27deffab4cb",
+  "commits_since_previous_audit": 18,
+  "changed_file_inventory_count": 262,
+  "release": {
+    "tag": "v0.1.16",
+    "commit": "db02f358da401b60d4ae14eb286163763a0705cc",
+    "main_commits_after_release": 39
+  },
+  "canonical": {
+    "pr": 336,
+    "state": "open",
+    "draft": true,
+    "head": "3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09",
+    "path": ".agents/skills/review-pr/SKILL.md"
+  },
+  "coverage": "Bounded source inspection and exact-byte verification, not a full semantic audit of all 18 commits or 262 changed paths. No upstream Rust/Python tests, live serving, model/GPU/ROCm/RDMA/performance or reviewer-accuracy measurement.",
+  "sources": [
+    {
+      "path": "CONTRIBUTING.md",
+      "git_blob_sha": "e0ba17817212d4f85d98b50b0beb0a0e09a5f8b1",
+      "sha256": "fbbc1bff23852e03b035272701af917e24f0858d685a7aaaf37e2e3d0af3a6eb",
+      "bytes": 890,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/CONTRIBUTING.md"
+    },
+    {
+      "path": "README.md",
+      "git_blob_sha": "2c89e81b78034b61d3bb12c6ba617dc8df3fd7ff",
+      "sha256": "d7dbccb815dbcdd182014effbdd329e70957aebcf3ecf0c370403c997210c85f",
+      "bytes": 12595,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/README.md"
+    },
+    {
+      "path": "Cargo.toml",
+      "git_blob_sha": "5f349e453dcc905b48558eb8236b1b1e01e034a1",
+      "sha256": "ae90c9727c6f59fe66e4fb927b88da86e14616fb5198b02ab90351337e80e1a9",
+      "bytes": 8172,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/Cargo.toml"
+    },
+    {
+      "path": ".buildkite/pipeline.yml",
+      "git_blob_sha": "567ea822db9d8d6357b02f2a7ede5e993d6afaf2",
+      "sha256": "7d87d275720fc322d4ae7a04a2d5f314024bb0caf76ffc973ead2267c4be5d70",
+      "bytes": 16709,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/.buildkite/pipeline.yml"
+    },
+    {
+      "path": ".github/workflows/pre-commit.yml",
+      "git_blob_sha": "8370f838da179b799cb08d8880067926fa16b613",
+      "sha256": "b1776e85f6aa53187b8e32a0598ae56956d8b8a7ae391307f04a12f056aaf9be",
+      "bytes": 1085,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/.github/workflows/pre-commit.yml"
+    },
+    {
+      "path": ".github/workflows/trivy.yaml",
+      "git_blob_sha": "c11b47cbdc921afecb1c50964202c74c209eb631",
+      "sha256": "4137b4b6bd8bf3048a496c7c8598842158e0db7bd8bcda8f9978ca4f290bd69b",
+      "bytes": 1019,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/.github/workflows/trivy.yaml"
+    },
+    {
+      "path": "src/backend/l1_encode_cache/mod.rs",
+      "git_blob_sha": "a9cec898e7489c79f0d93a9aeac07cb087ed9c47",
+      "sha256": "4f3c613006984976f651aabe8183e1ee5a9944a26ddaa132e6eaef67365298fe",
+      "bytes": 22620,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/l1_encode_cache/mod.rs"
+    },
+    {
+      "path": "src/backend/encode_cache.rs",
+      "git_blob_sha": "bdd6f3e32caeb9312d2321f939a32455496d84e1",
+      "sha256": "7f48d2cd8d315c5ddb07b16cbaa4f1e862b7be9594a068d8f325ba4680c67742",
+      "bytes": 20758,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/encode_cache.rs"
+    },
+    {
+      "path": "src/backend/completion.rs",
+      "git_blob_sha": "8b28181ad1b54d5e1e773b7b7cb1e5b4672e512b",
+      "sha256": "7c32a2cda9257e3209a77ab40cd6b18ce0e35f62f04541db0cfaa9f9877bc0f7",
+      "bytes": 7362,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/completion.rs"
+    },
+    {
+      "path": "src/backend/frontend.rs",
+      "git_blob_sha": "6d36f4810902b040e3d3e8137bd292d3e077bb72",
+      "sha256": "383a2faf56cc0d8ba8bcfa4510e0e2c0a8ae9000b761504c922f61cdc265cf27",
+      "bytes": 11221,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/frontend.rs"
+    },
+    {
+      "path": "src/backend/grpc.rs",
+      "git_blob_sha": "1baf2ab80cd64830736957a5a0e0100538fc46ea",
+      "sha256": "028f90ca95674f16364779d08bab2a0ef0fb472e76f552387951d2b27bb95271",
+      "bytes": 27336,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/grpc.rs"
+    },
+    {
+      "path": "src/routers/http/router.rs",
+      "git_blob_sha": "4a5f85dee70a8a58f4cfd83099c0934a3adce156",
+      "sha256": "d69096366b9bf4cd77958ff11c5d0cbad70fa51e506306aacd808e5ab82e5ee0",
+      "bytes": 210654,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/routers/http/router.rs"
+    },
+    {
+      "path": "src/policies/kv_aware.rs",
+      "git_blob_sha": "63cbf2bef93229096ba1111d9b623345eaad964c",
+      "sha256": "6ca0d32ada5752e1b3ded9944989197377925356c3714916061561760eb4cb5c",
+      "bytes": 104931,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/policies/kv_aware.rs"
+    },
+    {
+      "path": "src/policies/hash_key.rs",
+      "git_blob_sha": "3dcacad1b6f768debb8e3ab27765fe711b4b1877",
+      "sha256": "72790bfe7a8bc73d2113d1067d0d31358a21c4c30dea6b019121406c33ad9db8",
+      "bytes": 15470,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/policies/hash_key.rs"
+    },
+    {
+      "path": "src/routers/header_utils.rs",
+      "git_blob_sha": "82eff1993d04c6a5be42808bb93f87be51cc281d",
+      "sha256": "026c32d28fecfe1ef0d5bc6134e556eff5c705e776c1fb84561667b5012cf609",
+      "bytes": 12778,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/routers/header_utils.rs"
+    },
+    {
+      "path": "src/routers/http/vllm_pd_router.rs",
+      "git_blob_sha": "4db0bdcb9d0ad5ab916c2259a3ba705e7e1a9665",
+      "sha256": "e1c2d16bd5e0715a2d2b3370928e26619956ee2d2998b7b006f291c7a0448ce0",
+      "bytes": 196881,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/routers/http/vllm_pd_router.rs"
+    },
+    {
+      "path": "tests/rust/grpc_frontend_l1.rs",
+      "git_blob_sha": "e3a9b9c3a3b31c60459d710d03f535db8f8f7991",
+      "sha256": "ac7c7be522148e4080fbde72bad30e2f83c632be65054bebd7ca9001702bb786",
+      "bytes": 17472,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/tests/rust/grpc_frontend_l1.rs"
+    },
+    {
+      "path": "tests/rust/grpc_completion_frontend.rs",
+      "git_blob_sha": "48084af013d55c229fa038c7904ef8d87c444f3e",
+      "sha256": "e882844dcd41b30efc0f130d7611402439042ff4d0f333b12ca6b24fb0fb7b33",
+      "bytes": 5341,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/tests/rust/grpc_completion_frontend.rs"
+    },
+    {
+      "path": "tests/rust/completion_preparation.rs",
+      "git_blob_sha": "49610a8c13878817b4c2fab173edf00a5fe3bb4d",
+      "sha256": "66c291a1104556e6b9bf88080a22fce9dec879abb7e6b26083901928b16fd3ed",
+      "bytes": 14195,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/tests/rust/completion_preparation.rs"
+    },
+    {
+      "path": "docs/load_balancing/README.md",
+      "git_blob_sha": "c88fd588eb9fbd2b76e2f008e1190ee05bba5197",
+      "sha256": "381d92675169ac1608c661fa50c7ece485379333cdb1eb28ac878876a816ad69",
+      "bytes": 12629,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/docs/load_balancing/README.md"
+    },
+    {
+      "path": "docs/cli_reference.md",
+      "git_blob_sha": "d4a474d4ece0e616cf28864544652fe6abceb937",
+      "sha256": "637eebbd997e6ecc36e19300190657bafd43c4b1b24cd4fabe8e970f41dcc953",
+      "bytes": 19831,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/docs/cli_reference.md"
+    },
+    {
+      "path": "src/routers/http/usage_merge.rs",
+      "git_blob_sha": "363410a1fbd2065117b09dd1d445ac56495c3a30",
+      "sha256": "577a92c1e2b32cc7ce14021928d660ca2809e575d663cec60e5801d50b7b88e8",
+      "bytes": 11132,
+      "url": "https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/routers/http/usage_merge.rs"
+    },
+    {
+      "path": ".agents/skills/review-pr/SKILL.md",
+      "git_blob_sha": "75e7b940c1eb0eabddc588259b659a87117cd340",
+      "sha256": "ca3b87f02ff52c6548aeca0c7e6f3d1082a12a4670bb8e271c5f3f531ceb7b0f",
+      "bytes": 8998,
+      "url": "https://github.com/vllm-project/router/blob/3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09/.agents/skills/review-pr/SKILL.md"
+    }
+  ]
+}

@@ -153,6 +153,27 @@ class SelectionTests(unittest.TestCase):
         value["delivered"].pop()
         self.assertEqual(len(daily.select(value)["selected"]), 1)
 
+    def test_repository_case_does_not_reset_covered_head_or_daily_cap(self):
+        # GitHub owner/repository identities are case-insensitive. Collector
+        # spelling changes must not discard successful delivery coverage.
+        value = snapshot()
+        value["delivered"] = [delivered(repo="VLLM-PROJECT/ROUTER")]
+        with self.subTest(boundary="covered head"):
+            self.assertFalse(daily.select(value)["selected"])
+        value["delivered"] = [delivered(n, day=value["day"], repo="Vllm-Project/Router")
+                              for n in range(1, 11)]
+        with self.subTest(boundary="daily cap"):
+            self.assertFalse(daily.select(value)["selected"])
+            self.assertFalse(daily.select(value)["blocked"])
+
+    def test_malformed_repository_history_is_unknown(self):
+        for repo in ("vllm-project", " vllm-project/router", "a/b/c", "a/", "a/../b",
+                     "../router", "./router", "vllm-project/..", "vllm-project/."):
+            value = snapshot(); value["delivered"] = [delivered(repo=repo)]
+            result = daily.select(value)
+            self.assertTrue(result["blocked"])
+            self.assertFalse(result["selected"])
+
     def test_new_revision_of_already_counted_pr_does_not_consume_extra_slot(self):
         value = snapshot(); value["pr_pages"] = [[pr(1, head="b" * 40)]]
         value["delivered"] = [delivered(n, day=value["day"]) for n in range(1, 11)]
@@ -205,7 +226,7 @@ class PackagingTests(unittest.TestCase):
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
             installed = Path(target) / "skills/router-review"
-            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json"):
+            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
                                     input=json.dumps(snapshot()), text=True, capture_output=True)
@@ -242,6 +263,25 @@ class EvidenceTests(unittest.TestCase):
             self.assertGreater(source["bytes"], 0)
             self.assertEqual(source["url"], "https://github.com/" + daily.REPOSITORY
                              + "/blob/" + data["main"] + "/" + source["path"])
+
+    def test_current_audit_separates_draft_source_and_main(self):
+        data = json.loads((SKILL / "references/audit-2026-10-28.json").read_text())
+        self.assertEqual(data["repository"], daily.REPOSITORY)
+        self.assertEqual(data["commits_since_previous_audit"], 18)
+        self.assertEqual(data["changed_file_inventory_count"], 262)
+        self.assertEqual(data["release"]["main_commits_after_release"], 39)
+        self.assertNotEqual(data["main"], data["release"]["commit"])
+        self.assertTrue(data["canonical"]["draft"])
+        self.assertEqual(data["canonical"]["state"], "open")
+        self.assertEqual(len(data["sources"]), 23)
+        for source in data["sources"]:
+            self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
+            self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+            self.assertGreater(source["bytes"], 0)
+            ref = (data["canonical"]["head"] if source["path"] == data["canonical"]["path"]
+                   else data["main"])
+            self.assertEqual(source["url"], "https://github.com/" + daily.REPOSITORY
+                             + "/blob/" + ref + "/" + source["path"])
 
     def test_source_hashes_lines_and_adjudication_are_bounded(self):
         import hashlib

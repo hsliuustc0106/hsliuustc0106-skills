@@ -4,7 +4,90 @@ The repository-owned review skill remains canonical. This supplement covers the
 explicitly configured personal daily queue and dated source-inspection results;
 it does not authorize upstream reviews, labels, merges, or code changes.
 
-## Freshness update, inspected 2026-10-21 Asia/Shanghai
+## Current bounded refresh, 2026-10-28 Asia/Shanghai
+
+This refresh supersedes dated reachability, reservation and test-command facts
+below, not the canonical repository-owned review checklist. The
+[source manifest](audit-2026-10-28.json) pins 22 current-main files and the
+separate draft skill by Git blob, SHA-256 and byte length.
+
+- Personal main baseline: `577bbf92fa3518da646563b953b502f9895e87d3`.
+  Router main: [9e58176e8a8325508efd00bf1158e27deffab4cb](https://github.com/vllm-project/router/commit/9e58176e8a8325508efd00bf1158e27deffab4cb).
+  The complete delta inventory is 18 commits and 262 changed paths; source
+  inspection is targeted, not a semantic audit of every changed line.
+- Latest published release remains [v0.1.16](https://github.com/vllm-project/router/releases/tag/v0.1.16)
+  at `db02f358da401b60d4ae14eb286163763a0705cc`; main is 39 commits ahead.
+  The contracts below are main-only, not a released-artifact qualification.
+- Main still has no AGENTS.md or canonical review skill. PR336 remains
+  open/draft at `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`; use that explicit
+  source and revalidate its dated architecture/test map against the target.
+- All 13 open personal PRs were enumerated, followed by an empty page. PR6
+  and PR17 retain their previously recorded heads; their complete file lists
+  do not overlap these Router-only files. No proposal or human edit is replaced.
+
+### Current contracts to rediscover
+
+- [KV-aware selection](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/policies/kv_aware.rs)
+  now selects and reserves atomically: the receipt already owns worker-load and
+  request-slot reservations, plus any affinity reference. The HTTP
+  [RequestLoadGuard::from_selection](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/routers/http/router.rs)
+  adopts that reservation rather than incrementing again. The earlier blanket
+  “selection alone must not reserve” advice no longer applies to this API.
+  Check dispatch failure, retries, cancellation and body drop for exactly-once
+  release. Optional affinity is off by default, and a preparation hint must be
+  revalidated at selection; retry exclusions do not themselves invalidate a
+  still-valid binding. HTTP paths can now render/tokenize for KV placement,
+  superseding the earlier universal HTTP load-only description. A placement
+  score is still not proof of an actual backend cache hit.
+- [L1 encoding cache](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/l1_encode_cache/mod.rs)
+  stores router-side prefix token IDs, not worker KV. It is off by default
+  (`VLLM_ROUTER_L1_CACHE`), after the exact L0 lookup and before full encoding.
+  Prefix reuse requires validated added-token boundaries; the scope is text
+  gRPC, not HTTP workers or multimodal placeholders. Follow tokenizer namespace,
+  salt, fallback and optional verification-mismatch disablement together.
+  Estimated retained heap is not RSS, and fixture parity is not live-model or
+  performance evidence.
+- The [gRPC adapter](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/grpc.rs)
+  now reaches `/v1/completions` token-ID dispatch. Distinguish it from
+  [completion preparation](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/src/backend/completion.rs),
+  a pure preparation layer that does not automatically rewrite or dispatch HTTP
+  requests. Follow supported fields, tokenizer frontend and response conversion
+  together; do not infer live serving parity from preparation tests alone.
+- [Current Cargo test inventory](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/Cargo.toml)
+  relocates integration tests to `tests/rust/`; Rust tests are gated by `cpu`
+  and `ready`. Current CI uses `cargo test --features cpu,ready --lib --bins`
+  and `cargo test --features cpu,ready --test '*'`. Bare historical commands
+  may execute no gated tests. Python tests are under `tests/python/`, with
+  the `ready and cpu` marker selection. Inspect actual test counts and
+  prerequisites rather than accepting a zero-test success as coverage.
+- [Buildkite XGMI](https://github.com/vllm-project/router/blob/9e58176e8a8325508efd00bf1158e27deffab4cb/.buildkite/pipeline.yml)
+  is restored for default-branch non-PR builds, merge queue and same-repository
+  PRs, plus trusted UI/API `RUN_ROCM_XGMI=1`; fork PRs remain excluded from that
+  automatic PR condition. RDMA is still a separate nightly/manual lane.
+  Configured eligibility is not a successful run or GPU correctness evidence.
+
+### Maintenance validation and limits
+
+The Router selector now validates owner/name delivery identities and normalizes
+repository casing before deduplication and daily accounting. Three baseline
+failure assertions demonstrate that casing previously lost same-head coverage
+and the ten-distinct-PR cap, and malformed history was treated as another repo.
+The cap, exact-label policy, source ownership and delivery authority are unchanged.
+
+The existing two historical defect/fix families retain four correlated outcomes;
+eight historical source records were re-fetched and matched full hashes and
+excerpts. No new reviewer-accuracy sample is claimed. The network-free suite
+passes 259 tests, including 40 Router selection/corpus/packaging tests, with
+frontmatter, source pins, local links, manifests/routing, temporary-folder
+installation, Python/JSON/shell parsing and whitespace checks. Fixtures validate
+normalized collector snapshots, not live pagination, ancestry or concurrency.
+
+Cargo/rustc are unavailable here. No upstream Rust/Python suites, native serving,
+tokenizer/model parity, GPU/ROCm/RDMA, performance or distributed cleanup ran.
+No live review or delivery checkpoint was advanced, no upstream code changed,
+and no other project's selection policy was edited.
+
+## Historical freshness update, inspected 2026-10-21 Asia/Shanghai
 
 This bounded refresh supersedes the dated main-only reachability and CI facts
 below, not the repository-owned review checklist. [Source identities](audit-2026-10-21.json)
@@ -225,6 +308,10 @@ creation dates, a changed label, or a new policy version do not prove new code.
 The first run requires an explicit baseline or first-run authorization. Missing
 checkpoint history is unknown. See `tests/test_router_daily.py` for executable
 normalized snapshots; this helper does not implement the evidence collector.
+
+Validate delivered repository identities as owner/name and compare them case-insensitively,
+so collector spelling changes cannot reset coverage or the daily cap. Malformed
+identities are unknown, not evidence of a different repository.
 
 Deduplicate repository/PR/head/policy, and keep a head already reviewed under an
 older policy covered. Cap at ten distinct PRs per repository/Asia/Shanghai day
