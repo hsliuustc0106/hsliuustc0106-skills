@@ -267,13 +267,13 @@ class EvidenceTests(unittest.TestCase):
     def test_current_audit_separates_draft_source_and_main(self):
         data = json.loads((SKILL / "references/audit-2026-10-28.json").read_text())
         self.assertEqual(data["repository"], daily.REPOSITORY)
-        self.assertEqual(data["commits_since_previous_audit"], 18)
+        self.assertEqual(data["commits_since_previous_audit"], 19)
         self.assertEqual(data["changed_file_inventory_count"], 262)
-        self.assertEqual(data["release"]["main_commits_after_release"], 39)
+        self.assertEqual(data["release"]["main_commits_after_release"], 40)
         self.assertNotEqual(data["main"], data["release"]["commit"])
         self.assertTrue(data["canonical"]["draft"])
         self.assertEqual(data["canonical"]["state"], "open")
-        self.assertEqual(len(data["sources"]), 23)
+        self.assertEqual(len(data["sources"]), 24)
         for source in data["sources"]:
             self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
             self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
