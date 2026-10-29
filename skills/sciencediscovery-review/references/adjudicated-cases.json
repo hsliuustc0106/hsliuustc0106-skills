@@ -16,7 +16,7 @@
     ]
   },
   "source_baseline": {
-    "main_commit": "7a0324257eecb48b57f60b6a80ce2fff54e7dba7",
+    "main_commit": "5e56ea77cfcc5447947be8342d7781dc7891d004",
     "draft_skill_pr": "https://github.com/openJiuwen-ai/sciencediscovery/pull/231",
     "draft_skill_state": "open draft; unmerged at inspection",
     "draft_skill_commit": "1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c",
@@ -332,7 +332,7 @@
   },
   "source_license": {
     "name": "Apache-2.0",
-    "url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/7a0324257eecb48b57f60b6a80ce2fff54e7dba7/LICENSE",
+    "url": "https://github.com/openJiuwen-ai/sciencediscovery/blob/5e56ea77cfcc5447947be8342d7781dc7891d004/LICENSE",
     "scope": "Quoted upstream source excerpts retain their original license; corpus adjudications are separate.",
     "local_copy": "LICENSE.sciencediscovery.txt",
     "attribution": "Source excerpts from openJiuwen-ai/sciencediscovery; Copyright (C) 2026 Huawei Technologies Co., Ltd, where stated by source files. Excerpts omit surrounding code; source links identify the originals."
