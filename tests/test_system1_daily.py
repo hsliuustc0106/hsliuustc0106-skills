@@ -161,6 +161,71 @@ class SelectionTests(unittest.TestCase):
         s = snapshot(); s["repository"] = "other/repo"
         self.assertTrue(daily.select(s)["blocked"])
 
+class System1OverrideTests(unittest.TestCase):
+    def snapshot(self):
+        s = snapshot()
+        s['policy'] = daily.SYSTEM1_POLICY
+        del s['labels_complete']; del s['label_pages']
+        p = s['pr_pages'][0][0]
+        p['draft'] = p['current']['draft'] = False
+        del p['labels']; del p['current']['labels']
+        return s
+
+    def test_explicit_override_ignores_labels(self):
+        s = self.snapshot()
+        self.assertEqual(daily.select(s)['selected'][0]['policy'], daily.SYSTEM1_POLICY)
+        s['policy'] = 'unknown'
+        self.assertTrue(daily.select(s)['blocked'])
+
+    def test_draft_closed_unknown_and_stale_draft(self):
+        for value in (True, None, 'false'):
+            s = self.snapshot(); p = s['pr_pages'][0][0]
+            p['draft'] = p['current']['draft'] = value
+            self.assertFalse(daily.select(s)['selected'])
+        s = self.snapshot(); s['pr_pages'][0][0]['current']['draft'] = True
+        self.assertTrue(daily.select(s)['blocked'])
+        s = self.snapshot(); p = s['pr_pages'][0][0]
+        p['state'] = p['current']['state'] = 'closed'
+        self.assertFalse(daily.select(s)['selected'])
+
+    def test_new_code_and_complete_pages_still_required(self):
+        for field in ('prs_complete', 'checkpoint_complete'):
+            s = self.snapshot(); s[field] = False
+            self.assertTrue(daily.select(s)['blocked'])
+        for value in (False, None):
+            s = self.snapshot(); s['pr_pages'][0][0]['new_commits_verified'] = value
+            self.assertFalse(daily.select(s)['selected'])
+        s = self.snapshot(); s['pr_pages'].append({'error': 403})
+        self.assertTrue(daily.select(s)['blocked'])
+        s = self.snapshot(); s['pr_pages'][0][0]['current']['head'] = 'stale'
+        self.assertTrue(daily.select(s)['blocked'])
+
+    def test_rename_and_policy_change_preserve_completed_head(self):
+        s = self.snapshot(); s['repository'] = 'InferMatrixLab/system1-omni'
+        s['delivered'] = [{'repository': daily.REPOSITORY, 'number': 30,
+            'head': 'new', 'policy': daily.POLICY, 'day': '2026-10-02'}]
+        self.assertFalse(daily.select(s)['selected'])
+        s['repository'] = daily.REPOSITORY
+        s['delivered'][0]['repository'] = 'InferMatrixLab/system1-omni'
+        self.assertFalse(daily.select(s)['selected'])
+        s['delivered'][0]['head'] = 'old'
+        self.assertEqual(len(daily.select(s)['selected']), 1)
+
+    def test_first_run_requires_baseline_and_verified_recent_push(self):
+        s = self.snapshot(); s['first_run'] = True
+        self.assertTrue(daily.select(s)['blocked'])
+        s['first_run_baseline_verified'] = True
+        self.assertTrue(daily.select(s)['blocked'])
+        s['pr_pages'][0][0]['verified_activity_last24h'] = True
+        self.assertEqual(len(daily.select(s)['selected']), 1)
+
+    def test_rename_preserves_cross_policy_daily_cap(self):
+        s = self.snapshot()
+        s['delivered'] = [{'repository': 'InferMatrixLab/system1-omni', 'number': n,
+            'head': 'old', 'policy': daily.POLICY, 'day': s['day']} for n in range(1, 11)]
+        self.assertFalse(daily.select(s)['selected'])
+
+
 class EvidenceTests(unittest.TestCase):
     def test_canonical_source_routes_to_merged_main(self):
         import json

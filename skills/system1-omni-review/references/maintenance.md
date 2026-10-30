@@ -3,6 +3,35 @@
 This supplements the personal daily brief only. Repository-owned source remains
 canonical for engineering review. It does not authorize posting or label changes.
 
+## Explicit System1 daily-review override (October 29, 2026)
+
+For the owner-configured **Daily reviews and opportunities** workflow, pass
+`policy: "system1-nondraft-new-commits-v1"` to the offline adapter. This explicit
+System1-only policy overrides the label filter below and the upstream optional
+daily-selection reference: ignore labels, require open **non-draft** PRs and
+verified new commits. The legacy/default label-filter mode below remains for
+workflows that have not been explicitly assigned this override. An unknown policy
+fails closed. This adapter covers only System1 Omni, not other repositories.
+
+The final snapshot must include identical `head`, `state` and Boolean `draft`;
+label discovery and label changes are irrelevant in override mode. Complete PR
+pagination and checkpoint history remain mandatory. The collector must verify
+push/commit activity since the previous completed review/brief, not infer it from
+`updated_at` or a commit's author date. On first check, supply `first_run: true`,
+`first_run_baseline_verified: true`, and each candidate's
+`verified_activity_last24h: true` only after establishing the baseline and
+verifying that activity. The adapter trusts those assertions; it does not query
+GitHub or independently establish timestamps/ancestry.
+
+The verified repository rename from `ThinkFlowLab/system1-omni` to
+`InferMatrixLab/system1-omni` retains repository ID `1386454853`. The adapter
+accepts both names and emits the historical ledger identity so the rename cannot
+reset completed-head deduplication or daily capacity. A policy change alone is
+not new code: unchanged completed heads stay covered across policy versions.
+The ten-distinct-PR daily ceiling is a ceiling, not a review target; selection is
+not substantive review, approval, publication or confirmed delivery. Re-fetch
+mutable state again at actual review and finalization boundaries.
+
 ## Exact selection contract
 
 The explicit personal policy requires `high priority` (space), not
@@ -36,6 +65,66 @@ heads remain pending. Selection never records delivery; only commit checkpoint
 updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
+
+## Bounded update, 2026-10-31 Asia/Shanghai
+
+Public visibility and repository ID `1386454853` were verified after the move to
+`InferMatrixLab/system1-omni`. Personal baseline is
+`839c69fbd269946f1742cfbf21210dfe9fd666b0`. The new
+[upstream pin](https://github.com/InferMatrixLab/system1-omni/commit/e573260cc467a3bf4119311ebda2bfc351667e1a)
+is 278 commits beyond the October 24 audit. Commit pagination covered 100/100/78;
+the compare file list capped at 300, so complete non-truncated trees were
+reconciled: 334 added/changed blobs, zero removed. This is a bounded instruction
+and test-routing audit, not a correctness review of those commits/files.
+
+The sole release remains October 6
+[`release/v0.1.0`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.1.0)
+at `7f39ac40902c374803992407bb26eeba29c8a588`; current main is 593 commits ahead.
+The following changes are main-only, not released behavior:
+
+- The [canonical review skill](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/.agents/skills/system1-omni-review/SKILL.md)
+  now includes Public231 fast-screen provenance, same-request-ID baselines,
+  bucket shortfalls, real hardware smoke, auditable DROP timestamps and the
+  distinction between screening and full-C1 KEEP gates. Load its current source;
+  this wrapper does not copy hardware numbers or claim to reproduce them.
+  Canonical blob is `f3633eed045992caa8886847afcfc64cdbc417c7`, SHA-256
+  `3a4b876162da14eee8db56af86664576aa5755b8f3e80b3072e944018647c3bc`.
+  Both canonical reference blobs are unchanged from October 24. Their historical
+  architecture and optional label policy must not override current code or the
+  owner's explicit daily System1 policy above.
+- [Current CI](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/.github/workflows/ci.yml)
+  adds a CUDA 13.0 / TileLang 0.1.14 compile job with declared-backend build and
+  ELF inspection. It does not execute device kernels. Benchmark routing adds
+  JEV-VL vision-export and Clef Python tests; Rust retains `omni-laya/serve`.
+- [Runtime routing](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/src/runtime/README.md)
+  includes optional bounded admission/execution context with cancellation,
+  deadlines and reservation lifetimes. Decider opts in; other workers are not
+  automatically covered, and cancellation does not preempt device work.
+- [Architecture](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/docs/architecture.md)
+  now includes StartLux Instant, Clef's single Python executor behind Rust
+  serving, online JEV-VL vision, and bounded Cua text-prefix reuse. Shared
+  cross-request dynamic batching remains planned. Prior proposal-only PR127 is
+  now merged. Current CUDA ABI remains 9.
+- The [support matrix](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/docs/supported-models.md)
+  adds multiple native/reference paths, but evidence remains model/hardware
+  specific. StartLux's CUDA-unverified row must not be silently replaced with a
+  broad correctness claim based on historical benchmark prose.
+
+CONTRIBUTING and PR template were read and unchanged; no AGENTS.md, CLAUDE.md or
+CURSOR.md was found in the complete upstream tree. Skills PR6 and PR17 remain
+open at their previously recorded heads; their complete 4/18-file inventories
+have no overlap with this four-file System1-only patch. Neither was modified.
+
+The adapter now supports the explicit owner override while retaining the legacy
+label-filter default. Offline regression cases cover non-draft freshness,
+label-independent selection, unknown evidence/pages, first-run evidence,
+renamed-repository accounting and cross-policy completed-head deduplication.
+All five historical calibration source entries were re-fetched: exact lines,
+Git blobs and full-file SHA-256 match. The four cases remain two related pairs
+from one PR, not independent accuracy samples. No accuracy claim is made.
+Validation commands/results accompany the maintenance commit and report.
+No live queue selection, upstream review/publication, model/GPU execution,
+benchmark campaign, personal installation or upstream changes occurred.
 
 ## Bounded update, 2026-10-24 Asia/Shanghai
 
