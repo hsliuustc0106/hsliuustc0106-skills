@@ -97,9 +97,9 @@
       "status": "passed",
       "tests": 44,
       "python": "3.13.5",
-      "elapsed_seconds": 0.344,
+      "elapsed_seconds": 0.343,
       "network_boundary": "Both-case HTTP/HTTPS/ALL proxy variables pointed to 127.0.0.1:9; NO_PROXY empty. Tests were inspected first; live gh transport mocked and CLI offline fixture paths used.",
-      "reverified_on": "2026-10-23 Asia/Shanghai",
+      "reverified_on": "2026-10-30 Asia/Shanghai",
       "note": "Re-run on frozen main identical to head_sha; historical_source_verification not repeated this pass because fixture trees and main were unchanged."
     },
     "historical_source_verification": {
@@ -115,7 +115,7 @@
       "status": "blocked_before_collection",
       "blocker": "No module named pytest; no installation attempted. Available Python 3.13.5 lacked pytest.",
       "tests_executed": 0,
-      "rechecked_on": "2026-10-23 Asia/Shanghai"
+      "rechecked_on": "2026-10-30 Asia/Shanghai"
     },
     "upstream_worktree": "read-only shallow clone at 80c6feec31dc423f7efdcea12e854eab394dad9e; no upstream edits or publication performed"
   },

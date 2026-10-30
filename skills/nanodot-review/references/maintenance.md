@@ -45,10 +45,10 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Sources and overlap, inspected 2026-10-23 Asia/Shanghai
+## Sources and overlap, inspected 2026-10-30 Asia/Shanghai
 
 - Personal main baseline before this update:
-  `d83f46db1ccea37727111cc13a0fb034c884fe41`.
+  `bee5545ee0ef65f4d070619ab55ace94f062a38b`.
 - Upstream main remains identical to the prior audit pin
   [80c6feec31dc423f7efdcea12e854eab394dad9e](https://github.com/ThinkFlowLab/nanodot/commit/80c6feec31dc423f7efdcea12e854eab394dad9e)
   (`compare` status identical; ahead_by 0). Canonical migration
@@ -87,11 +87,11 @@ proof after the last completed review (including rewritten histories). Use this
 supplement only for that personal daily queue, never to reinterpret the upstream
 helper or silently change a directly requested review.
 
-Label catalog was fully enumerated via the GitHub Labels API (10 default
-names across one page; no `high priority` and no `ready`). Because `ready` is
-absent from the complete catalog, the personal queue requires exact
-`high priority` alone. Open PRs were fully enumerated (page 1 length 2, page 2
-empty): [#115](https://github.com/ThinkFlowLab/nanodot/pull/115)
+Label catalog was fully re-enumerated via the GitHub Labels API on
+2026-10-30 Asia/Shanghai (10 default names across one page; no `high priority`
+and no `ready`). Because `ready` is absent from the complete catalog, the
+personal queue requires exact `high priority` alone. Open PRs were fully
+re-enumerated (page 1 length 2, page 2 empty): [#115](https://github.com/ThinkFlowLab/nanodot/pull/115)
 (`8b21823731242614afa306b2ccfbe5a483f4e55b`, unlabeled, non-draft) and draft
 [#116](https://github.com/ThinkFlowLab/nanodot/pull/116)
 (`8ff4b12c1128923dd7d5abea75a2075620942ef2`, unlabeled). Neither carries
@@ -132,20 +132,20 @@ severity, routing expectations and upstream regression-test anchors. The corpus
 and executable behavior checks remain canonical upstream resources.
 
 At the pinned main, all 44 canonical network-free skill tests were re-run on
-2026-10-23 Asia/Shanghai (Python 3.13.5, ~0.34s) and passed, covering selection,
+2026-10-30 Asia/Shanghai (Python 3.13.5, ~0.34s) and passed, covering selection,
 grounding, severity, routing and historical executable controls. The prior pass
 also separately compared all 24 canonical source fixture items with exact
 historical Git objects (0 mismatches); that byte-level comparison was not
 repeated this week because main and the fixture trees are unchanged. This is a
 tiny curated, unblinded regression exercise; it is not a new review-accuracy
 estimate or certification of clean commits. The personal suite
-(`tests/test_nanodot_daily.py`, 33 tests) passed on the same interpreter and
-verifies the normalized queue contract, evidence metadata and self-contained
-installation with human-edit preservation. Metadata checks do not independently
-prove the truth of a finding or replace the upstream corpus.
+(`tests/test_nanodot_daily.py`, 33 tests) passed on the same interpreter
+(~0.51s) and verifies the normalized queue contract, evidence metadata and
+self-contained installation with human-edit preservation. Metadata checks do
+not independently prove the truth of a finding or replace the upstream corpus.
 
 Affected main-only pytest tests were again not collected because pytest was
-unavailable on both checked interpreters; no installation was attempted. No full
+unavailable on the checked interpreter; no installation was attempted. No full
 runtime, live provider/GitHub calls, OS notifications, npm bootstrap, actual
 browser/server interaction, performance benchmark or personal install ran. A
 source-inspected AUTO scope-change test has a vacuous pending-capability loop;
