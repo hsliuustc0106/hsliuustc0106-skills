@@ -66,7 +66,81 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
-## Bounded update, 2026-10-31 Asia/Shanghai
+## Bounded update, 2026-10-31 Asia/Shanghai (tip + release/v0.2.0)
+
+Public visibility and repository ID `1386454853` remain verified under
+`InferMatrixLab/system1-omni` (historical `ThinkFlowLab/system1-omni` accepted for
+adapter accounting). Personal baseline before this commit is
+`1436597a605cec0daf8af6c81858c04380dba1bf`. The current
+[upstream pin](https://github.com/InferMatrixLab/system1-omni/commit/5fa5179d57f9267bb0d20162004d8ce26352aa9d)
+is identical to main and to tag `release/v0.2.0`. Relative to the early-morning
+pin
+[`e573260cc467a3bf4119311ebda2bfc351667e1a`](https://github.com/InferMatrixLab/system1-omni/commit/e573260cc467a3bf4119311ebda2bfc351667e1a)
+the tip is ahead by 2:
+[`c1876a26bd96`](https://github.com/InferMatrixLab/system1-omni/commit/c1876a26bd96b286d174018a83193d11c29cf58f)
+(`chore: bump workspace crate versions to 0.2.0 for release/v0.2.0`) and merge
+[`5fa5179d57f9`](https://github.com/InferMatrixLab/system1-omni/commit/5fa5179d57f9267bb0d20162004d8ce26352aa9d)
+(PR #199). Compare lists 15 files, all `Cargo.toml` / `Cargo.lock` version
+fields `0.1.0` → `0.2.0` (omni-clef, omni-clm, omni-cua-s1-native, omni-cuda,
+omni-decider-native, omni-jemm-native, omni-jev, omni-jev-vl-native, omni-laya,
+omni-omnijev-native, omni-open-jev-native, omni-qwen3-5-native, omni-runtime,
+omni-startlux-native, plus lockfile). No skill-routing, architecture, CI,
+support-matrix, CONTRIBUTING, or PR-template content changed in that range.
+This is a bounded instruction/release audit, not a correctness review of those
+files.
+
+[`release/v0.2.0`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.2.0)
+was published 2026-10-31T02:01:52Z (10:01 Asia/Shanghai) targeting
+`5fa5179d57f9267bb0d20162004d8ce26352aa9d`, non-draft/non-prerelease, source
+archives only. Prior
+[`release/v0.1.0`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.1.0)
+at `7f39ac40902c374803992407bb26eeba29c8a588` remains; current main/v0.2.0 is
+595 commits ahead of that tag. The early-morning Oct31 paragraph that said the
+sole release was still v0.1.0 with main 593 ahead is superseded by this section.
+Released behavior at v0.2.0 now includes the morning audit's then-main-only notes
+(Public231 skill provenance, CUDA 13.0 / TileLang CI compile job, optional
+runtime admission context, architecture StartLux/Clef/JEV-VL/Cua prefix reuse,
+support-matrix expansions) plus the workspace crate bump to 0.2.0. No fresh
+release-SHA hardware benchmark or aggregate performance claim is made here.
+
+The [canonical review skill](https://github.com/InferMatrixLab/system1-omni/blob/5fa5179d57f9267bb0d20162004d8ce26352aa9d/.agents/skills/system1-omni-review/SKILL.md)
+blob is unchanged at `f3633eed045992caa8886847afcfc64cdbc417c7`, SHA-256
+`3a4b876162da14eee8db56af86664576aa5755b8f3e80b3072e944018647c3bc`. Both
+canonical reference blobs remain unchanged from October 24
+(`repository-contracts` `b6ace00bf8a7486cd20b0ed2e5d19515ef6d1ef0`,
+`daily-selection` `e28e81b1696c1a93817eb27384cc5ebc3d8919c1`). Their historical
+architecture and optional label policy must not override current code or the
+owner's explicit daily System1 policy above. This wrapper needs no SKILL.md text
+change; the Explicit System1 daily-review override
+(`policy: "system1-nondraft-new-commits-v1"`) and rename accounting are preserved.
+
+Skills [PR6](https://github.com/hsliuustc0106/hsliuustc0106-skills/pull/6) head
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8` and
+[PR17](https://github.com/hsliuustc0106/hsliuustc0106-skills/pull/17) head
+`f01a5df38f337e65d80f420e6b22e0b30a5237af` remain open and unchanged. Their
+complete inventories (4 and 18 files) have no overlap with this System1-only
+maintenance patch. Neither was merged, closed or overwritten.
+
+Label catalog was fully re-enumerated (15 names; exact `high priority` present;
+no `ready` and no `high-priority`). Personal daily selection therefore still
+requires exact `high priority` alone when `ready` is absent. Open PRs currently
+carrying `high priority` (inventory only, not a daily delivery): 152, 140, 124,
+109, and draft 82 (5 total). No verified collector snapshot with affirmative
+completeness flags, delivery history and new-commit ancestry was built in this
+pass, so `scripts/select_daily.py` was not run against live data. Listing labeled
+open PRs does not authorize reviews.
+
+All five historical calibration source entries (four adjudication rows plus the
+resident-revision companion) were re-fetched via historical ThinkFlowLab URLs:
+exact lines, Git blobs and full-file SHA-256 match. The four cases remain two
+related pairs from one PR30, not independent accuracy samples. No accuracy
+percentage is claimed. Adapter/select_daily.py and tests needed no code churn
+for this tip/release correction. Validation commands/results accompany the
+maintenance commit. No live queue selection, upstream review/publication,
+model/GPU execution, benchmark campaign, personal installation or upstream
+changes occurred.
+
+## Bounded update, 2026-10-31 Asia/Shanghai (early morning e573260 audit)
 
 Public visibility and repository ID `1386454853` were verified after the move to
 `InferMatrixLab/system1-omni`. Personal baseline is
@@ -77,10 +151,15 @@ the compare file list capped at 300, so complete non-truncated trees were
 reconciled: 334 added/changed blobs, zero removed. This is a bounded instruction
 and test-routing audit, not a correctness review of those commits/files.
 
-The sole release remains October 6
+Historical note (morning pin only; superseded by the tip + release/v0.2.0
+section above): at the early-morning e573260 audit the sole published release was
+still October 6
 [`release/v0.1.0`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.1.0)
-at `7f39ac40902c374803992407bb26eeba29c8a588`; current main is 593 commits ahead.
-The following changes are main-only, not released behavior:
+at `7f39ac40902c374803992407bb26eeba29c8a588` with main then 593 commits ahead.
+Those then-main-only notes below are now included in published
+[`release/v0.2.0`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.2.0)
+at `5fa5179d57f9267bb0d20162004d8ce26352aa9d`. Morning audit inventory (not a
+fresh re-audit of those blobs):
 
 - The [canonical review skill](https://github.com/InferMatrixLab/system1-omni/blob/e573260cc467a3bf4119311ebda2bfc351667e1a/.agents/skills/system1-omni-review/SKILL.md)
   now includes Public231 fast-screen provenance, same-request-ID baselines,
