@@ -53,7 +53,116 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Current bounded audit, 2026-10-26 Asia/Shanghai
+## Current bounded audit, 2026-11-02 Asia/Shanghai
+
+- Frozen upstream main:
+  [`9a095b910a66a9243c00af17607c55ce4fdcb938`](https://github.com/vllm-project/vllm-omni/commit/9a095b910a66a9243c00af17607c55ce4fdcb938).
+  The [prior-pin
+  comparison](https://github.com/vllm-project/vllm-omni/compare/f97686a9c33a5a2c3a16ee137878999cd4d78746...9a095b910a66a9243c00af17607c55ce4fdcb938)
+  contains 162 commits, fully paginated as 100 + 62 + 0. GitHub returned the maximum 300
+  comparison files; this is a bounded contract/source audit, **not** an exhaustive
+  changed-file or PR review.
+- Release inventory was fully paginated (32 + 0). Latest stable
+  [v0.32.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0), published
+  2026-10-28 10:10:49 UTC, resolves annotated tag
+  `151b80ecfb0184d408ab206e0bafd73aad7a5e51` to commit
+  `5917730a4b02aedb44d374173cdc1b10484ccd52`. The release-to-main comparison is
+  **diverged**, 277 commits ahead / 16 behind (main-ahead commits paginated 100 + 100 + 77
+  + 0), not a simple release ancestor. The three pointers below are main-only relative to
+  this exact stable tag: its untruncated tree lacks `serving_run.py` and `tracing.py`, and
+  its NIXL source lacks the new stream fences.
+- Re-read pinned `AGENTS.md`, `CONTRIBUTING.md`, `docs/contributing/ci/lessons.md`,
+  canonical `.claude/skills/review-pr/SKILL.md`, and its references
+  `process/review-routing.md`, `process/design-contracts.md`,
+  `features/runtime-stage-execution.md`, `features/communication.md`,
+  `modules/omni-connector.md`, `modules/observability.md`, `modules/entrypoints.md`, and
+  `checks/tests-docs-checklist.md`. Canonical skill remains blob
+  `96e9116e1c902e7197130d44fdfe9584ca1d4c34`, SHA-256
+  `23ff085a2e6e00bcae644217adb43c94432d773e78d13e124f33b3283af77a53`; no canonical
+  checklist replacement is needed.
+
+### New source-discovery pointers
+
+1. **Experimental independent-stage execution — opt-in, trusted callers, not an ordinary
+   OpenAI request path.** [#6883](https://github.com/vllm-project/vllm-omni/pull/6883)
+   adds one-stage-per-call `/v1/run`: the [documented gate and trust
+   boundary](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/docs/features/independent_stage_execution.md#L1-L10)
+   require `VLLM_OMNI_ENABLE_RUN_ENDPOINT=1`; otherwise the endpoint returns 400.
+   [Downstream
+   validation](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/vllm_omni/entrypoints/openai/serving_run.py#L99-L119)
+   requires the encoded payload's receiver to match the requested stage and rejects
+   downstream `sampling_params`. Follow input/output ownership and the disabled path when
+   this route changes; do not assume ordinary preprocessing/postprocessing or async-chunk
+   support. [API
+   fixtures](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/tests/entrypoints/openai_api/test_serving_run.py#L127-L206)
+   cover malformed inputs, receiver mismatch, stage parameters, and environment gating,
+   but are not real multi-stage hardware execution evidence.
+2. **NIXL producer/receiver stream ordering is scoped to the caller's current streams.**
+   [#9422](https://github.com/vllm-project/vllm-omni/pull/9422) introduces
+   [_wait_for_stream_writes](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/vllm_omni/distributed/omni_connectors/connectors/nixl_connector.py#L47-L56)
+   before producer registration and receiver READ. [The design
+   note](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/docs/design/feature/omni_connectors/nixl_connector.md#L39-L45)
+   explains both producer writes and reused receive allocation hazards; writes on other
+   streams remain the caller's responsibility. Inspect buffer lifetime and actual
+   producer-stream ownership rather than treating one synchronization as a universal
+   fence. [Ordering
+   fixtures](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/tests/distributed/omni_connectors/test_nixl_connector.py#L551-L603)
+   assert per-device fencing and ordering using stubs; they do not establish CUDA/RDMA
+   correctness.
+3. **OpenTelemetry spans describe orchestration lifetime, not kernel timing or client
+   receipt.** [#8836](https://github.com/vllm-project/vllm-omni/pull/8836) adds [opt-in
+   tracing and documented span
+   semantics](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/docs/usage/metrics.md#L137-L165).
+   No endpoint flag means tracing stays disabled. Pipeline/stage lifetimes include
+   orchestration waits and transfers; first-output timing records the orchestrator's
+   observation, not delivery to a client. Follow [trace-context and terminal-state
+   ownership](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/vllm_omni/tracing.py)
+   across HTTP, executor, pipeline, session, and turn boundaries. [Unit
+   fixtures](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/tests/engine/test_tracing.py)
+   cover disabled dependencies, success/cancel/error cleanup, first-output deduplication,
+   session overlap, and keep-alive request-parent isolation; [realtime
+   fixtures](https://github.com/vllm-project/vllm-omni/blob/9a095b910a66a9243c00af17607c55ce4fdcb938/tests/entrypoints/openai_api/test_realtime_tracing.py)
+   cover session parent/outcome cleanup. These are source-inspected tests, not measured
+   tracing overhead or executed model evidence.
+
+Source identity anchors: `serving_run.py` blob `83aaf71fb8954e54e435246cb5e27f9bf177c053`;
+NIXL connector blob `1d70703b725dc6b3f160408bc5ed5e6f13cc5792`; `tracing.py` blob
+`b7bade58566a7c6e3b66413f3e0c6fbbae5632b2`. The selected test sources are
+`test_serving_run.py` blob `afd6af3f428ce2d7d2862c22bfebec90329c4048`,
+`test_nixl_connector.py` blob `cde697acee35ab3ae2cacfbee8e8a073253543bf`,
+`test_tracing.py` blob `aa016823390bf8fba87a5840f8c1ea2d4d5259c5`, and
+`test_realtime_tracing.py` blob `21963c8cebb783b35a18461baa52036ddefe37c0`.
+
+**Coverage limits:** only the three contracts above and relevant source/test sections were
+inspected; no upstream tests, model inference, device ordering, multi-node transport,
+tracing exporter deployment, or performance measurement was executed. This pass supplies
+no new adjudicated defect/clean calibration cases and makes no accuracy claim. It does not
+change candidate selection, review authority, daily capacity, publication rules, or owner
+approval-loop gates.
+
+### Local maintenance validation and boundaries
+
+Personal main before this update: `e90c2f5ae39be7182fb1c39037f90d78c9871032`.
+All 13 open personal-skill PRs were enumerated (13 + empty page). PR6 remains at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8`; PR17 remains at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af`. Their complete file scopes
+(4 and 18 files, each followed by an empty page) were checked for overlap.
+Neither proposal nor its human edits were imported, overwritten, merged or closed.
+
+Only this maintenance supplement changes. Selection behavior and fixtures remain
+unchanged: 37 Omni selection/corpus/packaging tests and all 265 repository offline
+unittests pass. The existing two defect families/four bounded outcomes retain
+12 unique pinned source files, re-fetched and matched to both Git blob and
+SHA-256 identities. Frontmatter (24 skill entrypoints), scoped local links,
+JSON manifests, source pins, Python syntax, installer routing and shell syntax,
+and diff whitespace were checked. Validation used blob-verified text files;
+unrelated presentation binaries were not materialized or tested. No live daily
+queue, delivery checkpoint, approval-loop quota, review cadence, upstream code,
+or personal-computer installation changed. Hosted checks are recorded separately
+after publication, not inferred from local results.
+
+
+## Previous bounded audit, 2026-10-26 Asia/Shanghai
 
 Upstream main was frozen at [f97686a9c33a5a2c3a16ee137878999cd4d78746](https://github.com/vllm-project/vllm-omni/commit/f97686a9c33a5a2c3a16ee137878999cd4d78746).
 The [9-commit delta](https://github.com/vllm-project/vllm-omni/compare/f7d012bf3c2f63468a76b86acef5e5033872f7f5...f97686a9c33a5a2c3a16ee137878999cd4d78746)
