@@ -56,6 +56,114 @@ reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 ## Current bounded audit, 2026-11-02 Asia/Shanghai
 
 - Frozen upstream main:
+  [`effab8c866b1196406ef5b25e064714a82a74d42`](https://github.com/vllm-project/vllm-omni/commit/effab8c866b1196406ef5b25e064714a82a74d42).
+  The [prior-pin
+  comparison](https://github.com/vllm-project/vllm-omni/compare/9a095b910a66a9243c00af17607c55ce4fdcb938...effab8c866b1196406ef5b25e064714a82a74d42)
+  contains 2 commits and 45 files on a single comparison page (ahead_by=2,
+  behind_by=0). This is a bounded contract/source audit, **not** an exhaustive
+  changed-file or PR review.
+- Release inventory was fully paginated (32 + 0). Latest stable remains
+  [v0.32.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0), published
+  2026-10-28 10:10:49 UTC, annotated tag
+  `151b80ecfb0184d408ab206e0bafd73aad7a5e51` → commit
+  `5917730a4b02aedb44d374173cdc1b10484ccd52`. The release-to-main comparison remains
+  **diverged**, now 279 commits ahead / 16 behind. The weight-sharing package below
+  is **main-only**: the stable tag tree has no `vllm_omni/distributed/weight_sharing/`
+  directory (HTTP 404 on that path at `v0.32.0`).
+- Re-read pinned `AGENTS.md`, `CONTRIBUTING.md`, `docs/contributing/ci/lessons.md`,
+  and canonical `.claude/skills/review-pr/SKILL.md` at this tip. Blobs are unchanged
+  from the earlier same-day pin (`AGENTS.md` `2cdf07dd33e098d8784d1607647e3d7cd3bf96c4`,
+  `CONTRIBUTING.md` `eb860dd1e8ea78ed59d0c7f983e1f9f220cbf8da`, lessons
+  `cadf97b2c35fe0fa80ea41afc7f825b7f7d5a841`). Canonical skill remains blob
+  `96e9116e1c902e7197130d44fdfe9584ca1d4c34`, SHA-256
+  `23ff085a2e6e00bcae644217adb43c94432d773e78d13e124f33b3283af77a53`; no canonical
+  checklist replacement is needed. Existing weight-transfer / host-weight design and
+  user-guide docs are also unchanged across this delta. [#9392](https://github.com/vllm-project/vllm-omni/pull/9392)
+  is CI/CPU-coverage and xdist port hygiene only and is out of scope for rediscovery,
+  except that it churned `tests/distributed/omni_connectors/test_nixl_connector.py`
+  (blob `cde697acee35ab3ae2cacfbee8e8a073253543bf` → `de271149f3617d9a22532fee19229eec7579d7aa`) without changing
+  the NIXL connector contract source.
+
+### New source-discovery pointers
+
+1. **Persistent CUDA IPC weight-sharing backend is foundation-only; callers own
+   control-plane routing, pairing, and uncertain-failure reporting.**
+   [#9333](https://github.com/vllm-project/vllm-omni/pull/9333) adds
+   [`vllm_omni/distributed/weight_sharing/`](https://github.com/vllm-project/vllm-omni/tree/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing)
+   for colocated rank-paired sharing of finalized backbone storages. The
+   [package boundary](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing/__init__.py#L1-L10)
+   creates no sockets/threads, does not replace the request KV connector, and leaves
+   model binding/process supervision to callers; worker/serving integration is
+   explicitly deferred. The
+   [backend contract](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing/backend.py#L3-L9)
+   requires the trusted caller to route opaque metadata, call `mark_failed` on
+   uncertain delivery/peer outcomes, never replay a bundle into a replacement
+   consumer, and not treat a lost RPC response as proof that CUDA resources were
+   released. Owner-thread mutations and poison-on-uncertain-failure retain resources
+   for teardown rather than guessing safe cleanup
+   ([`mark_failed`](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing/backend.py#L215-L227)).
+   [CPU contracts](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing/contracts.py#L3-L7)
+   identify PyTorch storages (not CUDA allocations), reduce each storage once per
+   session, and keep descriptors free of tensor data/callables. The
+   [Torch CUDA IPC codec](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/vllm_omni/distributed/weight_sharing/torch_cuda_ipc_codec.py#L171-L182)
+   requires Linux + NVIDIA CUDA, the native PyTorch caching allocator, and rejects
+   non-matching device UUIDs / unsupported ABIs; it targets the PyTorch ≥ 2.13.0
+   reducer interfaces. When reviewing follow-up integration PRs, check identity/TP
+   pairing, bundle non-replay, poison vs closed disposition, and external tensor
+   reference removal on `close_import` — do not treat unit coverage as serving
+   readiness. [CPU backend/contract
+   fixtures](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/tests/distributed/weight_sharing/test_backend.py)
+   and [CUDA failure
+   lifetimes](https://github.com/vllm-project/vllm-omni/blob/effab8c866b1196406ef5b25e064714a82a74d42/tests/distributed/weight_sharing/test_cuda_ipc_failures.py)
+   cover poison/`mark_failed`, owner-thread checks, and withheld cleanup; they are
+   not multi-node serving or model-integration evidence.
+
+Source identity anchors: `weight_sharing/__init__.py` blob
+`7fb2b5ac3716550e4d36eae33299c8dec85e5aa7`; `backend.py` blob
+`7864b34d50bb8a5260fd51e2c8d693da5be80f1b`; `contracts.py` blob
+`42b0c34700a8dc5d1a4f3a8342cbe5615263fc8c`; `torch_cuda_ipc_codec.py` blob
+`5dd82b7f294e5cb76a120943d42a0448556ebd95`. Selected tests:
+`test_weight_sharing_contracts.py` blob `8a5ba834b76ddaf42c18bbe39d7638c934b2c9f6`,
+`test_backend.py` blob `75909dbf9d9804590147b55041e1a1b65832ea41`,
+`test_cuda_ipc.py` blob `256f016ab089ca18b076a55a2deacdd8febd6be8`,
+`test_cuda_ipc_failures.py` blob `7b07af7929082333c0e68d1d7f1b0121ae36ab0e`.
+Earlier same-day anchors for independent-stage `/v1/run`, NIXL stream fences, and
+tracing remain applicable at this tip (production sources unchanged); only the NIXL
+ordering **test** blob churned under #9392 as noted above.
+
+**Coverage limits:** only the weight-sharing foundation above and the AGENTS /
+canonical / release inventory re-checks were inspected; no upstream tests, CUDA IPC
+hardware runs, worker/model integration, multi-node transport, or performance
+measurement was executed. This pass supplies no new adjudicated defect/clean
+calibration cases and makes no accuracy claim. It does not change candidate
+selection, review authority, daily capacity, publication rules, or owner
+approval-loop gates.
+
+### Local maintenance validation and boundaries
+
+Personal main before this update: `1337787d32b783767d6196f2166877f595c6f3e2`.
+All 13 open personal-skill PRs were enumerated (13 + empty page). PR6 remains at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8`; PR17 remains at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af`. Their complete file scopes
+(4 and 18 files, each followed by an empty page) were checked for overlap.
+Neither proposal nor its human edits were imported, overwritten, merged or closed.
+
+Only this maintenance supplement changes. Selection behavior and fixtures remain
+unchanged: 37 Omni selection/corpus/packaging tests and all 265 repository offline
+unittests pass. The existing two defect families/four bounded outcomes retain
+12 unique pinned source files, re-fetched and matched to both Git blob and
+SHA-256 identities. Frontmatter (24 skill entrypoints), scoped local links,
+JSON manifests, source pins, Python syntax, installer routing and shell syntax,
+and diff whitespace were checked. Validation used blob-verified text files;
+unrelated presentation binaries were not materialized or tested. No live daily
+queue, delivery checkpoint, approval-loop quota, review cadence, upstream code,
+or personal-computer installation changed. Hosted checks are recorded separately
+after publication, not inferred from local results.
+
+
+## Previous bounded audit, 2026-11-02 Asia/Shanghai (earlier pin)
+
+- Frozen upstream main:
   [`9a095b910a66a9243c00af17607c55ce4fdcb938`](https://github.com/vllm-project/vllm-omni/commit/9a095b910a66a9243c00af17607c55ce4fdcb938).
   The [prior-pin
   comparison](https://github.com/vllm-project/vllm-omni/compare/f97686a9c33a5a2c3a16ee137878999cd4d78746...9a095b910a66a9243c00af17607c55ce4fdcb938)
