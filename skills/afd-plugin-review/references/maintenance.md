@@ -49,11 +49,101 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
-## Current bounded refresh, 2026-10-27 Asia/Shanghai
+## Current bounded refresh, 2026-11-03 Asia/Shanghai
 
 This section supersedes older dated runtime assumptions below; it does not
-replace the canonical review skill. [Source identities](audit-2026-10-27.json)
+replace the canonical review skill. [Source identities](audit-2026-11-03.json)
 record this bounded inspection. Personal skills main was
+`801da342d934a5d8bca67a49d4b480d3b0577b2d`; upstream main was
+[c0e56c43e8a2f57ec164100c9d7e48e9a8588742](https://github.com/vllm-project/afd-plugin/commit/c0e56c43e8a2f57ec164100c9d7e48e9a8588742).
+The complete comparison contains 8 commits and 182 changed paths after the
+October 27 pin. Targeted contracts were inspected, not every changed line.
+Latest release remains
+[v0.30.0rc1](https://github.com/vllm-project/afd-plugin/releases/tag/v0.30.0rc1)
+(October 19, tag commit `9fcdbd1ff64698785fa0dcf2c61a817fd60f9f06`); main is
+24 commits / 287 paths ahead of that RC. The new changes below are
+**main-only**, not released guarantees.
+
+- The canonical review skill's blob remains
+  `81d94c95de61d37931111e770a791d1c0a2e5663`. Migration PR #420 stays closed
+  unmerged; load current main rather than a closed migration branch.
+- Complete skills open-PR enumeration found 13 PRs. PR #6 and #17 retain heads
+  `68d7b38df04c382e9e51c9fde28428181d3bc5a8` and
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af`; their complete file lists do not
+  overlap these AFD-only changes. Shared manifests/routing and other projects
+  remain untouched.
+- The label catalog still contains both `high priority` and `ready`. No open
+  PRs currently carry `high priority` (ready alone does not qualify), so there
+  is no high-priority coverage set for this pass.
+
+### Current contracts to rediscover
+
+- [Dependency metadata](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/pyproject.toml)
+  now pins optional runtime `vllm==0.32.0` (was 0.30.0) and the `afdep` extra to
+  `afdep-comm @ …@2b74d574e9d25cc794de8d2359f815fcfb48955a`.
+  [compat/vllm.py](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/compat/vllm.py)
+  asserts exactly `TARGET_VLLM_VERSION = "0.32.0"`.
+  [README installation evidence](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/README.md)
+  names vLLM `0.32.0` / `5df63a7203cdb9328d824a27b682e77c7b9928be` and
+  vLLM-Ascend `bd42eea01d8312c4df469fabaed45f77a12df4d3`. A supported source
+  pair is not a released Ascend wheel/container or proof of arbitrary-version
+  compatibility; earlier 0.30 pin statements are stale for current main.
+- [DeepEPM2NAFDConnector](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/connectors/factory.py)
+  is registered beside P2P/CAM connectors.
+  [User guide](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/docs/gpu/DEEPEP_M2N_CONNECTOR_USER_GUIDE.md)
+  and [recipes](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/recipe/gpu/DeepEPM2NAFDConnector/README.md)
+  document Hopper SM90+ expert-routed M2N via afdEP-comm DeepEP + DeepGEMM.
+  [validation.py](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/validation.py)
+  requires `compute_gate_on_attention=true`, FFN TP=1, and Attention-routing
+  architectures `Qwen3MoeForCausalLM` or `DeepseekV2ForCausalLM` (DeepSeek-V2-Lite
+  recipes landed in #518). Handshake-owned checks (payload, shapes, SM90+, EP
+  layout, weight format) are not replaced by CPU unit coverage. The README
+  connector-table note that still says "Qwen3 MoE only" lags the guide and
+  validator; resolve model support from validation + guide at the review target.
+  Docs/unit presence is not GPU throughput, multi-node, or DeepGEMM correctness.
+- NPU [DSpark eager A/F](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/model_executor/models/npu/deepseek_v4_dspark.py)
+  patches role-local draft construction; the
+  [AFDDSparkSpeculator](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/v1/worker/npu/dspark_speculator.py)
+  scopes native proposal under the Attention AFD context and keeps the physical
+  draft KV block size.
+  [NPU feature validation](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/afd_plugin/compat/npu/feature_validation.py)
+  limits DSpark to DeepSeek-V4, eager target/draft, TP=1, legacy (non-layered
+  W4A8) FFN, and draft query capacity within `max_num_batched_tokens`. Source
+  acceptance of these gates is not NPU accuracy or speculative-acceptance proof;
+  this path was not executed here.
+- [#465](https://github.com/vllm-project/afd-plugin/pull/465) adds the
+  [run-vllm-bench-k8s](https://github.com/vllm-project/afd-plugin/blob/c0e56c43e8a2f57ec164100c9d7e48e9a8588742/.agents/skills/run-vllm-bench-k8s/SKILL.md)
+  skill for one-run GPU colocation recipe benchmarking via `vllm bench serve`.
+  Skill prose is workflow guidance, not a completed benchmark or published
+  number from this maintenance pass. WeChat QR (#521) is asset-only.
+
+### Maintenance validation and limits
+
+The AFD selector contract is unchanged: exact `high priority` (plus `ready`
+when present in the catalog), new-head evidence, ten-distinct-PR Asia/Shanghai
+day cap, case-insensitive owner/repository normalization, and delivery
+deduplication. No selector code change in this pass.
+
+The existing corpus remains two adjudicated defect families / four defect-clean
+outcomes; fourteen unique tip source artifacts were byte-verified against pinned
+Git blobs and SHA-256 hashes. No new adjudicated cases, upstream tests, model
+inference, GPU/NPU execution or cluster deployment were performed. Historical
+audits and `adjudicated-cases.json` are preserved.
+
+Validation: the full personal-repository suite passed 265 network-free tests,
+including 37 AFD selector cases, four AFD corpus/audit metadata checks, and the
+AFD temporary-directory install/idempotence/conflict test. All 24 skill
+frontmatters, JSON/Python parsing, affected local links, and diff whitespace
+passed. Fourteen current-source files were byte-verified against Git blob and
+SHA-256 pins. These fixture and packaging checks are not upstream runtime tests
+or accuracy measurements. Installation occurred only in temporary test
+directories.
+
+## Historical bounded refresh, 2026-10-27 Asia/Shanghai
+
+This historical section is superseded by the 2026-11-03 refresh above; it does
+not replace the canonical review skill. [Source identities](audit-2026-10-27.json)
+record that bounded inspection. Personal skills main was
 `93563df3abba4849ac60489e4bef05da14d1a1c3`; upstream main was
 [2bcd76fcf318dda123124f4cfb1d08302f8a1ec9](https://github.com/vllm-project/afd-plugin/commit/2bcd76fcf318dda123124f4cfb1d08302f8a1ec9).
 The complete comparison contains 12 commits after the October 20 pin. Targeted
