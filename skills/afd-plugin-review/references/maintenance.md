@@ -131,13 +131,12 @@ inference, GPU/NPU execution or cluster deployment were performed. Historical
 audits and `adjudicated-cases.json` are preserved.
 
 Validation: the full personal-repository suite passed 265 network-free tests,
-including 37 AFD selector cases, four AFD corpus/audit metadata checks, and the
-AFD temporary-directory install/idempotence/conflict test. All 24 skill
-frontmatters, JSON/Python parsing, affected local links, and diff whitespace
-passed. Fourteen current-source files were byte-verified against Git blob and
-SHA-256 pins. These fixture and packaging checks are not upstream runtime tests
-or accuracy measurements. Installation occurred only in temporary test
-directories.
+including 37 AFD daily tests (32 selector, four corpus/audit metadata, one
+temporary-directory install/idempotence/conflict). All 24 skill frontmatters,
+JSON/Python parsing, affected local links, and diff whitespace passed. Fourteen
+current-source files were byte-verified against Git blob and SHA-256 pins.
+These fixture and packaging checks are not upstream runtime tests or accuracy
+measurements. Installation occurred only in temporary test directories.
 
 ## Historical bounded refresh, 2026-10-27 Asia/Shanghai
 
