@@ -226,7 +226,7 @@ class PackagingTests(unittest.TestCase):
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
             installed = Path(target) / "skills/router-review"
-            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json"):
+            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json", "references/audit-2026-11-04.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
                                     input=json.dumps(snapshot()), text=True, capture_output=True)
@@ -277,6 +277,41 @@ class EvidenceTests(unittest.TestCase):
         for source in data["sources"]:
             self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
             self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+            self.assertGreater(source["bytes"], 0)
+            ref = (data["canonical"]["head"] if source["path"] == data["canonical"]["path"]
+                   else data["main"])
+            self.assertEqual(source["url"], "https://github.com/" + daily.REPOSITORY
+                             + "/blob/" + ref + "/" + source["path"])
+
+    def test_november_audit_pins_new_pd_completion_and_ci_sources(self):
+        data = json.loads((SKILL / "references/audit-2026-11-04.json").read_text())
+        previous = json.loads((SKILL / "references/audit-2026-10-28.json").read_text())
+        self.assertEqual(data["repository"], daily.REPOSITORY)
+        self.assertEqual(data["main"], "7b6ff6903c779f8cca51427b34bc68e943936d67")
+        self.assertEqual(data["previous_audit"], previous["main"])
+        self.assertEqual(data["commits_since_previous_audit"], 23)
+        self.assertEqual(data["changed_file_inventory_count"], 175)
+        self.assertEqual(data["release"]["commit"], previous["release"]["commit"])
+        self.assertEqual(data["release"]["main_commits_after_release"], 63)
+        self.assertNotEqual(data["main"], data["release"]["commit"])
+        self.assertEqual(data["canonical"], previous["canonical"])
+        paths = [source["path"] for source in data["sources"]]
+        self.assertEqual(len(paths), 39)
+        self.assertEqual(len(paths), len(set(paths)))
+        for required in (data["canonical"]["path"],
+                         "src/routers/http/pd_router.rs", "src/routers/http/pd_kv_state.rs",
+                         "src/routers/http/pd_program_adapter.rs", "src/routers/http/pd_warm_remote.rs",
+                         "src/routers/http/completion_route.rs", "src/backend/completion.rs",
+                         "src/backend/grpc.rs", "tests/rust/grpc_pd_routing.rs",
+                         "tests/rust/completion_preparation.rs", "Cargo.toml", "pytest.ini",
+                         ".buildkite/pipeline.yml", ".buildkite/scripts/upload_pipeline.py",
+                         ".buildkite/test-ready.yml", ".buildkite/test-merge.yml",
+                         ".buildkite/test-nightly.yml"):
+            self.assertIn(required, paths)
+        for source in data["sources"]:
+            self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
+            self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+            self.assertIs(type(source["bytes"]), int)
             self.assertGreater(source["bytes"], 0)
             ref = (data["canonical"]["head"] if source["path"] == data["canonical"]["path"]
                    else data["main"])
