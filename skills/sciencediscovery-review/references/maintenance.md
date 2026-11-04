@@ -53,7 +53,92 @@ canonical draft's `high-priority` spelling for this personal queue only. Neither
 hyphenated labels nor `priority/major` are aliases. Do not mutate labels or broaden
 the queue to reconcile the discrepancy. Unknown current catalogs remain BLOCKED.
 
-## Current bounded audit, 2026-10-29 Asia/Shanghai
+## Current bounded audit, 2026-11-05 Asia/Shanghai
+
+This section supersedes the historical October 29 routing, release and source
+availability observations below. Historical calibration pins remain unchanged.
+
+- Personal main baseline: `85398e9ed0631d7a263316f37833ef9c2994ef8e`.
+  Target main: [89cd2d30c93e11c6e98e264cc08b171f6a3705f0](https://github.com/openJiuwen-ai/sciencediscovery/commit/89cd2d30c93e11c6e98e264cc08b171f6a3705f0).
+  Complete local Git history counts 210 commits and 637 changed files since
+  `5e56ea77cfcc5447947be8342d7781dc7891d004`. This pass inspected source and CI
+  contracts, not all 55,168 added / 4,047 removed lines or product correctness.
+- [Canonical migration PR231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
+  remains open, draft and unmerged at `1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c`.
+  Its recorded base is not current main. Main still lacks the review skill and
+  root AGENTS.md. Continue explicit draft-source loading, recording the revision
+  and hash; re-discover current target contracts rather than copying its old base.
+  Main has removed `.agents/skills/sciencediscovery-dev/`; do not restore or treat
+  its historical handbook as current repository instructions. The web-local
+  AGENTS.md and frontend-quality skill still require visual UI inspection.
+- Latest stable [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0)
+  was published October 31 at peeled tag commit
+  `7acc1dcf62736f7e7bf06c6d51acb5114899f2de`. Main and the release tag diverge: 116 commits are unique to main and two
+  unique to the tag.
+  RC1 and beta remain prereleases. A release's `target_commitish=main` is not a
+  source pin; use its peeled tag. Do not call post-tag behavior released.
+- All 13 open personal-skills PRs and their changed-file lists were enumerated;
+  none overlaps this skill or repository-review-source. PR6 and PR17 retain the
+  full heads recorded in the historical audit. No other PR or human edit changed.
+- Fresh label-catalog access through the connector returned unsupported-endpoint
+  `INVALID_ARGUMENT`. Current catalog and queue eligibility therefore remain
+  unknown, not empty. October 29's catalog is retained only as dated evidence.
+  No live queue was selected and no review or delivery checkpoint changed.
+
+### Current CI evidence routing
+
+Read the selected revision's executable workflow and policy together. The CI
+skill's ordinary tier table alone omits a newer documentation-only exception.
+At the current pin, [changed-paths.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/.ci/changed-paths.mjs),
+[tier-policy.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/.ci/tier-policy.mjs),
+[ci.yml](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/.github/workflows/ci.yml)
+and [the docs-only explanation](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/.ci/README.md#L183-L202)
+establish:
+
+- PR, push and merge-group diffs wholly in the explicit documentation allowlist
+  run `pnpm docs:check` instead of product tests. `.agents/skills/**/*.md`
+  qualifies; arbitrary `skills/**/*.md` and other `.agents` files do not.
+  Renames check both paths. Unknown, empty or unavailable diffs preserve the full
+  profile. Manual/reusable and scheduled profiles do not infer this exception.
+- Non-draft docs-only PRs, pushes and merge groups require policy/L1 success and
+  the enumerated product jobs skipped. Draft PRs run documentation checks but
+  skip the merge-gate. UT/ST, browser E2E, real E2E, binary and Docker skips are not executed
+  passes. Inspect the actual policy output and job results before making a test
+  coverage claim; a green aggregate does not prove those suites ran.
+- Ordinary L1–L5 routing remains as described in the historical audit, with
+  live environment now `nightly-ci-ds`. L5 currently uses the same eligible real
+  cases/evaluation modes as L4, not a calibrated capability baseline.
+- [Provider-fault classification](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/test/support/tagged/provider-fault.mjs),
+  [attempt handling](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/test/support/tagged/shared.mjs)
+  and [plan accounting](https://github.com/openJiuwen-ai/sciencediscovery/blob/89cd2d30c93e11c6e98e264cc08b171f6a3705f0/test/support/tagged/plan.mjs)
+  distinguish a remaining `PROVIDER_FAULT`: executed but neither passed nor
+  product-failed, still non-green. Eligible early transient faults lasting at most 300 seconds
+  may retry once; product assertions, authentication and rate limits are not
+  that exception. When every case in a batch faults, at most two eligible cases
+  repeat as outage probes. A successful retry may replace a fault and permit a
+  green run, with `retriedAfterProviderFault` recorded. Retain attempt evidence;
+  do not describe retry success as a
+  clean first attempt or provider failure as a passing gate.
+
+### Validation and limits for this refresh
+
+The unchanged selector retains exact-label, pagination/error-as-unknown,
+old-PR/new-head, stale-head and cross-policy deduplication fixtures. The two
+historical defect families / four adjudicated outcomes remain bounded P2 and
+fixed-clean cases, not whole-PR approval or an accuracy estimate. Their isolated
+replay reproduced all four outcomes using Node 24.22.1 and already-present Git
+objects, with imports stripped and explicit in-memory authority stubs. It did
+not execute the upstream application suite. LICENSE bytes still match main.
+
+Validation: all 266 personal-repository tests passed, including 36 focused
+ScienceDiscovery selection/evidence/install tests. Frontmatter, scoped local
+links, immutable source paths and case pins, source routing, plugin manifest,
+installer preservation behavior, Python/Node syntax and diff whitespace were
+checked. No live models, Windows runs, browser journeys, full product UT/ST/E2E,
+binary/Docker qualification, remote CI pass, or exhaustive architecture audit is
+claimed. No source-owned checklist, selection policy or upstream code changed.
+
+## Historical bounded audit, 2026-10-29 Asia/Shanghai
 
 This refresh supersedes the dated pins and catalog notes below from the
 2026-10-08 pass; it does not replace the canonical review checklist.
@@ -107,7 +192,7 @@ This refresh supersedes the dated pins and catalog notes below from the
   eligibility. No live queue, delivery history or checkpoint was selected or
   changed in this maintenance pass
 
-### Current contracts to rediscover at the target
+### Historical contracts observed October 29
 
 - [CI skill](https://github.com/openJiuwen-ai/sciencediscovery/blob/5e56ea77cfcc5447947be8342d7781dc7891d004/.agents/skills/ci/SKILL.md)
   (Git blob `b3641cbf9c242069082afa969dd77fe9804b9519`; prior audit pin used
@@ -140,7 +225,7 @@ This refresh supersedes the dated pins and catalog notes below from the
   SSE frame-buffer bounds, Runner symlink/sandbox preflight, and skills-catalog
   startup hardening; those are main-only until a later release tag
 
-## Freshness and validation routing
+## Historical freshness and validation routing
 
 At the main pin above, CONTRIBUTING.md (Git blob `6c5dd807e1ab8eeb6b364c48edb40fa556cc451b`),
 package.json, `.ci/README.md` (Git blob `8e8da0f551133c5320007bc55a3b05765acaa7cd`)
@@ -149,7 +234,7 @@ workflow/profile and tagged summaries rather than promoting older prose examples
 to passing evidence. Full product CI remains separate from this supplement's
 network-free Python tests.
 
-## Corpus and validation limits
+## Historical corpus and validation limits
 
 [Adjudicated cases](adjudicated-cases.json) record bounded historical defect/fix
 pairs (four outcomes) with immutable source evidence. Both before outcomes are
