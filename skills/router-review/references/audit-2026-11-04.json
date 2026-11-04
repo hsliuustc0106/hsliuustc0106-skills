@@ -1,14 +1,21 @@
 {
   "repository": "vllm-project/router",
-  "audited_at_utc": "2026-11-03T16:10:23Z",
-  "previous_audit": "a774cdda09237da16e33e67f725998ff4db920a3",
-  "main": "7b6ff6903c779f8cca51427b34bc68e943936d67",
-  "commits_since_previous_audit": 23,
-  "changed_file_inventory_count": 175,
+  "audited_at_utc": "2026-11-04T02:10:35Z",
+  "previous_audit": "7b6ff6903c779f8cca51427b34bc68e943936d67",
+  "main": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
+  "commits_since_previous_audit": 1,
+  "changed_file_inventory_count": 4,
   "release": {
+    "published_tag": "v0.1.16",
+    "published_commit": "db02f358da401b60d4ae14eb286163763a0705cc",
+    "main_commits_after_published_release": 64,
+    "lightweight_tag": "v0.1.17",
+    "lightweight_tag_commit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
+    "github_release_for_v0.1.17": false,
+    "note": "Latest published GitHub Release remains v0.1.16. Lightweight tag v0.1.17 exists at main tip but has no GitHub Release (404).",
     "tag": "v0.1.16",
     "commit": "db02f358da401b60d4ae14eb286163763a0705cc",
-    "main_commits_after_release": 63
+    "main_commits_after_release": 64
   },
   "canonical": {
     "pr": 336,
@@ -17,11 +24,14 @@
     "head": "3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09",
     "path": ".agents/skills/review-pr/SKILL.md"
   },
-  "coverage": "Bounded source inspection and exact-byte verification, not a semantic audit of all 23 commits, all 175 changed paths or every line of the fetched files. The large vllm_pd_router.rs caller was not inspected. No upstream Rust/Python test suites, live serving, model/GPU/ROCm/RDMA/NIXL/performance or reviewer-accuracy measurement. Three CI pipeline renders were executed offline without upload.",
+  "coverage": "Bounded pin refresh after version bump 0.1.16\u21920.1.17 (#495). Exact-byte revalidation of the same 38 current-main sources plus the separate draft skill: only Cargo.toml changed among pinned sources (version field); architecture/test sources unchanged blob-by-blob. Delta vs overnight pin is 1 commit / 4 paths (Cargo.lock, Cargo.toml, py_src/vllm_router/version.py, pyproject.toml). No upstream Rust/Python test suites, live serving, model/GPU/ROCm/RDMA/NIXL/performance or reviewer-accuracy measurement. No invented accuracy. Large vllm_pd_router.rs caller was not inspected.",
   "sample_size": {
     "historical_defect_families": 2,
     "correlated_outcomes": 4,
-    "historical_source_records_revalidated": 8
+    "historical_source_records_revalidated": 8,
+    "current_main_sources_rehashed": 38,
+    "draft_skill_sources_rehashed": 1,
+    "current_main_sources_blob_changed": 1
   },
   "selection_policy_changed": false,
   "live_review_checkpoint_advanced": false,
@@ -31,7 +41,7 @@
       "git_blob_sha": "e04799a423bd659f541c4e428e04062f6ed7b17e",
       "sha256": "c0e44261ecf1afdfa8f402a5e4b2eaf79f5964aa9f44104127a6c4f467bdf82c",
       "bytes": 3837,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.agents/skills/precheck-pr/SKILL.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.agents/skills/precheck-pr/SKILL.md"
     },
     {
       "path": ".agents/skills/review-pr/SKILL.md",
@@ -45,259 +55,266 @@
       "git_blob_sha": "4e396dbf283cf1cc1d0aafa841e88d2faa37433f",
       "sha256": "a0d5193e05cbe93a3ed7e73a6a5cc24d174234f76501c661918b05c97789fb13",
       "bytes": 11350,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/README.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/README.md"
     },
     {
       "path": ".buildkite/ci_mirror_hardwares.yml",
       "git_blob_sha": "0894248a22241c769d9e310d09dbd9a24a0b976b",
       "sha256": "bd3d36f0b6fe240688073c23e93eadcb4237e3c26385ae194df20bcfb3fe395d",
       "bytes": 9260,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/ci_mirror_hardwares.yml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/ci_mirror_hardwares.yml"
     },
     {
       "path": ".buildkite/pipeline.yml",
       "git_blob_sha": "ff65d98a15e94321db9e732c06bcb43e9bdb7f3a",
       "sha256": "e0fad81b8ec4ca36621e10229eb4401e5fcc6d0d2fbe71fd3760d366d6f032f5",
       "bytes": 5235,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/pipeline.yml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/pipeline.yml"
     },
     {
       "path": ".buildkite/scripts/upload_pipeline.py",
       "git_blob_sha": "5a1d3dfc004a6651d12dd28540e4252bcf85f554",
       "sha256": "f9d89df490a0cf7d346574505417439fba56bcda548a116037ffd05673491729",
       "bytes": 6483,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/scripts/upload_pipeline.py"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/scripts/upload_pipeline.py"
     },
     {
       "path": ".buildkite/test-merge.yml",
       "git_blob_sha": "02c22d6895160328b17eaf7b9eca71c322f997f1",
       "sha256": "1bfb1097fa63f37ca8737113455fda123e677bba1fc33ff040e78fd89ed5b842",
       "bytes": 3494,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/test-merge.yml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/test-merge.yml"
     },
     {
       "path": ".buildkite/test-nightly.yml",
       "git_blob_sha": "b62021b0f7e0549b96e1efc140177a7a623d96b1",
       "sha256": "667722b04dc33314ea30bdb6debcbf9c78592ddeb5eb85547af81504e982c1e0",
       "bytes": 11603,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/test-nightly.yml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/test-nightly.yml"
     },
     {
       "path": ".buildkite/test-ready.yml",
       "git_blob_sha": "f070efc42670c856eaa64a37fe570e08746c190f",
       "sha256": "285b69721924226875edeff965756dfbf87522c2d91bac3d397c43df41b31907",
       "bytes": 6378,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/test-ready.yml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/test-ready.yml"
     },
     {
       "path": "CONTRIBUTING.md",
       "git_blob_sha": "e0ba17817212d4f85d98b50b0beb0a0e09a5f8b1",
       "sha256": "fbbc1bff23852e03b035272701af917e24f0858d685a7aaaf37e2e3d0af3a6eb",
       "bytes": 890,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/CONTRIBUTING.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/CONTRIBUTING.md"
     },
     {
       "path": "Cargo.toml",
-      "git_blob_sha": "5d51eef8444313e8ecac570a10d502f6d47123a1",
-      "sha256": "20731354d8caa0d34b797fcb9af2aef080ef304c13b4c0ac8b765fb3126f6781",
+      "git_blob_sha": "257e5c1eb7e159c18d29195dc5d777e2eb3c197d",
+      "sha256": "b0c88d64ca7cd6c8ca79fabffa0f743c442fc57bf3118599573c211431659c4f",
       "bytes": 8685,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/Cargo.toml"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/Cargo.toml"
     },
     {
       "path": "docker/Dockerfile.ci",
       "git_blob_sha": "2bb5fddcae96734c201a4bdb5f91544fe6658b1a",
       "sha256": "afe618e5c4614f20b016e259625048fde947e4f3c161b36b7a626062253a1382",
       "bytes": 1759,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docker/Dockerfile.ci"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docker/Dockerfile.ci"
     },
     {
       "path": "docker/Dockerfile.router",
       "git_blob_sha": "cb41b4caf840151c12b45fca5ee83bbb16aff115",
       "sha256": "67b91aaa585882fc764b31fbdb4af5ea301f2f00f64692540d9dd6ae381e5e06",
       "bytes": 1719,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docker/Dockerfile.router"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docker/Dockerfile.router"
     },
     {
       "path": "docs/backend/grpc.md",
       "git_blob_sha": "74da20be7ed3824cbd1065bba4a94ff9172253f3",
       "sha256": "1eac2e51ff2f188a46843ca606a318378c6d173b59e097a6bfa3b7b6afcc48d2",
       "bytes": 15815,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/backend/grpc.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/backend/grpc.md"
     },
     {
       "path": "docs/load_balancing/README.md",
       "git_blob_sha": "6d60a1f11547b79eddcf87eca212480f497cefe6",
       "sha256": "9120b35b20854398104e7f2472cfe62b8d1cc3a1aa1803018d4d9b93f3fb27c9",
       "bytes": 13614,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/load_balancing/README.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/load_balancing/README.md"
     },
     {
       "path": "docs/load_balancing/http_completion_kv.md",
       "git_blob_sha": "77026ddbeb1cbdb239667063bc29c66d8665fe5c",
       "sha256": "56e0b380df817f64cfb8eee4b153dbe2ff6bb310c20b1073e6af8685af4f3427",
       "bytes": 1794,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/load_balancing/http_completion_kv.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/load_balancing/http_completion_kv.md"
     },
     {
       "path": "docs/program_scheduling/pd-program-scheduling.md",
       "git_blob_sha": "12bd78e433c19e273008d6ecad129e751a0caa2a",
       "sha256": "5bb3470c2093cd86a539ee4adfee974985cbbeb9b752683931475b3af8f7b9bd",
       "bytes": 20665,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/program_scheduling/pd-program-scheduling.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/program_scheduling/pd-program-scheduling.md"
     },
     {
       "path": "docs/program_scheduling/program-scheduling.md",
       "git_blob_sha": "5348f84614f3db7311d906166c1e155cef68ad1c",
       "sha256": "7c910d30f4b019085f80f057683129358de4016e958057eb7b7258878c4148f6",
       "bytes": 29853,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/program_scheduling/program-scheduling.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/program_scheduling/program-scheduling.md"
     },
     {
       "path": "pytest.ini",
       "git_blob_sha": "54ae51356117aa9f1bf0591a39366c2ec14b5927",
       "sha256": "bda1e9c7b9a4fbaed7cfbd25ea5fed5c4219b75b67f48a247cb11263bce58bfe",
       "bytes": 1125,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/pytest.ini"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/pytest.ini"
     },
     {
       "path": "src/backend/completion.rs",
       "git_blob_sha": "8b28181ad1b54d5e1e773b7b7cb1e5b4672e512b",
       "sha256": "7c32a2cda9257e3209a77ab40cd6b18ce0e35f62f04541db0cfaa9f9877bc0f7",
       "bytes": 7362,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/backend/completion.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/backend/completion.rs"
     },
     {
       "path": "src/backend/grpc.rs",
       "git_blob_sha": "6ae7e6f124fcd7cccbfa519399bda7da93eb44a8",
       "sha256": "2ae6b5f8b6fd342bc431f44ef13243310bbb7cd3835a614f58be0e15c9508cb2",
       "bytes": 36422,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/backend/grpc.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/backend/grpc.rs"
     },
     {
       "path": "src/policies/kv_aware.rs",
       "git_blob_sha": "8421ed5fcdce07160d72802cc7f10f97c5c843fd",
       "sha256": "db2e823acfd3efbd1bece98a0cda00c942eee36bf8cd618952c80223038ef96a",
       "bytes": 141733,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/policies/kv_aware.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/policies/kv_aware.rs"
     },
     {
       "path": "src/policies/sticky_least_loaded.rs",
       "git_blob_sha": "6ffe6ea60c5b103a6b857439a4de8484ecc84205",
       "sha256": "b3a009aba99b9080ab10f26cec294f21e6a094990c46512dab195f4d4cfe1c49",
       "bytes": 21792,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/policies/sticky_least_loaded.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/policies/sticky_least_loaded.rs"
     },
     {
       "path": "src/program_scheduling/prediction_profile.rs",
       "git_blob_sha": "7da02b18ca1a307c35ff20df273ac9f6aa46f495",
       "sha256": "2db7570b0c591c4cf536f885e56c3c08ad5cc9735462aadd83dad1019ab13f2e",
       "bytes": 35011,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/program_scheduling/prediction_profile.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/program_scheduling/prediction_profile.rs"
     },
     {
       "path": "src/routers/http/completion_route.rs",
       "git_blob_sha": "401dc7a59b9059b7f185066ba3cf0f99f8a76a30",
       "sha256": "cba90c160fcfee62a22f3d217f77b8ed21401b9a4b64a95b5188fc3ae7d50d42",
       "bytes": 2528,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/completion_route.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/completion_route.rs"
     },
     {
       "path": "src/routers/http/pd_kv_state.rs",
       "git_blob_sha": "9a431ab92f4363e55cc0cf06324d8c9c601caf9e",
       "sha256": "ec09c14c0dc963b70d0d6233b2d10e441af0d6ef6be5798941519786db4d7462",
       "bytes": 40841,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_kv_state.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_kv_state.rs"
     },
     {
       "path": "src/routers/http/pd_program_adapter.rs",
       "git_blob_sha": "0918236dbad4690d165d1d5ff5478f45841ae334",
       "sha256": "68580d7ae361d5dab463ef037c8f1c8489323078dce85d10b6af1e518abe84d4",
       "bytes": 46384,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_program_adapter.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_program_adapter.rs"
     },
     {
       "path": "src/routers/http/pd_router.rs",
       "git_blob_sha": "0d7a91f140987988ab8fcc1396656399bd90b41e",
       "sha256": "c0e580f756aaef7b5df050070e6f50810935e807564a2991a5f97b7cc97c4e56",
       "bytes": 124636,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_router.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_router.rs"
     },
     {
       "path": "src/routers/http/pd_warm_remote.rs",
       "git_blob_sha": "471514b078657fdfc842147de88167c7b6a60f9a",
       "sha256": "7f5007af7a18e18373424e55fbd8c7c1116113d9c43b3d07141b711231370cb6",
       "bytes": 71365,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_warm_remote.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_warm_remote.rs"
     },
     {
       "path": "tests/python/e2e/pd_disagg_vllm/run_grpc_pd_accuracy_test.sh",
       "git_blob_sha": "fa5276dd9eddf2ff65897aba7fc976fcd2a9114f",
       "sha256": "250a66be7f2f0e55a45b31304212ede94222ced8fd2577004f71b5e67033e6f8",
       "bytes": 8726,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/e2e/pd_disagg_vllm/run_grpc_pd_accuracy_test.sh"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/e2e/pd_disagg_vllm/run_grpc_pd_accuracy_test.sh"
     },
     {
       "path": "tests/python/e2e/perf/l1_encode/README.md",
       "git_blob_sha": "09bfdf49c7e5256842078093951fb7fafbcd9315",
       "sha256": "f864abd6fe4c5dc06b6ce17ee878059baed2e1c52170c06f7c0497c1c81e9674",
       "bytes": 5042,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/e2e/perf/l1_encode/README.md"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/e2e/perf/l1_encode/README.md"
     },
     {
       "path": "tests/python/e2e/perf/l1_encode/check.py",
       "git_blob_sha": "5731c175fa0363088a630d1439c2e1e064d46736",
       "sha256": "a75460d5f57eeb2235239b7231667d33ae46931bff1a36644af8bafca5b7176b",
       "bytes": 4665,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/e2e/perf/l1_encode/check.py"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/e2e/perf/l1_encode/check.py"
     },
     {
       "path": "tests/python/e2e/perf/l1_encode/test_l1_encode.py",
       "git_blob_sha": "21d10d63b1219dff879acc39051765c0574fe262",
       "sha256": "4c03f21800d8cc2a5da90d6f96b654441a85d723697d7c6949115096ca07daa5",
       "bytes": 3452,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/e2e/perf/l1_encode/test_l1_encode.py"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/e2e/perf/l1_encode/test_l1_encode.py"
     },
     {
       "path": "tests/python/integration/test_grpc_pd_disagg.py",
       "git_blob_sha": "50a36dc7b83b0e0bf785d968279c9c7dc3982418",
       "sha256": "5cec3f2cedad5d1c7ee2436c21f686c6bf248baaf23c5621c0867104b491bba9",
       "bytes": 811,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/integration/test_grpc_pd_disagg.py"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/integration/test_grpc_pd_disagg.py"
     },
     {
       "path": "tests/python/integration/test_pd_disagg_routing.py",
       "git_blob_sha": "235fd8758aa0f115b93fe313d4de043535021dbc",
       "sha256": "bb8c05b1833433bff4f169c9500d569f81a9207d1e373c61d1d149fb3bdeb499",
       "bytes": 9984,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/integration/test_pd_disagg_routing.py"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/integration/test_pd_disagg_routing.py"
     },
     {
       "path": "tests/rust/completion_preparation.rs",
       "git_blob_sha": "49610a8c13878817b4c2fab173edf00a5fe3bb4d",
       "sha256": "66c291a1104556e6b9bf88080a22fce9dec879abb7e6b26083901928b16fd3ed",
       "bytes": 14195,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/rust/completion_preparation.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/rust/completion_preparation.rs"
     },
     {
       "path": "tests/rust/grpc_pd_routing.rs",
       "git_blob_sha": "fa56dc578d2f020cd812e2e15fd69dd8c2eda7f5",
       "sha256": "d5455566912fa45d23194db1ba3389ca62f03a83a56595fe8e6613a45b746952",
       "bytes": 40843,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/rust/grpc_pd_routing.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/rust/grpc_pd_routing.rs"
     },
     {
       "path": "tests/rust/test_pd_program_scheduling.rs",
       "git_blob_sha": "b2b1bdd414090d592772169ee6a52065352d04ab",
       "sha256": "274544bced6f7082c14553ca0a8467d184306c58bb18ef1eaf29994ecbb2e67a",
       "bytes": 18410,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/rust/test_pd_program_scheduling.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/rust/test_pd_program_scheduling.rs"
     },
     {
       "path": "tests/rust/test_pd_warm_remote.rs",
       "git_blob_sha": "2ad702f9fc8f0056118cab7976ec2204dc4a7386",
       "sha256": "8d11ff4ec3cd66c3c33f3781685e75da8082739e9689be8537db033ec229dff4",
       "bytes": 24797,
-      "url": "https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/rust/test_pd_warm_remote.rs"
+      "url": "https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/rust/test_pd_warm_remote.rs"
     }
-  ]
+  ],
+  "high_priority_open_prs": {
+    "github_label_catalog_spelling": "High Priority",
+    "selector_policy_spelling": "high priority",
+    "ready_label_present_in_catalog": true,
+    "open_count_under_github_label": 0,
+    "note": "No High Priority open PRs found under the GitHub label as spelled. Selector offline policy still requires exact lowercase 'high priority' (and ready when catalog contains ready)."
+  }
 }

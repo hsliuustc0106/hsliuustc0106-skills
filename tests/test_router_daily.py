@@ -286,13 +286,19 @@ class EvidenceTests(unittest.TestCase):
     def test_november_audit_pins_new_pd_completion_and_ci_sources(self):
         data = json.loads((SKILL / "references/audit-2026-11-04.json").read_text())
         previous = json.loads((SKILL / "references/audit-2026-10-28.json").read_text())
+        overnight = "7b6ff6903c779f8cca51427b34bc68e943936d67"
+        tip = "3451e66a8ba5416d3e3e8eb3d9ee604211cde042"
         self.assertEqual(data["repository"], daily.REPOSITORY)
-        self.assertEqual(data["main"], "7b6ff6903c779f8cca51427b34bc68e943936d67")
-        self.assertEqual(data["previous_audit"], previous["main"])
-        self.assertEqual(data["commits_since_previous_audit"], 23)
-        self.assertEqual(data["changed_file_inventory_count"], 175)
+        self.assertEqual(data["main"], tip)
+        self.assertEqual(data["previous_audit"], overnight)
+        self.assertEqual(data["commits_since_previous_audit"], 1)
+        self.assertEqual(data["changed_file_inventory_count"], 4)
         self.assertEqual(data["release"]["commit"], previous["release"]["commit"])
-        self.assertEqual(data["release"]["main_commits_after_release"], 63)
+        self.assertEqual(data["release"]["tag"], "v0.1.16")
+        self.assertEqual(data["release"]["main_commits_after_release"], 64)
+        self.assertEqual(data["release"]["lightweight_tag"], "v0.1.17")
+        self.assertEqual(data["release"]["lightweight_tag_commit"], tip)
+        self.assertIs(data["release"]["github_release_for_v0.1.17"], False)
         self.assertNotEqual(data["main"], data["release"]["commit"])
         self.assertEqual(data["canonical"], previous["canonical"])
         paths = [source["path"] for source in data["sources"]]
@@ -308,6 +314,10 @@ class EvidenceTests(unittest.TestCase):
                          ".buildkite/test-ready.yml", ".buildkite/test-merge.yml",
                          ".buildkite/test-nightly.yml"):
             self.assertIn(required, paths)
+        cargo = next(source for source in data["sources"] if source["path"] == "Cargo.toml")
+        self.assertEqual(cargo["git_blob_sha"], "257e5c1eb7e159c18d29195dc5d777e2eb3c197d")
+        self.assertEqual(cargo["sha256"], "b0c88d64ca7cd6c8ca79fabffa0f743c442fc57bf3118599573c211431659c4f")
+        self.assertEqual(cargo["bytes"], 8685)
         for source in data["sources"]:
             self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
             self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")

@@ -1,51 +1,59 @@
-# Personal daily selection and bounded Router audit
-
-The repository-owned review skill remains canonical. This supplement covers the
-explicitly configured personal daily queue and dated source-inspection results;
-it does not authorize upstream reviews, labels, merges, or code changes.
-
 ## Current bounded refresh, 2026-11-04 Asia/Shanghai
 
 This refresh supersedes dated P/D, Completion and CI facts below, not the
 repository-owned review checklist. The [source manifest](audit-2026-11-04.json)
 pins 38 current-main files and the separate draft skill by Git blob, SHA-256
-and byte length.
+and byte length. It updates the overnight same-day pin for the version bump
+only; architecture/test sources were re-hashed blob-by-blob and unchanged.
 
-- Personal main baseline: `00a15291eddc2de54794e7f36dc8a1962919bc35`.
-  Router main: [7b6ff6903c779f8cca51427b34bc68e943936d67](https://github.com/vllm-project/router/commit/7b6ff6903c779f8cca51427b34bc68e943936d67).
-  The complete delta inventory since the October 28 pin contains 23 commits
-  and 175 changed paths. Source reading was targeted, not a full audit of
-  those commits or every line in the fetched files.
-- Latest published release remains [v0.1.16](https://github.com/vllm-project/router/releases/tag/v0.1.16),
+- Personal main baseline: `4f3b0644304fa0dd72252dcaf29faaa767d7267c`.
+  Router main: [3451e66a8ba5416d3e3e8eb3d9ee604211cde042](https://github.com/vllm-project/router/commit/3451e66a8ba5416d3e3e8eb3d9ee604211cde042).
+  Overnight pin was `7b6ff6903c779f8cca51427b34bc68e943936d67`; the complete delta inventory since that pin
+  is 1 commit and 4 changed paths (`Cargo.lock`, `Cargo.toml`,
+  `py_src/vllm_router/version.py`, `pyproject.toml`) for
+  `chore: bump version to 0.1.17 (#495)`. Among pinned sources only
+  `Cargo.toml` changed (version `0.1.16`→`0.1.17`; blob
+  `257e5c1eb7e159c18d29195dc5d777e2eb3c197d`). Source reading was targeted,
+  not a full audit of every line in the fetched files.
+- Latest published GitHub Release remains [v0.1.16](https://github.com/vllm-project/router/releases/tag/v0.1.16),
   resolving through its annotated tag to `db02f358da401b60d4ae14eb286163763a0705cc`.
-  Main is 63 commits ahead; the new contracts below are main-only.
+  Lightweight tag [v0.1.17](https://github.com/vllm-project/router/tree/v0.1.17)
+  exists at the main tip above, but there is no GitHub Release for v0.1.17
+  (API 404). Main is 64 commits ahead of the published v0.1.16 release
+  commit; the contracts below remain main-only.
 - Main still has no AGENTS.md or canonical review skill. [PR336](https://github.com/vllm-project/router/pull/336)
   remains open/draft at `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`.
   Its unchanged bytes were verified; its older architecture/test map must
   be reconciled with the actual review target.
 - All 13 open personal PRs and their complete changed-file lists were checked,
   with an empty second collection page. PR6 and PR17 retain their recorded
-  heads; none overlap these Router-only changes. No proposal or human edit
-  is replaced.
+  heads (`68d7b38df04c382e9e51c9fde28428181d3bc5a8`,
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af`); none overlap these Router-only
+  pin refreshes. No proposal or human edit is replaced.
+- The label catalog still has `High Priority` (title case) and `ready`. No
+  open High Priority PRs were found under that GitHub label spelling. Offline
+  selector policy still requires exact lowercase `high priority` (and `ready`
+  when the catalog contains `ready`); see `tests/test_router_daily.py`
+  `test_exact_label_spelling`. Ready alone does not qualify.
 
 ### Current contracts to rediscover
 
-- [KV-aware P/D](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/policies/kv_aware.rs)
+- [KV-aware P/D](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/policies/kv_aware.rs)
   now supports HTTP and gRPC, superseding the earlier regular-only restriction.
   Prefill scores reusable KV and work; decode minimizes occupancy with rotating
   ties. Optional P/D session affinity applies to decode only, remains off by
-  default and permits fair-share rebinding. [Input preparation and binding](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_kv_state.rs)
+  default and permits fair-share rebinding. [Input preparation and binding](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_kv_state.rs)
   use per-worker HTTP tokens or actual router-produced gRPC IDs. Unknown
   identities remain routable without cache credit. Placement estimates are
   not physical cache residency or Program admission.
-- [Program-scoped HTTP P/D](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/program_scheduling/pd-program-scheduling.md)
+- [Program-scoped HTTP P/D](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/program_scheduling/pd-program-scheduling.md)
   needs configured Program scheduling and request identity; requests without
   a recognized Program identity retain native P/D behavior. Admission uses explicit per-decode-rank
-  capacity and affinity; [prefill permits](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_program_adapter.rs)
+  capacity and affinity; [prefill permits](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_program_adapter.rs)
   cover the complete prefill body, not the entire decode. Check cancellation
   and body-drop release. A logical seat is not a physical KV lease or
   multi-router ownership guarantee.
-- [Warm remote reuse](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/routers/http/pd_warm_remote.rs)
+- [Warm remote reuse](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/routers/http/pd_warm_remote.rs)
   and automatic Acting TTL are separate, default-off extensions. The warm
   path requires the matching `vllm-0.28.0-pd-feedback-v1` engine capability
   contract, token-ID Completions with `return_token_ids`, `n=1` and
@@ -55,23 +63,23 @@ and byte length.
   load release. On the WarmRemote path, a failed read gets one bounded cold retry;
   ordinary upstream 4xx/429 preserve status/body/headers. The roadmap
   calls LocalAppend later/off, but the implementation and
-  [mock tests](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/rust/test_pd_warm_remote.rs)
+  [mock tests](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/rust/test_pd_warm_remote.rs)
   contain a calibrated default-off local path; do not claim it is absent.
-- [Workflow prediction profiles](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/program_scheduling/prediction_profile.rs)
+- [Workflow prediction profiles](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/program_scheduling/prediction_profile.rs)
   are shadow-only. Verify bounded online signals and compatible offline seeds;
   terminal completion is no-return while expiry/shutdown are censored.
   Shadow signals do not change admission, pause ordering, TTL or decode-buffer
   fallback. Profile IDs are not metric labels.
-- [Rust gRPC P/D](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/backend/grpc.rs)
+- [Rust gRPC P/D](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/backend/grpc.rs)
   sends unary one-token Generate to prefill and GenerateStream to decode,
   carrying connector JSON; cached NIXL push identity permits concurrent legs.
   Abort completion fails a leg; client/sibling cancellation sends Control.Abort,
   with a second abort for an unanswered RPC. The
-  [documented worker requirement](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/backend/grpc.md#pd-disaggregation)
+  [documented worker requirement](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/backend/grpc.md#pd-disaggregation)
   is vLLM >=0.30.0 because older connector numeric fields can fail despite a
   successful health probe. A version warning, colocated compatibility or
   mock result does not qualify live P/D or NIXL behavior.
-- [Regular HTTP Completion KV routing](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/docs/load_balancing/http_completion_kv.md)
+- [Regular HTTP Completion KV routing](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/docs/load_balancing/http_completion_kv.md)
   uses Direct/Worker preparation and preserves validated ingress bytes.
   Explicit IDs need no preparation RPC; text can use worker render/tokenize.
   Retries reuse preparation but select/reserve anew. Unknown modifiers disable
@@ -80,7 +88,7 @@ and byte length.
   are required. Keep this route distinct from the restricted pure
   `src/backend/completion.rs` library and its tests; those do not establish
   worker alignment or HTTP dispatch.
-- [Sticky least-loaded](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/src/policies/sticky_least_loaded.rs)
+- [Sticky least-loaded](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/src/policies/sticky_least_loaded.rs)
   counts active sessions, not in-flight requests or KV occupancy. New sessions
   use healthy least-session-count workers with rendezvous tie breaking;
   assignments persist until inactivity expiry, finish or unavailable-worker
@@ -89,7 +97,7 @@ and byte length.
 
 ### CI and evidence boundaries
 
-[Buildkite](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/.buildkite/pipeline.yml)
+[Buildkite](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/.buildkite/pipeline.yml)
 now uploads separate `test-ready.yml`, `test-merge.yml` and `test-nightly.yml`
 pipelines. Follow both uploader and per-job gates, not the earlier blanket
 trusted-PR XGMI rule: ready selects non-default branches with that label;
@@ -106,7 +114,7 @@ the gRPC P/D integration wrapper has four-L4 hardware marks and is excluded.
 Current Cargo vLLM frontend dependencies and NVIDIA images pin 0.30.0.
 Check nonzero test counts and prerequisites at the target.
 
-The [L1 performance checker](https://github.com/vllm-project/router/blob/7b6ff6903c779f8cca51427b34bc68e943936d67/tests/python/e2e/perf/l1_encode/check.py)
+The [L1 performance checker](https://github.com/vllm-project/router/blob/3451e66a8ba5416d3e3e8eb3d9ee604211cde042/tests/python/e2e/perf/l1_encode/check.py)
 checks encoding/reuse metrics, reuse bands and enabled/bypass state. It does
 not compare encoding speed across on/off scenarios; GPU TTFT/end-to-end time
 is not an isolated encoding-speed measurement. Do not turn its assertions
@@ -120,13 +128,11 @@ cross-policy coverage and the ten-distinct-PR daily cap. No live review queue
 or delivery checkpoint was advanced.
 
 The two historical defect/fix families still provide four correlated outcomes;
-all eight pinned historical source records were freshly revalidated for full
-Git blob/SHA-256 and excerpt identities. This is not a new reviewer-accuracy
-sample. The full personal-repository suite passes 266 tests, including 41
-Router tests and the new manifest/install check. Frontmatter, source pins,
-local links, routing/manifests, temporary-folder installs, Python/JSON/shell
-parsing and diff whitespace pass. Three current upstream pipeline renders
-pass offline without `--upload`; no Buildkite job was submitted.
+all eight pinned historical source records remain the prior revalidated set.
+This is not a new reviewer-accuracy sample. The full personal-repository suite
+passes 266 tests, including 41 Router tests and the updated November audit pin
+assertions. Frontmatter, source pins, local links, routing/manifests,
+temporary-folder installs, Python/JSON/shell parsing and diff whitespace pass.
 
 Cargo/rustc are unavailable. No upstream Rust/Python test suite, live serving,
 model/tokenizer parity, GPU/ROCm/RDMA/NIXL, performance or distributed-cleanup
