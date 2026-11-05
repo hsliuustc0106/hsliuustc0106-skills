@@ -55,8 +55,112 @@ the queue to reconcile the discrepancy. Unknown current catalogs remain BLOCKED.
 
 ## Current bounded audit, 2026-11-05 Asia/Shanghai
 
-This section supersedes the historical October 29 routing, release and source
-availability observations below. Historical calibration pins remain unchanged.
+This afternoon verification (~10:10 Asia/Shanghai) supersedes the earlier same-day
+morning routing below. Historical October 29 calibration pins remain unchanged.
+
+- Personal main baseline before this refresh: `8f47c966a9755028476c3465307b7cb451fc1b1f`
+  (`docs(sciencediscovery-review): refresh release and CI evidence routing`,
+  2026-11-04T16:07:42Z / 2026-11-05 00:07 Asia/Shanghai).
+  Target main: [48848578d58f0ecd83798493bcf4f2cde8d02b26](https://github.com/openJiuwen-ai/sciencediscovery/commit/48848578d58f0ecd83798493bcf4f2cde8d02b26)
+  (`fix(web): translate the tool-result headings at render time`,
+  2026-11-04T18:36:14Z). Compare against the morning pin
+  `89cd2d30c93e11c6e98e264cc08b171f6a3705f0` reports `ahead_by=10`, `behind_by=0`,
+  ten web-only files under `apps/web/` (CSV empty-version, unknown activity/execution,
+  compact token rounding, tool-result locale headings). Compare against the prior
+  October 29 pin `5e56ea77cfcc5447947be8342d7781dc7891d004` reports `ahead_by=220`,
+  `behind_by=0` (GitHub file array still truncates at 300). This pass re-checked
+  source and CI contract identity at the new tip; it did not re-audit all product
+  lines.
+- [Canonical migration PR231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
+  remains open, draft and unmerged at `1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c`.
+  Its recorded base is not current main. Main still lacks the review skill and
+  root AGENTS.md. Continue explicit draft-source loading, recording the revision
+  and hash; re-discover current target contracts rather than copying its old base.
+  Main has removed `.agents/skills/sciencediscovery-dev/`; do not restore or treat
+  its historical handbook as current repository instructions. The web-local
+  AGENTS.md and frontend-quality skill still require visual UI inspection.
+- Latest stable [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0)
+  remains published October 31 at peeled tag commit
+  `7acc1dcf62736f7e7bf06c6d51acb5114899f2de`. Main and the release tag diverge: 126
+  commits are unique to main and two unique to the tag (was 116 unique to main at
+  the morning pin). RC1 and beta remain prereleases. No newer stable or prerelease
+  tag appeared. A release's `target_commitish=main` is not a source pin; use its
+  peeled tag. Do not call post-tag behavior released.
+- All 13 open personal-skills PRs and their changed-file lists were re-enumerated;
+  none overlaps this skill or repository-review-source. PR6 remains at
+  `68d7b38df04c382e9e51c9fde28428181d3bc5a8` and PR17 at
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af`. No other PR or human edit changed.
+- Fresh complete label catalog succeeded via GitHub REST
+  (`GET /repos/openJiuwen-ai/sciencediscovery/labels?per_page=100`, paginated): one
+  page, 56 exact names, page 2 empty. Catalog contains `ready`, `priority/major`,
+  `priority/unspecified`, and `agent-ready`; it does not contain `high priority` or
+  `high-priority`. Search found zero issues/PRs labeled `high priority` or
+  `high-priority`. With `ready` present the personal queue still requires exact
+  `high priority` AND `ready`, so the eligible set is empty until that exact label
+  exists in the catalog. Do not treat `priority/major`, `agent-ready`, or hyphenated
+  spellings as aliases, and do not create labels to force eligibility. October 29's
+  45-label catalog and the morning `INVALID_ARGUMENT` unknown state are retained only
+  as dated evidence. No live queue was selected and no review or delivery checkpoint
+  changed.
+
+### Current CI evidence routing
+
+Read the selected revision's executable workflow and policy together. The CI
+skill's ordinary tier table alone omits a newer documentation-only exception.
+Blob identity for the CI contracts is unchanged from the morning pin
+`89cd2d30…` through tip `48848578…`. At the current tip,
+[changed-paths.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/.ci/changed-paths.mjs),
+[tier-policy.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/.ci/tier-policy.mjs),
+[ci.yml](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/.github/workflows/ci.yml)
+and [the docs-only explanation](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/.ci/README.md#L183-L202)
+establish:
+
+- PR, push and merge-group diffs wholly in the explicit documentation allowlist
+  run `pnpm docs:check` instead of product tests. `.agents/skills/**/*.md`
+  qualifies; arbitrary `skills/**/*.md` and other `.agents` files do not.
+  Renames check both paths. Unknown, empty or unavailable diffs preserve the full
+  profile. Manual/reusable and scheduled profiles do not infer this exception.
+- Non-draft docs-only PRs, pushes and merge groups require policy/L1 success and
+  the enumerated product jobs skipped. Draft PRs run documentation checks but
+  skip the merge-gate. UT/ST, browser E2E, real E2E, binary and Docker skips are not executed
+  passes. Inspect the actual policy output and job results before making a test
+  coverage claim; a green aggregate does not prove those suites ran.
+- Ordinary L1–L5 routing remains as described in the historical audit, with
+  live environment now `nightly-ci-ds`. L5 currently uses the same eligible real
+  cases/evaluation modes as L4, not a calibrated capability baseline.
+- [Provider-fault classification](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/test/support/tagged/provider-fault.mjs),
+  [attempt handling](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/test/support/tagged/shared.mjs)
+  and [plan accounting](https://github.com/openJiuwen-ai/sciencediscovery/blob/48848578d58f0ecd83798493bcf4f2cde8d02b26/test/support/tagged/plan.mjs)
+  distinguish a remaining `PROVIDER_FAULT`: executed but neither passed nor
+  product-failed, still non-green. Eligible early transient faults lasting at most 300 seconds
+  may retry once; product assertions, authentication and rate limits are not
+  that exception. When every case in a batch faults, at most two eligible cases
+  repeat as outage probes. A successful retry may replace a fault and permit a
+  green run, with `retriedAfterProviderFault` recorded. Retain attempt evidence;
+  do not describe retry success as a
+  clean first attempt or provider failure as a passing gate.
+
+### Validation and limits for this refresh
+
+The unchanged selector retains exact-label, pagination/error-as-unknown,
+old-PR/new-head, stale-head and cross-policy deduplication fixtures. The two
+historical defect families / four adjudicated outcomes remain bounded P2 and
+fixed-clean cases, not whole-PR approval or an accuracy estimate. LICENSE bytes
+still match main tip. No adjudicated-case pins changed.
+
+Validation: all 266 personal-repository tests passed, including 36 focused
+ScienceDiscovery selection/evidence/install tests. Frontmatter, scoped local
+links, immutable source paths and case pins, source routing, plugin manifest,
+installer preservation behavior, Python/Node syntax and diff whitespace were
+checked. No live models, Windows runs, browser journeys, full product UT/ST/E2E,
+binary/Docker qualification, remote CI pass, or exhaustive architecture audit is
+claimed. No source-owned checklist, selection policy or upstream code changed.
+
+## Historical same-day morning audit, 2026-11-05 Asia/Shanghai
+
+Earlier same-day morning refresh at personal tip `8f47c966a9755028476c3465307b7cb451fc1b1f`.
+Superseded by the current afternoon audit above; retained as dated evidence.
+Historical calibration pins remain unchanged.
 
 - Personal main baseline: `85398e9ed0631d7a263316f37833ef9c2994ef8e`.
   Target main: [89cd2d30c93e11c6e98e264cc08b171f6a3705f0](https://github.com/openJiuwen-ai/sciencediscovery/commit/89cd2d30c93e11c6e98e264cc08b171f6a3705f0).
