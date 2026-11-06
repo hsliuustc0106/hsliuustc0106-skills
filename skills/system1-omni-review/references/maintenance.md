@@ -66,6 +66,66 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-11-07 Asia/Shanghai (release/v0.2.1)
+
+Public repository `InferMatrixLab/system1-omni` still has ID `1386454853`;
+its historical ThinkFlowLab name redirects to the same repository. The personal
+skills baseline is `8ad957ff44b7d4bfe9f6926c6b3925bed4941852`. Current upstream
+main and the verified lightweight tag
+[`release/v0.2.1`](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.2.1)
+both resolve to
+[`9cc769ec495cff620e86730b47e9eb513a752802`](https://github.com/InferMatrixLab/system1-omni/commit/9cc769ec495cff620e86730b47e9eb513a752802).
+The non-draft, non-prerelease source release was published November 6 at
+09:42:37 UTC; it has no binary/model assets. The complete
+[comparison](https://github.com/InferMatrixLab/system1-omni/compare/5fa5179d57f9267bb0d20162004d8ce26352aa9d...9cc769ec495cff620e86730b47e9eb513a752802)
+from the October 31 pin contains 11 commits and 33 changed files: merged PR183's
+resident/window Graph work and PR203's crate-version bump. This is a bounded
+source/instruction audit, not a correctness review of every changed line.
+
+Read the current pinned recipes before applying the older architecture map:
+
+- [Cua-S1 screenshot execution](https://github.com/InferMatrixLab/system1-omni/blob/9cc769ec495cff620e86730b47e9eb513a752802/recipe/cua_s1/native_screenshot.md)
+  can use language Graphs with resident vision features and matched-prefix
+  window reuse. `CUA_S1_GRAPH=1` is opt-in; do not describe it as default eager
+  behavior or general cross-request batching.
+- [Window Graph ownership](https://github.com/InferMatrixLab/system1-omni/blob/9cc769ec495cff620e86730b47e9eb513a752802/src/models/qwen3_5/native/src/model/window_graph.rs)
+  is shared by Cua-S1 and OmniJev. Relevant review routing includes absolute
+  window bounds, source and destination prefix allocation identities, GEMM
+  handle identity, retention of both allocations, bounded cache retirement and
+  eager fallback after capture failure. Do not replace every older cache limit
+  with this window cache's limit: cache kinds have different contracts.
+- The new [OmniJev window regression](https://github.com/InferMatrixLab/system1-omni/blob/9cc769ec495cff620e86730b47e9eb513a752802/tests/omnijev/window_graph.rs)
+  and [multimodal Graph regressions](https://github.com/InferMatrixLab/system1-omni/blob/9cc769ec495cff620e86730b47e9eb513a752802/tests/qwen3_5/multimodal_graph.rs)
+  need their declared CUDA/hardware execution. Ordinary CPU tests and CUDA
+  compile/contract jobs are not inference/parity or performance evidence.
+  Recipe and PR performance figures remain author-reported, matched-workload
+  evidence; this maintenance run did not reproduce them.
+
+The canonical skill, its two references, contribution instructions and CI were
+not changed by this release delta. The personal wrapper remains a thin loader;
+this dated audit does not replace the repository-owned checklist. Existing
+label-based selection and the separately configured non-draft override remain
+unchanged. No live candidate selection was performed: the connector rejected
+this pass's label-catalog endpoint as unsupported, so catalog completeness is
+unknown rather than inferred from PR labels. This does not invalidate the
+network-free selection fixtures or broaden review eligibility.
+
+All 13 open personal-skills PR file inventories were checked, including PR6 and
+PR17 (heads `68d7b38df04c382e9e51c9fde28428181d3bc5a8` and
+`f01a5df38f337e65d80f420e6b22e0b30a5237af`). None overlaps this reference file;
+no open branch was merged, closed or overwritten. The five pinned source entries
+behind the four adjudicated rows were re-fetched: Git blob IDs, SHA-256 values
+and exact lines all matched. Four rows still represent two related defect/fix
+pairs from one historical PR, not an accuracy sample.
+
+Validation: all 266 network-free repository tests pass, including 37 System1
+selection/evidence/install tests. These cover pagination, unknown API evidence,
+old PR/new commits, exact-label eligibility, stale snapshots, cross-policy and
+rename deduplication, daily capacity, grounding, severity and routing. Temporary
+installability, relative links and script syntax were checked; personal computer
+installations were not changed. No upstream tests, hardware runs, benchmark
+campaigns, upstream review posts or upstream repository changes were performed.
+
 ## Bounded update, 2026-10-31 Asia/Shanghai (tip + release/v0.2.0)
 
 Public visibility and repository ID `1386454853` remain verified under
