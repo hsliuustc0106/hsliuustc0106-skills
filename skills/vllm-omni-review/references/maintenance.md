@@ -53,7 +53,67 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Current bounded audit, 2026-11-02 Asia/Shanghai
+## Current bounded audit, 2026-11-09 Asia/Shanghai
+
+- Frozen upstream main: [`62876f40ac77f14dccc4ab9d332e9d5110875ab9`](https://github.com/vllm-project/vllm-omni/commit/62876f40ac77f14dccc4ab9d332e9d5110875ab9).
+  The [delta from the previous audited pin](https://github.com/vllm-project/vllm-omni/compare/effab8c866b1196406ef5b25e064714a82a74d42...62876f40ac77f14dccc4ab9d332e9d5110875ab9)
+  contains 126 commits (100 + 26 + empty page); the comparison file list is
+  capped at 300. This remains a bounded source-discovery audit, not a review of
+  every changed file or an upstream approval.
+- Release inventory: 33 + empty page. Latest stable remains
+  [v0.32.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0)
+  (2026-10-28); [v0.33.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.33.0rc1)
+  (2026-11-04) is explicitly a prerelease. Do not call the release candidate
+  stable or extrapolate this main audit into its runtime behavior.
+- Re-read pinned AGENTS, CONTRIBUTING, lessons and the canonical review skill.
+  Their blob identities are unchanged from the preceding audit. The canonical
+  skill remains `96e9116e1c902e7197130d44fdfe9584ca1d4c34`; the live
+  [routing reference](https://github.com/vllm-project/vllm-omni/blob/62876f40ac77f14dccc4ab9d332e9d5110875ab9/.claude/skills/review-pr/references/process/review-routing.md)
+  is now blob `292ab4d8021c53beaafd68d55b842e9aaa6faef1` and routes multi-stage
+  performance claims to `omni-perf-opt`. Load references at the resolved target
+  commit even when the entrypoint skill itself has not changed.
+
+### New source-discovery pointer: caller-selected stage replicas
+
+[Merged #9729](https://github.com/vllm-project/vllm-omni/pull/9729) extends the
+experimental, opt-in, trusted-caller `/v1/run` path with a stage-local
+`replica_id`. The [current contract](https://github.com/vllm-project/vllm-omni/blob/62876f40ac77f14dccc4ab9d332e9d5110875ab9/docs/features/independent_stage_execution.md)
+requires an attached/live selected replica, rejects unavailable selections without
+fallback, and keeps automatic balancing when the field is omitted. Identical IDs
+in different stages need not identify the same worker. The existing environment
+gate, no-async-chunk limitation and raw-payload caller responsibilities remain.
+
+Trace both [entry and downstream forwarding](https://github.com/vllm-project/vllm-omni/blob/62876f40ac77f14dccc4ab9d332e9d5110875ab9/vllm_omni/entrypoints/openai/serving_run.py)
+and [StagePool admission](https://github.com/vllm-project/vllm-omni/blob/62876f40ac77f14dccc4ab9d332e9d5110875ab9/vllm_omni/engine/stage_pool.py#L574-L666).
+Pre-admission requested intent is distinct from an active affinity. Frontend
+multimodal preflight cannot replace admission revalidation after membership
+changes; cleanup must release requested intent as well as bindings. Do not
+silently substitute a different worker when an explicit selection becomes stale.
+The [API fixtures](https://github.com/vllm-project/vllm-omni/blob/62876f40ac77f14dccc4ab9d332e9d5110875ab9/tests/entrypoints/openai_api/test_serving_run.py)
+cover forwarding, strict/nonnegative IDs, and request-local rejection. Source
+inspection is not proof of real distributed membership-race or CUDA behavior.
+
+Anchors: documentation blob `bb0265c8e67fa8b6ea71a9aae74b811276677712`;
+serving blob `f15c2db8fb2bdcafc0aa1a2021d16026f8001610`; StagePool blob
+`4f90bec1666452597bb0d77d5ddd73f868bdd731`; API-test blob
+`9eee79a2385fc5cb73d2eb9178dc534fc7eff411`. This is current-main guidance;
+`v0.32.0` has no `vllm_omni/entrypoints/openai/protocol/run.py` at the inspected
+path. No release-candidate compatibility or runtime pass is asserted.
+
+### Validation and limits
+
+Personal main baseline: `5e12388422ce5a5ae5f60400bb48472d25ee699f`.
+All 13 open skill PRs were enumerated (13 + empty page); PR6 and PR17 retain
+previously recorded heads and their complete 4-/18-file scopes were inspected.
+Neither branch nor its human edits was changed. Only this supplement changes;
+canonical checklist, selection policy, quotas, review authority and routing
+installation remain unchanged. The offline suite passes 266 tests, including
+existing selection, corpus grounding/severity/routing and packaging checks.
+The two historical defect families/four bounded outcomes remain unchanged; no
+new calibration sample, reviewer accuracy or upstream test pass is claimed.
+No GPU, model inference, distributed runtime or live selection collector ran.
+
+## Previous bounded audit, 2026-11-02 Asia/Shanghai
 
 - Frozen upstream main:
   [`effab8c866b1196406ef5b25e064714a82a74d42`](https://github.com/vllm-project/vllm-omni/commit/effab8c866b1196406ef5b25e064714a82a74d42).
