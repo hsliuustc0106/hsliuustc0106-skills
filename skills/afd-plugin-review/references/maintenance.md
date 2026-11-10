@@ -49,10 +49,194 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
-## Current bounded refresh, 2026-11-03 Asia/Shanghai
+## Current bounded refresh, 2026-11-10 Asia/Shanghai
 
 This section supersedes older dated runtime assumptions below; it does not
-replace the canonical review skill. [Source identities](audit-2026-11-03.json)
+replace the canonical review skill. [Source identities](audit-2026-11-10.json)
+record this bounded inspection. Personal skills main was
+`4c89c31db3addafbfc9f129c3102a2869242c428`; upstream main was
+[e58fdec5876782b9c6a03683416611deea42af92](https://github.com/vllm-project/afd-plugin/commit/e58fdec5876782b9c6a03683416611deea42af92)
+(2026-11-09 22:32:16 Asia/Shanghai). The complete comparison contains 21
+commits and 274 changed paths after the November 3 pin (53 added, 184
+modified, 17 removed, 20 renamed; the compare file list is under the 300-file
+truncation limit). Targeted contracts were inspected, not every changed line.
+Latest GitHub Release is now
+[v0.32.0rc1](https://github.com/vllm-project/afd-plugin/releases/tag/v0.32.0rc1)
+(published 2026-11-04 22:08:42 Asia/Shanghai, `prerelease: true`). The tag is a
+lightweight tag: the git ref object type is commit
+`652e249872bc968fc645c68ba6683182e0f69368` (`fix(npu): keep profile routing
+decisions inside an opaque op`, #500), not an annotated tag object. Main is
+16 commits / 250 paths ahead of that RC; those 16 commits are **main-only**,
+not released guarantees. Ancestry is confirmed: the five commits after
+`c0e56c43` through #500 are in the RC (compare pin...RC is ahead_by 5,
+behind_by 0, 56 paths).
+
+- The canonical review skill was refreshed on main in #547 after the RC, so
+  its current blob `c15faf1017b42950c4bf6a65c5eb38b2ca03fc00` is main-only
+  until a later release includes it. Migration PR #420 stays closed unmerged;
+  load current main rather than a closed migration branch. The skill points at
+  `docs/UT_MAINTENANCE.md` and `docs/installation.md` for test rules and pins.
+  It still lists "experimental FFN two-stream" as an FFN execution variant;
+  that wording predates #550, which removed the implementation on current
+  main. Resolve two-stream status from the reviewed head, not from the skill
+  prose alone.
+- Complete skills open-PR enumeration found 13 PRs (#28, #24, #22, #21, #20,
+  #17, #15, #14, #13, #11, #9, #6, #4). PR #6 and #17 retain heads
+  `68d7b38df04c382e9e51c9fde28428181d3bc5a8` and
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af`; their complete file lists (PR #6:
+  four vllm-omni-review files; PR #17: 18 files under omni skills, shared
+  manifests, README, AGENTS.md, and `tests/test_helpers.py`) do not overlap
+  these AFD-only changes. Shared manifests/routing and other projects remain
+  untouched.
+- The label catalog still contains both `high priority` and `ready`. No open
+  PRs currently carry `high priority` (ready alone does not qualify), so there
+  is no high-priority coverage set for this pass.
+
+### Current contracts to rediscover
+
+Released in or at v0.32.0rc1 (the five commits after the November 3 pin
+through #500):
+
+- NPU DSpark is no longer limited to legacy non-layered W4A8 FFN.
+  [#525](https://github.com/vllm-project/afd-plugin/pull/525) enables DSpark
+  target and draft layered experts;
+  [#532](https://github.com/vllm-project/afd-plugin/pull/532) runs those
+  experts on the existing FFN FULL graph.
+  [feature_validation.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/compat/npu/feature_validation.py)
+  still requires DeepSeek-V4, eager Attention/draft proposal, and target/draft
+  TP=1, and keeps draft query capacity within `max_num_batched_tokens`. FFN
+  may replay its expert transaction in FULL; Attention and native draft
+  proposal stay eager.
+  [deepseek_v4_dspark.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/model_executor/models/npu/deepseek_v4_dspark.py)
+  exposes `get_async_cam_layered_weights` onto the existing FFN runner. The
+  [AFDDSparkSpeculator](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/v1/worker/npu/dspark_speculator.py)
+  blob is unchanged. Source acceptance of these gates is not NPU accuracy or
+  speculative-acceptance proof; this path was not executed here.
+- [#527](https://github.com/vllm-project/afd-plugin/pull/527) adds W8A8
+  support in Async CAM layered execution;
+  [#528](https://github.com/vllm-project/afd-plugin/pull/528) restores SwiGLU
+  limits for layered W4A8 FFNs (configured limit `10.0`; layered W8A8 stays
+  unclipped). These are in the RC.
+- [#500](https://github.com/vllm-project/afd-plugin/pull/500) keeps profile
+  routing decisions inside an opaque op (the RC tip).
+
+Main-only after `652e2498` (not released guarantees):
+
+- The root
+  [README](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/README.md)
+  is now a short entry point. Installation pins and the support matrix moved
+  to
+  [docs/installation.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/installation.md)
+  and
+  [docs/support.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/support.md).
+  [pyproject.toml](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/pyproject.toml)
+  still pins optional runtime `vllm==0.32.0`;
+  [compat/vllm.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/compat/vllm.py)
+  is unchanged and still asserts `TARGET_VLLM_VERSION = "0.32.0"`. The
+  `afdep` extra now pins `afdep-comm @ …@v1.1.0` (the RC and the November 3
+  pin still used commit `2b74d574e9d25cc794de8d2359f815fcfb48955a`).
+  Installation evidence in `docs/installation.md` names vLLM `0.32.0` /
+  `5df63a7203cdb9328d824a27b682e77c7b9928be` and vLLM-Ascend
+  `bd42eea01d8312c4df469fabaed45f77a12df4d3`, plus a tested
+  CANN/torch/torch-npu stack. A supported source pair is not a released
+  Ascend wheel/container or proof of arbitrary-version compatibility.
+- `docs/npu/TESTING.md` was removed. Current testing and documentation
+  contracts are
+  [docs/UT_MAINTENANCE.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/UT_MAINTENANCE.md)
+  (linked from
+  [AGENTS.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/AGENTS.md)),
+  [tests/npu/README.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/tests/npu/README.md)
+  (NPU runtime and operator tests; device tests remain outside CI),
+  [docs/README.md](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/README.md)
+  (documentation index), and
+  [.buildkite/cuda/test-ready.yml](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/.buildkite/cuda/test-ready.yml)
+  (L2 ready: CPU unit selection plus `tests/gpu/test_attention_routing.py` on
+  `l4_1`, and the seven-case DeepSeek-V2-Lite GPU E2E gate on `l4_4`). Do not
+  cite `docs/npu/TESTING.md` as a current-tip source.
+- [DeepEPM2NAFDConnector](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/connectors/factory.py)
+  remains registered beside P2P/CAM connectors.
+  [#555](https://github.com/vllm-project/afd-plugin/pull/555) adds flexible
+  Attention/FFN placement across pods.
+  [layout.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/connectors/gpu/deepep_m2n/layout.py)
+  and the
+  [user guide](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/gpu/DEEPEP_M2N_CONNECTOR_USER_GUIDE.md)
+  accept either an FFN-prefix placement or a per-domain layout where every pod
+  holds the same FFN count (`N x <a>A<f>F`); mixed FFN counts or unequal pod
+  sizes are rejected.
+  [Recipes](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/recipe/gpu/DeepEPM2NAFDConnector/README.md)
+  document `multipod_4a1f_4a1f_graph.sh` for that symmetric case.
+  [validation.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/validation.py)
+  still requires `compute_gate_on_attention=true`, FFN TP=1, and
+  Attention-routing architectures `Qwen3MoeForCausalLM` or
+  `DeepseekV2ForCausalLM`. Handshake-owned checks (payload, shapes, SM90+, EP
+  layout, weight format) are not replaced by CPU unit coverage. Docs/unit
+  presence is not GPU throughput, multi-node, or DeepGEMM correctness.
+- Async CAM on current main:
+  [#538](https://github.com/vllm-project/afd-plugin/pull/538) makes layered
+  GMM the only Async CAM FFN path;
+  [#550](https://github.com/vllm-project/afd-plugin/pull/550) removes FFN
+  two-stream execution
+  (`afd_plugin/v1/worker/npu/async_ffn_two_stream.py` is gone on the tip; the
+  file was still present at the RC).
+  [#517](https://github.com/vllm-project/afd-plugin/pull/517) adds opt-in
+  pull-based MegaMoE (`ffn_mega_moe`, default false) via
+  [async_cam_mega.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/model_executor/npu/async_cam_mega.py),
+  which requires per-channel W4A8/W8A8 weights.
+  [#551](https://github.com/vllm-project/afd-plugin/pull/551) clarifies
+  session ownership in
+  [async_cam_session.py](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/afd_plugin/connectors/npu/async_cam_runtime/async_cam_session.py):
+  Push keeps a per-stage FIFO; Pull owns one in-flight Attention window and
+  the fused FFN transaction. Pull may split one expert across receive rounds,
+  so `validate_graph_capacity` and feature validation allow a receive capacity
+  smaller than `max_num_batched_tokens` only when row slicing / MegaMoE is
+  selected. The
+  [CAM async user guide](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/docs/npu/CAM_ASYNC_CONNECTOR_USER_GUIDE.md)
+  documents these contracts. None of this was executed here.
+- The canonical
+  [review-pr skill](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/.agents/skills/review-pr/SKILL.md)
+  (#547) and
+  [tests-docs-checklist](https://github.com/vllm-project/afd-plugin/blob/e58fdec5876782b9c6a03683416611deea42af92/.agents/skills/review-pr/references/checks/tests-docs-checklist.md)
+  describe the current CI and docs evidence contract, including the
+  `test-ready` selection above and `docs/UT_MAINTENANCE.md`. That refresh is
+  main-only. New review-pr references include `dspark-draft.md` and
+  `e2e-harness.md` (inspected as present; not separately byte-pinned).
+- [#533](https://github.com/vllm-project/afd-plugin/pull/533) simplifies
+  deploy-afd-k8s readiness, timeouts, and recipe parsing;
+  [#556](https://github.com/vllm-project/afd-plugin/pull/556) updates the
+  WeChat QR;
+  [#557](https://github.com/vllm-project/afd-plugin/pull/557) adds path-based
+  PR labels. These were not treated as review-skill contracts in this pass.
+
+### Maintenance validation and limits
+
+The AFD selector contract is unchanged: exact `high priority` (plus `ready`
+when present in the catalog), new-head evidence, ten-distinct-PR Asia/Shanghai
+day cap, case-insensitive owner/repository normalization, and delivery
+deduplication. No selector code change in this pass.
+
+The existing corpus remains two adjudicated defect families / four defect-clean
+outcomes; twenty-five unique tip source artifacts were byte-verified against
+pinned Git blobs and SHA-256 hashes. Four of the previous fourteen sources are
+unchanged at the new tip (same blob as the November 3 pin):
+`afd_plugin/compat/vllm.py`, `afd_plugin/connectors/factory.py`,
+`afd_plugin/v1/worker/npu/dspark_speculator.py`, and
+`.agents/skills/run-vllm-bench-k8s/SKILL.md`. No new adjudicated cases,
+upstream tests, model inference, GPU/NPU execution or cluster deployment were
+performed. Historical audits and `adjudicated-cases.json` are preserved.
+
+Validation: the full personal-repository suite passed 266 network-free tests,
+including 37 AFD daily tests (32 selector, four corpus/audit metadata, one
+temporary-directory install/idempotence/conflict). All 24 skill frontmatters,
+JSON/Python parsing (16 JSON files, 29 Python files), affected local links,
+and diff whitespace passed. Twenty-five current-source files were
+byte-verified against Git blob and SHA-256 pins. These fixture and packaging
+checks are not upstream runtime tests or accuracy measurements. Installation
+occurred only in temporary test directories.
+
+## Historical bounded refresh, 2026-11-03 Asia/Shanghai
+
+This historical section is superseded by the 2026-11-10 refresh above; it does
+not replace the canonical review skill. [Source identities](audit-2026-11-03.json)
 record this bounded inspection. Personal skills main was
 `801da342d934a5d8bca67a49d4b480d3b0577b2d`; upstream main was
 [c0e56c43e8a2f57ec164100c9d7e48e9a8588742](https://github.com/vllm-project/afd-plugin/commit/c0e56c43e8a2f57ec164100c9d7e48e9a8588742).
