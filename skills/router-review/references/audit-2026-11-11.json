@@ -1,0 +1,200 @@
+{
+  "repository": "vllm-project/router",
+  "audited_at_utc": "2026-11-10T16:10:06.116603+00:00",
+  "previous_audit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
+  "main": "44312e5b52598c28033157f065d7ad352009084c",
+  "commits_since_previous_audit": 15,
+  "changed_paths": [
+    ".buildkite/README.md",
+    ".buildkite/pipeline.yml",
+    ".buildkite/release-pipeline.yml",
+    ".buildkite/scripts/cleanup-nightly-router-builds.sh",
+    ".buildkite/test-merge.yml",
+    ".buildkite/test-nightly.yml",
+    "Cargo.toml",
+    "docs/assets/WeChat.png",
+    "docs/epd.md",
+    "docs/program_scheduling/pd-program-scheduling.md",
+    "examples/wasm_middleware/build.sh",
+    "src/backend/preprocess.rs",
+    "src/config/types.rs",
+    "src/config/validation.rs",
+    "src/core/worker.rs",
+    "src/kv_index/discovery.rs",
+    "src/policies/kv_aware.rs",
+    "src/program_scheduling/observations.rs",
+    "src/protocols/mod.rs",
+    "src/routers/http/dp_utils.rs",
+    "src/routers/http/epd.rs",
+    "src/routers/http/pd_router.rs",
+    "src/routers/http/pd_types.rs",
+    "src/routers/http/pd_warm_remote.rs",
+    "src/routers/http/router.rs",
+    "src/routers/http/vllm_pd_router.rs",
+    "src/server.rs",
+    "tests/python/e2e/pd_disagg_vllm/test_lm_eval_accuracy.py",
+    "tests/python/e2e/perf/grpc/cases/python_http.json",
+    "tests/python/e2e/perf/grpc/cases/rust_grpc.json",
+    "tests/rust/common/http.rs",
+    "tests/rust/common/mod.rs",
+    "tests/rust/common/test_app.rs",
+    "tests/rust/grpc_policy_routing.rs",
+    "tests/rust/routing_edge_cases_test.rs",
+    "tests/rust/test_admission_fallback.rs",
+    "tests/rust/test_dp_routing.rs",
+    "tests/rust/test_pd_routing.rs",
+    "tests/rust/test_pd_warm_remote.rs"
+  ],
+  "release": {
+    "tag": "v0.1.17",
+    "commit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
+    "published_at": "2026-11-04T02:25:30Z",
+    "url": "https://github.com/vllm-project/router/releases/tag/v0.1.17",
+    "main_commits_after_release": 15
+  },
+  "canonical": {
+    "pr": 336,
+    "state": "open",
+    "draft": true,
+    "head": "3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09",
+    "path": ".agents/skills/review-pr/SKILL.md"
+  },
+  "coverage": "Partial source audit: complete commit/path inventory; targeted changed hunks and tests for NaN validation, decode error-body ownership, named-LoRA decode affinity and Program prefill selection. Hashes cover full files, not a full-file correctness review. Other delta paths remain unaudited. No Rust toolchain or upstream runtime tests, GPU, performance or accuracy evaluation.",
+  "overlap_check": {
+    "open_prs": 13,
+    "collection_pages": 2,
+    "second_page_empty": true,
+    "all_changed_file_lists_read": true,
+    "router_path_overlap": false
+  },
+  "selection_policy_changed": false,
+  "live_review_checkpoint_advanced": false,
+  "sources": [
+    {
+      "path": "src/config/validation.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "3cb9ac07c3e573961e1e080a11051efc388acb53",
+      "sha256": "988042ed04a67cbe8bd47cf9f32a2b2664a93f8898bf1926e4f2997b3b793916",
+      "bytes": 71569,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/config/validation.rs"
+    },
+    {
+      "path": "src/core/worker.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "2871858b4bf22e00c5cad59332b6deb4ba769d01",
+      "sha256": "b985d718c33f50ed1521fd29ad70c8b946266f52d8dc63919fe71e5dc6af22e5",
+      "bytes": 63211,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/core/worker.rs"
+    },
+    {
+      "path": "src/backend/preprocess.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "edcc78463e89ffe906431afcea9761830c2feea9",
+      "sha256": "151019892aacf959c56ed67121aca46d07ba67231aaa9c99a917cd6ad6559766",
+      "bytes": 59397,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/backend/preprocess.rs"
+    },
+    {
+      "path": "src/policies/kv_aware.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "dcbb58e872c4cc97c3e1ddb9a3215cafcac1b9f4",
+      "sha256": "f054b68c16286319c0b38d4d6ef206b83af0567c1cc9a28f8cba4de15f3b7016",
+      "bytes": 146992,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/policies/kv_aware.rs"
+    },
+    {
+      "path": "src/routers/http/vllm_pd_router.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "718a916648698a49cf8b358a616dc218e21b81e1",
+      "sha256": "5ef652ee005655d30e11f302502f0fbc87f5b1e2c3a7e901eb8ba8b2ac611a9e",
+      "bytes": 242247,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/routers/http/vllm_pd_router.rs"
+    },
+    {
+      "path": "src/routers/http/pd_warm_remote.rs",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "c445e6c7ce3d15041d5f216ce1bc78b4b32d4c45",
+      "sha256": "b3cf8aeb5d8f07f25085254b505826dbb2e8226c04f33755551af354fba258e5",
+      "bytes": 72105,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/routers/http/pd_warm_remote.rs"
+    },
+    {
+      "path": "Cargo.toml",
+      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "git_blob_sha": "8b8f28670d060a9eab3e3fac09f1efac1415f938",
+      "sha256": "cc7d1fe8eb11b6aae410863ba1303ae63029f693d451373bd9e9c518aca9aa33",
+      "bytes": 8775,
+      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/Cargo.toml"
+    },
+    {
+      "path": ".agents/skills/review-pr/SKILL.md",
+      "commit": "3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09",
+      "git_blob_sha": "75e7b940c1eb0eabddc588259b659a87117cd340",
+      "sha256": "ca3b87f02ff52c6548aeca0c7e6f3d1082a12a4670bb8e271c5f3f531ceb7b0f",
+      "bytes": 8998,
+      "url": "https://github.com/vllm-project/router/blob/3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09/.agents/skills/review-pr/SKILL.md"
+    }
+  ],
+  "commits": [
+    {
+      "sha": "44312e5b52598c28033157f065d7ad352009084c",
+      "subject": "ci: skip thin LTO in premerge release builds (#537)"
+    },
+    {
+      "sha": "6a101a618a0de4edbc6ac3c55b9f0542d03ce013",
+      "subject": "fix(pd): scope decode session affinity by named LoRA (#510)"
+    },
+    {
+      "sha": "394a63e0a3add03b9a78d4582b769375800c1b56",
+      "subject": "[Bugfix] Reject NaN in config validation for lower-bound floats (#278)"
+    },
+    {
+      "sha": "29ac71fe5d433104254cd223910f6b553ec72417",
+      "subject": "fix(pd): select the Program prefill target once, with request inputs (#535)"
+    },
+    {
+      "sha": "ea7f21ebf2fde00a8c244fa10aa543e47ada020d",
+      "subject": "[Feature] Support EPD with data-parallel consumers (#507)"
+    },
+    {
+      "sha": "f6be12a91289c45d2d5e8fa92861a5513a7bc7e2",
+      "subject": "fix: Return 413 for Oversized Streamed Bodies on the Fallback (#529)"
+    },
+    {
+      "sha": "7f745100d5b3159d72fab870ce874843fcccda6d",
+      "subject": "fix(kv-aware): break equal-score ties in P/D and colocated routing (#534)"
+    },
+    {
+      "sha": "ddf78218cffdb6361579d3babd69a90ba6d63aaa",
+      "subject": "docs: refresh WeChat group QR code (#543)"
+    },
+    {
+      "sha": "51c675a3d7b7e2157af8ea5d037828482764aa0d",
+      "subject": "feat(kv-index): discover worker cache metadata from /metrics (#520)"
+    },
+    {
+      "sha": "770606e4b4e7d2e7a274f9db8ca4b8c960e5a32f",
+      "subject": "fix(router): make load accounting cancellation-safe (#200)"
+    },
+    {
+      "sha": "ea20a532485c6f4635cee0dff6dab788b87d1365",
+      "subject": "fix: Apply Global Layers to the Fallback Handler (#485)"
+    },
+    {
+      "sha": "10f6cf112ffad2c1c0b96f7ddf1c9ae04810431d",
+      "subject": "[CI] Use a scoped Buildkite secret for Docker Hub releases (#523)"
+    },
+    {
+      "sha": "1bc4747c77899376ed726186bc50ae4cfb850252",
+      "subject": "fix(wasm): honor CARGO_TARGET_DIR in the example build script (#511)"
+    },
+    {
+      "sha": "39539b561e7d6d38cfa4786d53a7d089b6d1a362",
+      "subject": "[CI] change nightly ci scene for grpc and l1 encode  (#503)"
+    },
+    {
+      "sha": "30f7459f809d0aad71c7e990a590bfc85d856d2f",
+      "subject": "fix: configure the XGMI smoke GSM8K baseline (#502)"
+    }
+  ]
+}

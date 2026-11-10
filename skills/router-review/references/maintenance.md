@@ -1,4 +1,47 @@
-## Current bounded refresh, 2026-11-04 Asia/Shanghai
+## Current bounded refresh, 2026-11-11 Asia/Shanghai
+
+This section supersedes the dated release-status claims below. The
+[source manifest](audit-2026-11-11.json) records the complete 15-commit,
+39-path delta inventory since the November 4 pin and eight exact-byte source
+pins. This is a **partial source audit**, not a completed review of that delta.
+
+- [v0.1.17](https://github.com/vllm-project/router/releases/tag/v0.1.17) is now a published
+  GitHub Release (November 4, 02:25:30 UTC), at `3451e66a8ba5416d3e3e8eb3d9ee604211cde042`.
+  Previously documented November 4 main behavior belongs to that release;
+  do not keep describing all of it as main-only. The following changes at
+  [current main](https://github.com/vllm-project/router/commit/44312e5b52598c28033157f065d7ad352009084c) are **after** that release.
+- Source-read examples for future targeted checks: [#278](https://github.com/vllm-project/router/pull/278)
+  changes lower-bound float checks to reject NaN for cache-aware relative
+  balance and retry multiplier. Its regression tests exercise NaN and 1.0.
+  Do not infer a new finite-only contract: the unbounded range still accepts
+  positive infinity. [Pinned validation source](https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/config/validation.rs).
+- [#200](https://github.com/vllm-project/router/pull/200) removes early decode-load
+  release on an error status. The added `decode_error_body_preserves_other_requests_load`
+  test keeps the reservation while an error body is pending, then checks drop/abort
+  cleanup without decrementing another request's load. Its streaming, buffered
+  and oversized branches are source-read evidence, not locally executed tests.
+- [#510](https://github.com/vllm-project/router/pull/510) includes named LoRA in the
+  decode binding digest; unsupported adapter identities bypass affinity rather
+  than collapsing into the plain binding. Empty/non-string names differ from
+  a literal whitespace name. [#535](https://github.com/vllm-project/router/pull/535)
+  reuses the selected Program prefill target when the warm protocol declines,
+  passing request inputs to the shared picker. For either area, inspect current
+  callers and tests rather than extrapolating general backend support.
+  [Pinned P/D source](https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/routers/http/vllm_pd_router.rs).
+- The canonical skill remains absent from main; [PR336](https://github.com/vllm-project/router/pull/336)
+  is still an open draft at `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`. Its bytes were revalidated;
+  its old `py_test/` examples still need reconciliation with `tests/python/`.
+  No repository-owned checklist is copied or replaced here.
+- All 13 open personal skill PRs and their paginated changed-file lists were
+  checked, including PR6 and PR17; a second collection page was empty. None
+  overlaps these router reference/test paths. Existing proposals remain intact.
+- Daily selection policy, live review checkpoints and historical adjudicated
+  cases are unchanged. The two historical defect families/four correlated
+  outcomes are not new accuracy samples. No upstream runtime, GPU, performance
+  or hardware validation ran; Cargo is unavailable. Uninspected delta paths,
+  including EPD/metrics/fallback/CI changes, remain pending source coverage.
+
+## Historical bounded refresh, 2026-11-04 Asia/Shanghai
 
 This refresh supersedes dated P/D, Completion and CI facts below, not the
 repository-owned review checklist. The [source manifest](audit-2026-11-04.json)
