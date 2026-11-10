@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "fixture_note": "Synthetic hashes and benchmark labels exercise the v0.26 decision contract; this is not a factual evidence manifest.",
+  "release": {
+    "previous_tag": "v0.25.0",
+    "current_tag": "v0.26.0",
+    "target_commit": "0123456789abcdef0123456789abcdef01234567",
+    "cutoff_date": "2026-08-01"
+  },
+  "deck": {
+    "baseline": "community-maintained-vllm-omni-release-deck",
+    "audience": "vLLM community release meeting",
+    "slide_budget": 39
+  },
+  "slides": [
+    {
+      "key": "introduction-overview",
+      "role": "introduction",
+      "action": "preserve",
+      "locked": true
+    },
+    {
+      "key": "dlo-mechanism",
+      "role": "release-highlight",
+      "action": "update",
+      "layout": {
+        "exemplar_slide_id": "template-dlo-mechanism",
+        "title_max_lines": 1,
+        "subtitle_max_lines": 1,
+        "protected_footer": true,
+        "source_position": "footer-left",
+        "placement_notes": "Mechanism figure in the body; explanation outside the figure."
+      }
+    },
+    {
+      "key": "dlo-results",
+      "role": "release-highlight",
+      "action": "add",
+      "layout": {
+        "exemplar_slide_id": "template-benchmark-results",
+        "title_max_lines": 1,
+        "subtitle_max_lines": 1,
+        "protected_footer": true,
+        "source_position": "footer-left",
+        "placement_notes": "Results figure fills the body without cropping."
+      }
+    },
+    {
+      "key": "minimax-h3-roadmap",
+      "role": "roadmap",
+      "action": "add",
+      "layout": {
+        "exemplar_slide_id": "template-model-architecture",
+        "title_max_lines": 1,
+        "subtitle_max_lines": 1,
+        "protected_footer": true,
+        "source_position": "footer-left",
+        "placement_notes": "Use the official overview figure intact and label the slide Roadmap."
+      }
+    },
+    {
+      "key": "qwen3-omni-performance",
+      "role": "appendix",
+      "action": "update",
+      "layout": {
+        "exemplar_slide_id": "template-performance-stack",
+        "title_max_lines": 1,
+        "subtitle_max_lines": 1,
+        "protected_footer": true,
+        "source_position": "footer-left",
+        "placement_notes": "Keep the source SVG proportional and the metric conditions visible."
+      }
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Keep the general introduction unchanged.",
+      "slide_keys": ["introduction-overview"]
+    },
+    {
+      "text": "Explain DLO mechanism and results on separate slides.",
+      "slide_keys": ["dlo-mechanism", "dlo-results"]
+    }
+  ],
+  "highlights": [
+    {
+      "id": "dlo",
+      "claim": "DLO separates mechanism from extensive results.",
+      "category": "performance-and-scaling",
+      "user_impact": "Explains how the release improves distributed serving.",
+      "decision": "main",
+      "decision_reason": "High impact with first-party mechanism and result evidence.",
+      "release_relation": "in_tag",
+      "slide_keys": ["dlo-mechanism", "dlo-results"],
+      "sources": [
+        {
+          "url": "https://github.com/vllm-project/vllm-project.github.io/pull/295",
+          "kind": "pull_request",
+          "revision": "0123456789abcdef0123456789abcdef01234567",
+          "primary": true,
+          "included_in_target_tag": true
+        }
+      ],
+      "quantitative": false,
+      "mechanism_summary": "Separate orchestration and replica work.",
+      "results": ["Scaling result", "Latency result"],
+      "presentation_pattern": "mechanism_then_results",
+      "figures": []
+    },
+    {
+      "id": "minimax-h3",
+      "claim": "MiniMax-H3 optimization is post-tag roadmap work.",
+      "category": "roadmap",
+      "user_impact": "Sets expectations without presenting future work as shipped.",
+      "decision": "main",
+      "decision_reason": "Explicitly requested roadmap context.",
+      "release_relation": "roadmap",
+      "presentation_label": "Roadmap · post-tag",
+      "slide_keys": ["minimax-h3-roadmap"],
+      "sources": [
+        {
+          "url": "https://github.com/vllm-project/vllm-omni/issues/5700",
+          "kind": "issue",
+          "revision": "issue-5700",
+          "primary": true,
+          "included_in_target_tag": false
+        }
+      ],
+      "quantitative": false,
+      "figures": []
+    },
+    {
+      "id": "qwen3-omni-stack",
+      "claim": "The cumulative Qwen3-Omni stack improves throughput and latency.",
+      "category": "runtime-performance",
+      "user_impact": "Shows the implementation depth behind the release result.",
+      "decision": "appendix",
+      "decision_reason": "Important technical evidence but too detailed for the main narrative.",
+      "release_relation": "in_tag",
+      "slide_keys": ["qwen3-omni-performance"],
+      "sources": [
+        {
+          "url": "https://github.com/vllm-project/vllm-project.github.io/pull/258",
+          "kind": "pull_request",
+          "revision": "fedcba9876543210fedcba9876543210fedcba98",
+          "primary": true,
+          "included_in_target_tag": true
+        }
+      ],
+      "quantitative": true,
+      "carried_forward": true,
+      "revalidated_for_release": true,
+      "benchmark": {
+        "model": "Qwen3-Omni",
+        "hardware": "source-defined GPU setup",
+        "software": "vLLM-Omni v0.26.0",
+        "workload": "official PR 258 workload at concurrency 64",
+        "metric": "request throughput and audio time to first packet",
+        "units": "requests/s and ms",
+        "baseline": "official PR 258 baseline",
+        "conditions": "cumulative stack; concurrency and source qualifiers retained"
+      },
+      "figures": [
+        {
+          "canonical_url": "https://raw.githubusercontent.com/vllm-project/vllm-project.github.io/fedcba9876543210fedcba9876543210fedcba98/assets/qwen3-omni.svg",
+          "source_revision": "fedcba9876543210fedcba9876543210fedcba98",
+          "original_format": "svg",
+          "original_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "aspect_ratio": 1.7777777778,
+          "usage_basis": "official project pull-request asset",
+          "derivative": {
+            "format": "png",
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "aspect_ratio": 1.7777777778
+          }
+        }
+      ]
+    }
+  ]
+}
