@@ -1,11 +1,14 @@
 {
   "repository": "vllm-project/router",
-  "audited_at_utc": "2026-11-10T16:10:06.116603+00:00",
+  "audited_at_utc": "2026-11-11T02:28:24Z",
   "previous_audit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
-  "main": "44312e5b52598c28033157f065d7ad352009084c",
-  "commits_since_previous_audit": 15,
+  "same_day_previous_tip": "44312e5b52598c28033157f065d7ad352009084c",
+  "main": "485e7e24559c111353df9aefabdbbc03f24cd947",
+  "commits_since_previous_audit": 16,
+  "commits_since_same_day_pin": 1,
   "changed_paths": [
     ".buildkite/README.md",
+    ".buildkite/ci_mirror_hardwares.yml",
     ".buildkite/pipeline.yml",
     ".buildkite/release-pipeline.yml",
     ".buildkite/scripts/cleanup-nightly-router-builds.sh",
@@ -33,8 +36,23 @@
     "src/routers/http/vllm_pd_router.rs",
     "src/server.rs",
     "tests/python/e2e/pd_disagg_vllm/test_lm_eval_accuracy.py",
+    "tests/python/e2e/perf/README.md",
+    "tests/python/e2e/perf/conftest.py",
     "tests/python/e2e/perf/grpc/cases/python_http.json",
     "tests/python/e2e/perf/grpc/cases/rust_grpc.json",
+    "tests/python/e2e/perf/process.py",
+    "tests/python/e2e/perf/router_policy/README.md",
+    "tests/python/e2e/perf/router_policy/case_loader.py",
+    "tests/python/e2e/perf/router_policy/cases/cache_aware.json",
+    "tests/python/e2e/perf/router_policy/cases/kv_aware.json",
+    "tests/python/e2e/perf/router_policy/cases/kv_aware_aff.json",
+    "tests/python/e2e/perf/router_policy/conftest.py",
+    "tests/python/e2e/perf/router_policy/data/README.md",
+    "tests/python/e2e/perf/router_policy/data/extract_tracelab.py",
+    "tests/python/e2e/perf/router_policy/data/tracelab-ci-uniform-28.jsonl",
+    "tests/python/e2e/perf/router_policy/log_summary.py",
+    "tests/python/e2e/perf/router_policy/stack_launcher.py",
+    "tests/python/e2e/perf/router_policy/test_router_policy_scenarios.py",
     "tests/rust/common/http.rs",
     "tests/rust/common/mod.rs",
     "tests/rust/common/test_app.rs",
@@ -43,14 +61,15 @@
     "tests/rust/test_admission_fallback.rs",
     "tests/rust/test_dp_routing.rs",
     "tests/rust/test_pd_routing.rs",
-    "tests/rust/test_pd_warm_remote.rs"
+    "tests/rust/test_pd_warm_remote.rs",
+    "typos.toml"
   ],
   "release": {
     "tag": "v0.1.17",
     "commit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
     "published_at": "2026-11-04T02:25:30Z",
     "url": "https://github.com/vllm-project/router/releases/tag/v0.1.17",
-    "main_commits_after_release": 15
+    "main_commits_after_release": 16
   },
   "canonical": {
     "pr": 336,
@@ -59,7 +78,7 @@
     "head": "3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09",
     "path": ".agents/skills/review-pr/SKILL.md"
   },
-  "coverage": "Partial source audit: complete commit/path inventory; targeted changed hunks and tests for NaN validation, decode error-body ownership, named-LoRA decode affinity and Program prefill selection. Hashes cover full files, not a full-file correctness review. Other delta paths remain unaudited. No Rust toolchain or upstream runtime tests, GPU, performance or accuracy evaluation.",
+  "coverage": "Partial source audit. Same-day tip refresh after midnight pin 44312e5b52598c28033157f065d7ad352009084c. Complete 16-commit / 56-path inventory since the v0.1.17 / November 4 pin; one commit / 19 paths since the midnight pin. The prior eight source pins were re-hashed: blobs unchanged at the new tip or PR336 head. Seven additional exact-byte pins cover #477 nightly router_policy evidence (Buildkite README/nightly/hardware comment, perf README, router_policy README/test, and the kv_aware case JSON). Hashes cover full files, not a full-file correctness review. Other post-release delta paths remain unaudited. No Rust toolchain or upstream runtime tests, GPU, performance or accuracy evaluation.",
   "overlap_check": {
     "open_prs": 13,
     "collection_pages": 2,
@@ -69,62 +88,70 @@
   },
   "selection_policy_changed": false,
   "live_review_checkpoint_advanced": false,
+  "sample_size": {
+    "historical_defect_families": 2,
+    "correlated_outcomes": 4,
+    "current_main_sources_rehashed_unchanged": 7,
+    "draft_skill_sources_rehashed_unchanged": 1,
+    "new_sources_pinned": 7,
+    "current_main_and_draft_sources_total": 15
+  },
   "sources": [
     {
       "path": "src/config/validation.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "3cb9ac07c3e573961e1e080a11051efc388acb53",
       "sha256": "988042ed04a67cbe8bd47cf9f32a2b2664a93f8898bf1926e4f2997b3b793916",
       "bytes": 71569,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/config/validation.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/config/validation.rs"
     },
     {
       "path": "src/core/worker.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "2871858b4bf22e00c5cad59332b6deb4ba769d01",
       "sha256": "b985d718c33f50ed1521fd29ad70c8b946266f52d8dc63919fe71e5dc6af22e5",
       "bytes": 63211,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/core/worker.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/core/worker.rs"
     },
     {
       "path": "src/backend/preprocess.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "edcc78463e89ffe906431afcea9761830c2feea9",
       "sha256": "151019892aacf959c56ed67121aca46d07ba67231aaa9c99a917cd6ad6559766",
       "bytes": 59397,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/backend/preprocess.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/backend/preprocess.rs"
     },
     {
       "path": "src/policies/kv_aware.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "dcbb58e872c4cc97c3e1ddb9a3215cafcac1b9f4",
       "sha256": "f054b68c16286319c0b38d4d6ef206b83af0567c1cc9a28f8cba4de15f3b7016",
       "bytes": 146992,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/policies/kv_aware.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/policies/kv_aware.rs"
     },
     {
       "path": "src/routers/http/vllm_pd_router.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "718a916648698a49cf8b358a616dc218e21b81e1",
       "sha256": "5ef652ee005655d30e11f302502f0fbc87f5b1e2c3a7e901eb8ba8b2ac611a9e",
       "bytes": 242247,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/routers/http/vllm_pd_router.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/routers/http/vllm_pd_router.rs"
     },
     {
       "path": "src/routers/http/pd_warm_remote.rs",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "c445e6c7ce3d15041d5f216ce1bc78b4b32d4c45",
       "sha256": "b3cf8aeb5d8f07f25085254b505826dbb2e8226c04f33755551af354fba258e5",
       "bytes": 72105,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/src/routers/http/pd_warm_remote.rs"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/src/routers/http/pd_warm_remote.rs"
     },
     {
       "path": "Cargo.toml",
-      "commit": "44312e5b52598c28033157f065d7ad352009084c",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
       "git_blob_sha": "8b8f28670d060a9eab3e3fac09f1efac1415f938",
       "sha256": "cc7d1fe8eb11b6aae410863ba1303ae63029f693d451373bd9e9c518aca9aa33",
       "bytes": 8775,
-      "url": "https://github.com/vllm-project/router/blob/44312e5b52598c28033157f065d7ad352009084c/Cargo.toml"
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/Cargo.toml"
     },
     {
       "path": ".agents/skills/review-pr/SKILL.md",
@@ -133,9 +160,69 @@
       "sha256": "ca3b87f02ff52c6548aeca0c7e6f3d1082a12a4670bb8e271c5f3f531ceb7b0f",
       "bytes": 8998,
       "url": "https://github.com/vllm-project/router/blob/3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09/.agents/skills/review-pr/SKILL.md"
+    },
+    {
+      "path": ".buildkite/README.md",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "d31c90cdcd6a43435c478dd9422d7274a107d129",
+      "sha256": "5110f61865bf6a9fb8e2417bf3c8deec1e930e46cd8c0f268bb8d2e7db61eb23",
+      "bytes": 11950,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/.buildkite/README.md"
+    },
+    {
+      "path": ".buildkite/test-nightly.yml",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "0fda3bfde39446d526a073c3dc865a80e82b427b",
+      "sha256": "f99b7aba13c37e704d357db0f9f92ad6128c7e8eac3a28a6547d6452c4c50df6",
+      "bytes": 13592,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/.buildkite/test-nightly.yml"
+    },
+    {
+      "path": ".buildkite/ci_mirror_hardwares.yml",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "d602e7f5a6a7583fdffe79bb14271bc1dd8d74c1",
+      "sha256": "a7e73542b0265374d3d5876a40e6f3a0192ad2ca24cb9ec4306c49073203bc4d",
+      "bytes": 9328,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/.buildkite/ci_mirror_hardwares.yml"
+    },
+    {
+      "path": "tests/python/e2e/perf/README.md",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "e25e8249c46d7b5d87ca0d1af246479545a705cc",
+      "sha256": "1c52ce5a12bff430981bc2ff774c3a38e49da8569b4e13ea02ea2e3dbc00a213",
+      "bytes": 1908,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/README.md"
+    },
+    {
+      "path": "tests/python/e2e/perf/router_policy/README.md",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "fc75161275b713489980a298c24d59d32aea7a8f",
+      "sha256": "8ba0cfd8c3a85c31a43fa823fa55ed6ad8ac1d703eb93cdda2c6f9e5e0f335d7",
+      "bytes": 5242,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/router_policy/README.md"
+    },
+    {
+      "path": "tests/python/e2e/perf/router_policy/test_router_policy_scenarios.py",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "fec2931d8d53a3a13c9dc7783afe8d74bbb27f92",
+      "sha256": "d2033abe8fa00ebe561cfde254d2a24a9b7f5108f31bbdc8106b28cce82a3527",
+      "bytes": 1781,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/router_policy/test_router_policy_scenarios.py"
+    },
+    {
+      "path": "tests/python/e2e/perf/router_policy/cases/kv_aware.json",
+      "commit": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "git_blob_sha": "0956ab60b052187ba1fc6955bd0e569c3415747c",
+      "sha256": "4f1b732b007fa61f76e4d04b8934a3ffe78167c499e91fbfa0f497f16fc4ea4b",
+      "bytes": 1191,
+      "url": "https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/router_policy/cases/kv_aware.json"
     }
   ],
   "commits": [
+    {
+      "sha": "485e7e24559c111353df9aefabdbbc03f24cd947",
+      "subject": "[Test] add pd merge perf test case (#477)"
+    },
     {
       "sha": "44312e5b52598c28033157f065d7ad352009084c",
       "subject": "ci: skip thin LTO in premerge release builds (#537)"

@@ -1,5 +1,70 @@
 ## Current bounded refresh, 2026-11-11 Asia/Shanghai
 
+This same-day tip refresh supersedes the midnight main pin below, not the
+repository-owned review checklist. The [source manifest](audit-2026-11-11.json)
+now records the complete 16-commit, 56-path delta since the November 4 /
+v0.1.17 pin, revalidates the eight previously pinned sources (unchanged blobs
+at the new tip or PR336 head), and adds seven exact-byte pins for the new
+nightly router_policy evidence. This remains a **partial source audit**.
+
+- Personal main baseline: `0fe053ac748f02a670205bea769dc6478498d4fb`.
+  [v0.1.17](https://github.com/vllm-project/router/releases/tag/v0.1.17) remains
+  the latest published GitHub Release (November 4, 02:25:30 UTC), at
+  `3451e66a8ba5416d3e3e8eb3d9ee604211cde042`. Current main is
+  [`485e7e24559c111353df9aefabdbbc03f24cd947`](https://github.com/vllm-project/router/commit/485e7e24559c111353df9aefabdbbc03f24cd947)
+  (`[Test] add pd merge perf test case (#477)`, 2026-11-11 07:01:31 Asia/Shanghai).
+  That commit is one commit and 19 paths after the midnight pin
+  `44312e5b52598c28033157f065d7ad352009084c`. The 16 commits after the release
+  are **main-only**.
+- [#477](https://github.com/vllm-project/router/pull/477) adds a TraceLab
+  cold-replay `router_policy` suite under
+  [tests/python/e2e/perf/router_policy](https://github.com/vllm-project/router/tree/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/router_policy).
+  Each case JSON (`cache_aware`, `kv_aware`, `kv_aware_aff`) lists concurrency
+  8, 16 and 32; pytest expands those into cells. The cases use four gRPC
+  workers, `kv_cache_memory_bytes=12884901888` (12 GiB) per worker,
+  `cpu_kv_bytes=0` and `max_model_len=32768`. The `kv_aware_aff` case also sets
+  `kv_aware_session_affinity_ttl_secs=1800`. The default case model is
+  `Qwen/Qwen3-4B-Instruct-2507`, overridable by `MODEL`.
+  [The scenario test](https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/tests/python/e2e/perf/router_policy/test_router_policy_scenarios.py)
+  asserts every replay row in `requests.jsonl` has `status=success`; it does
+  not fix a request count. These files are not part of the default `ready`
+  suite.
+- Nightly job `router-policy-perf-e2e` in
+  [test-nightly.yml](https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/.buildkite/test-nightly.yml)
+  runs only the three c16 cells (`cache_aware/c16 or kv_aware/c16 or
+  kv_aware_aff/c16`) on `l4_4` when `ROCM_ONLY != 1` (240-minute timeout, one
+  automatic retry). It installs `agentinfer==0.2.0` and uses
+  `data/tracelab-ci-uniform-28.jsonl` (documented as 8 sessions, 28 requests)
+  unless `TRACELAB_JSONL_URL` replaces that file. The
+  [Buildkite README](https://github.com/vllm-project/router/blob/485e7e24559c111353df9aefabdbbc03f24cd947/.buildkite/README.md)
+  lists this as L3 "router_policy TraceLab c16 on 4× L4". A configured job,
+  case JSON or fixture length is not a successful hardware run, policy-quality
+  comparison or measured speedup.
+- The eight midnight source pins, including the draft skill, were re-checked
+  at the new tip or PR336 head; their Git blobs, SHA-256 and sizes are
+  unchanged. The #278 / #200 / #510 / #535 notes in the midnight section still
+  apply at this tip.
+- The canonical skill remains absent from main; [PR336](https://github.com/vllm-project/router/pull/336)
+  is still an open draft at `3fa8e31e8eed24c10ee39cce842dbdeb7a5e8f09`. All 13
+  open personal skill PRs and their paginated changed-file lists were
+  rechecked, including PR6 (`68d7b38df04c382e9e51c9fde28428181d3bc5a8`) and
+  PR17 (`f01a5df38f337e65d80f420e6b22e0b30a5237af`); a second collection page
+  was empty. None overlaps these router reference/test paths.
+- Daily selection policy, live review checkpoints and historical adjudicated
+  cases are unchanged. The label catalog still has `High Priority` and
+  `ready`. No open High Priority PRs were found. Ready alone does not
+  qualify. No upstream runtime, GPU, performance or hardware validation ran;
+  Cargo is unavailable. Uninspected delta paths from earlier post-release
+  commits, including EPD/metrics/fallback and most prior CI changes, remain
+  pending source coverage. `typos.toml` only excludes the TraceLab fixture
+  from typo checks.
+
+## Historical bounded refresh, 2026-11-11 Asia/Shanghai (midnight)
+
+The shared manifest was later updated for the same-day tip `485e7e24`; the
+15-commit, 39-path inventory and `44312e5b` links below were accurate at the
+midnight pin.
+
 This section supersedes the dated release-status claims below. The
 [source manifest](audit-2026-11-11.json) records the complete 15-commit,
 39-path delta inventory since the November 4 pin and eight exact-byte source

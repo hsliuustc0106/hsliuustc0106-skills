@@ -288,14 +288,24 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(data["repository"], daily.REPOSITORY)
         self.assertEqual(data["release"]["tag"], "v0.1.17")
         self.assertEqual(data["previous_audit"], data["release"]["commit"])
+        self.assertEqual(data["main"], "485e7e24559c111353df9aefabdbbc03f24cd947")
+        self.assertEqual(data["same_day_previous_tip"], "44312e5b52598c28033157f065d7ad352009084c")
         self.assertNotEqual(data["main"], data["release"]["commit"])
-        self.assertEqual(data["commits_since_previous_audit"], 15)
-        self.assertEqual(len(data["changed_paths"]), 39)
+        self.assertEqual(data["commits_since_previous_audit"], 16)
+        self.assertEqual(data["commits_since_same_day_pin"], 1)
+        self.assertEqual(len(data["changed_paths"]), 56)
+        self.assertEqual(data["release"]["main_commits_after_release"], 16)
         self.assertIn("Partial source audit", data["coverage"])
         self.assertFalse(data["selection_policy_changed"])
         self.assertFalse(data["live_review_checkpoint_advanced"])
         self.assertTrue(data["canonical"]["draft"])
-        self.assertEqual(len(data["sources"]), 8)
+        self.assertEqual(len(data["sources"]), 15)
+        paths = [source["path"] for source in data["sources"]]
+        self.assertEqual(len(paths), len(set(paths)))
+        for required in (".buildkite/test-nightly.yml",
+                         "tests/python/e2e/perf/router_policy/test_router_policy_scenarios.py",
+                         "tests/python/e2e/perf/router_policy/cases/kv_aware.json"):
+            self.assertIn(required, paths)
         for source in data["sources"]:
             expected = data["canonical"]["head"] if source["path"] == data["canonical"]["path"] else data["main"]
             self.assertEqual(source["commit"], expected)
