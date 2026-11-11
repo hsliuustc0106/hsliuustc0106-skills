@@ -53,7 +53,83 @@ canonical draft's `high-priority` spelling for this personal queue only. Neither
 hyphenated labels nor `priority/major` are aliases. Do not mutate labels or broaden
 the queue to reconcile the discrepancy. Unknown current catalogs remain BLOCKED.
 
-## Current bounded audit, 2026-11-05 Asia/Shanghai
+## Current bounded audit, 2026-11-12 Asia/Shanghai
+
+This refresh supersedes the November 5 routing below; historical calibration
+pins remain unchanged. It is a source-contract audit, not an upstream PR review.
+
+- Personal main baseline: `984096a4d1101d9ccf3cfb122589925c10a3f06a`.
+  Target main: [807982f00da6253b41042146171554c51ecc2c3e](https://github.com/openJiuwen-ai/sciencediscovery/commit/807982f00da6253b41042146171554c51ecc2c3e).
+  Local Git comparison from the previous audited pin `48848578d58f0ecd83798493bcf4f2cde8d02b26`
+  enumerated 391 new commits and 895 changed files. The inventory is complete,
+  but semantic inspection is limited to the CI contracts cited below, current
+  contribution guidance and canonical-source routing, not all changed product code.
+- Canonical [PR231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
+  remains open/draft at `1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c`.
+  Main still has no root AGENTS.md or canonical review skill. Continue explicit
+  draft-source loading; the canonical SKILL bytes retain SHA-256
+  `2bf261c60d527034b5fe90f2b5194d8e076e887e8a069515c17575a53d5a9dd1`.
+- Latest stable remains [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0),
+  published October 31, peeled to `7acc1dcf62736f7e7bf06c6d51acb5114899f2de`.
+  Main has 517 unique commits and the release tag two. The changes below are
+  main-only evidence, not a claim about released behavior.
+- All 13 open personal-skills PRs and their complete changed-file lists were
+  checked; the second discovery page was empty. None overlaps this scoped
+  supplement. PR6 and PR17 retain their previously recorded heads and remain
+  untouched, including shared manifest/installer changes proposed by PR17.
+- The label-catalog connector read returned `INVALID_ARGUMENT` (unsupported
+  endpoint); local GitHub CLI has no authenticated session. Current catalog and
+  eligibility are **unknown**, not empty. November 5's 56-label catalog is only
+  historical evidence. No live queue or delivery ledger was changed; keep the
+  exact-label/new-head/cap contract above, and retry catalog discovery with an
+  authorized supported transport before selection. No permission expansion or
+  credential setup was attempted.
+
+### Executable CI routing takes precedence over stale tier prose
+
+At the target pin, read [tier-policy.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.ci/tier-policy.mjs),
+[ci.yml](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.github/workflows/ci.yml)
+and [.ci/README.md](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.ci/README.md)
+together. The canonical CI skill's tier table still describes the older split;
+it is not evidence that those jobs ran. The policy change is pinned by
+[0dc16ce7682a3ee717924a7e50c0cb0f94dfb765](https://github.com/openJiuwen-ai/sciencediscovery/commit/0dc16ce7682a3ee717924a7e50c0cb0f94dfb765).
+
+- Ordinary `pr` profile: policy/L1/UT/ST plus binary and Docker jobs;
+  mocked and real E2E are skipped. A green PR gate does not prove browser E2E.
+- `merge` profile: policy/L1/UT/ST plus mocked and real E2E;
+  binary and Docker jobs are skipped. Verify the merge-group SHA separately.
+- `daily` and `release`: both E2E and distribution jobs are required.
+  Local cumulative test profiles are distinct from workflow job selection;
+  `pnpm ci:e2e` still selects the mocked slice locally.
+- The documentation-only exception is retained: policy/L1 success with the
+  enumerated product jobs skipped, not executed product passes. Read actual
+  diff classification and job results; unknown diffs retain the full profile.
+- [Real E2E workflow](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.github/workflows/real-e2e.yml)
+  now references `nightly-research`, not the older `nightly-ci-ds` environment.
+  Workflow source does not verify live environment configuration or credentials.
+- L5 is no longer the same case set as L4. Read the frozen plan and
+  [real matrix](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.ci/real-matrix.mjs),
+  [Biomni gate](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.ci/biomni-gate.mjs)
+  and [configuration](https://github.com/openJiuwen-ai/sciencediscovery/blob/807982f00da6253b41042146171554c51ecc2c3e/.ci/biomni-gate.json).
+  Current configuration declares 45 active versus 50 historical cases and a
+  temporary, unapproved baseline. Population-scaled additive resource budgets
+  are not measured 45-case results; historical mean/P95 are not recalibrated
+  capability evidence. Do not claim an approved non-regression baseline from a
+  green run. This pass ran no benchmark, model or paid workflow.
+
+### Validation and limits
+
+The selector is unchanged. Its network-free pagination, unknown/error,
+old-PR/new-head, exact-label, stale-head and cross-policy cap/dedup tests remain
+required. The corpus remains two adjudicated defect families/four outcomes,
+not an accuracy estimate. Validation passed: 267 Python unittests (including 36 focused ScienceDiscovery
+selection/evidence/install tests), four pinned-source replay outcomes under
+Node 24.22.1, installer preservation, frontmatter/local-link/source-pin checks,
+manifest parsing, script syntax and diff whitespace. Historical Git objects were
+materialized before a second replay with lazy fetching disabled. No upstream review, product
+UT/ST/E2E, native Windows run, scientific validation or remote CI pass is implied.
+
+## Historical bounded audit, 2026-11-05 Asia/Shanghai
 
 This afternoon verification (~10:10 Asia/Shanghai) supersedes the earlier same-day
 morning routing below. Historical October 29 calibration pins remain unchanged.
