@@ -57,6 +57,9 @@ the queue to reconcile the discrepancy. Unknown current catalogs remain BLOCKED.
 
 This refresh supersedes the November 5 routing below; historical calibration
 pins remain unchanged. It is a source-contract audit, not an upstream PR review.
+A later Thursday-morning catalog retry (~09:54 Asia/Shanghai), from personal
+main baseline `462c2c63769ffcf51377e95ec8e628a364639d13`, completed eligibility
+evidence at the same target pin; the CI routing findings below are unchanged.
 
 - Personal main baseline: `984096a4d1101d9ccf3cfb122589925c10a3f06a`.
   Target main: [807982f00da6253b41042146171554c51ecc2c3e](https://github.com/openJiuwen-ai/sciencediscovery/commit/807982f00da6253b41042146171554c51ecc2c3e).
@@ -73,17 +76,33 @@ pins remain unchanged. It is a source-contract audit, not an upstream PR review.
   published October 31, peeled to `7acc1dcf62736f7e7bf06c6d51acb5114899f2de`.
   Main has 517 unique commits and the release tag two. The changes below are
   main-only evidence, not a claim about released behavior.
-- All 13 open personal-skills PRs and their complete changed-file lists were
-  checked; the second discovery page was empty. None overlaps this scoped
-  supplement. PR6 and PR17 retain their previously recorded heads and remain
-  untouched, including shared manifest/installer changes proposed by PR17.
-- The label-catalog connector read returned `INVALID_ARGUMENT` (unsupported
-  endpoint); local GitHub CLI has no authenticated session. Current catalog and
-  eligibility are **unknown**, not empty. November 5's 56-label catalog is only
-  historical evidence. No live queue or delivery ledger was changed; keep the
-  exact-label/new-head/cap contract above, and retry catalog discovery with an
-  authorized supported transport before selection. No permission expansion or
-  credential setup was attempted.
+- All 13 open personal-skills PRs were re-enumerated (`per_page=100`, page 2
+  empty). None is a sciencediscovery-review change. PR6 remains at
+  `68d7b38df04c382e9e51c9fde28428181d3bc5a8` and PR17 at
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af`. Both remain untouched, including
+  shared manifest/installer changes proposed by PR17.
+- The earlier same-day catalog connector read returned `INVALID_ARGUMENT`
+  (unsupported endpoint) and local GitHub CLI had no authenticated session, so
+  eligibility was recorded as **unknown**, not empty. The Thursday-morning retry
+  succeeded via GitHub REST (`GET /repos/openJiuwen-ai/sciencediscovery/labels?per_page=100`,
+  paginated): one page, 57 exact names, page 2 empty. November 5 recorded 56
+  names; the current catalog includes `release/0.4.0-rc1`, which was not in that
+  historical write-up. No `v0.4.0-rc1` or other newer GitHub Release or tag
+  exists; latest stable remains v0.3.0 as recorded above. The catalog contains
+  `ready`, `priority/major`, `priority/unspecified`, and `agent-ready`; it does
+  not contain `high priority` or `high-priority`.
+- Open pull requests on `openJiuwen-ai/sciencediscovery` were re-enumerated at
+  the same transport (`per_page=100`): 42 open, page 2 empty. Search and
+  label-filtered issue/PR lists found zero items labeled `high priority` or
+  `high-priority` (`incomplete_results=false`). Zero open PRs carry exact
+  `ready`. Two open PRs carry `priority/major` (#1105, #1053) and are not
+  eligible. With `ready` present the personal queue still requires exact
+  `high priority` AND `ready`, so the eligible set is empty before new-head or
+  delivery checks, until that exact label exists in the catalog. Do not treat
+  `priority/major`, `agent-ready`, or hyphenated spellings as aliases, and do
+  not create labels to force eligibility. The earlier same-day unknown state
+  and November 5's 56-label catalog are retained only as dated evidence. No
+  live queue was selected and no review or delivery checkpoint changed.
 
 ### Executable CI routing takes precedence over stale tier prose
 
@@ -224,13 +243,17 @@ historical defect families / four adjudicated outcomes remain bounded P2 and
 fixed-clean cases, not whole-PR approval or an accuracy estimate. LICENSE bytes
 still match main tip. No adjudicated-case pins changed.
 
-Validation: all 266 personal-repository tests passed, including 36 focused
-ScienceDiscovery selection/evidence/install tests. Frontmatter, scoped local
-links, immutable source paths and case pins, source routing, plugin manifest,
-installer preservation behavior, Python/Node syntax and diff whitespace were
-checked. No live models, Windows runs, browser journeys, full product UT/ST/E2E,
-binary/Docker qualification, remote CI pass, or exhaustive architecture audit is
-claimed. No source-owned checklist, selection policy or upstream code changed.
+Validation of the earlier same-day CI refresh recorded 266 personal-repository
+tests. The Thursday-morning catalog retry re-ran the same gates at this
+working tree: all 267 personal-repository tests passed, including 36 focused
+ScienceDiscovery selection/evidence/install tests. Frontmatter for all 24 skill
+entrypoints, scoped local links, immutable source paths and case pins, source
+routing, plugin `./skills/` discovery, installer preservation behavior,
+Python/Node syntax and diff whitespace were checked. No live models, Windows
+runs, browser journeys, full product UT/ST/E2E, binary/Docker qualification,
+remote CI pass, or exhaustive architecture audit is claimed. No source-owned
+checklist, selection policy, adjudicated-case pins, LICENSE bytes, or upstream
+code changed.
 
 ## Historical same-day morning audit, 2026-11-05 Asia/Shanghai
 
