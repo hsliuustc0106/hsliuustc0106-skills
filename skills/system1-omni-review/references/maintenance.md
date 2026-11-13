@@ -66,6 +66,56 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-11-14 Asia/Shanghai (main-only routing)
+
+Personal skills baseline: `f728ed035ba6782ee4e4bf0903fec3a172ef9a19`.
+[Current upstream main](https://github.com/InferMatrixLab/system1-omni/commit/285c79102966d341085f14853c20f8b69ea0692e)
+is four commits and 41 changed files beyond the November 7 pin
+`9cc769ec495cff620e86730b47e9eb513a752802`. The complete comparison covers
+merged PR200 (prefix-bidirectional Qwen), PR194 (Clef executor liveness), and
+PR170 (Kev export/head). Latest published release remains `release/v0.2.1` at
+the older pin; the following additions are **main-only**, not released behavior.
+This is a bounded instruction/test-routing audit, not a full correctness review.
+
+- [Prefix-bidirectional tests](https://github.com/InferMatrixLab/system1-omni/blob/285c79102966d341085f14853c20f8b69ea0692e/tests/qwen3_5/README.md)
+  route to eager full-row execution, not Graph, media, continuation, batching
+  or an HTTP worker. State rows see state keys; question rows see state plus
+  their own question, while GDN remains causal. The kernel oracle and synthetic
+  full-layer replay have distinct gates; neither establishes full-model decision
+  parity. Default workspace tests leave device cases ignored. Do not describe
+  this correctness baseline as a speed optimization.
+- [Clef lifecycle](https://github.com/InferMatrixLab/system1-omni/blob/285c79102966d341085f14853c20f8b69ea0692e/src/models/clef/README.md)
+  requires failure publication while the scheduled exchange retains admission,
+  including a cancelled HTTP caller, and idle-child reaping for health. Route
+  to `tests/clef/executor.rs` and `tests/clef/serve.rs`; Python executor ownership
+  is unchanged. The recorded GPU campaign lost its raw artifacts after restart:
+  it remains historical reporting, not independently verifiable acceptance.
+- [Kev preparation](https://github.com/InferMatrixLab/system1-omni/blob/285c79102966d341085f14853c20f8b69ea0692e/recipe/kev/README.md)
+  adds pinned CPU export and FP32 pointer-head checks, **not a runnable worker**.
+  Validate complete LoRA target inventory, hashes, final publication and late
+  failure cleanup. `tests/kev/test_export.py` uses synthetic inputs; the ignored
+  head test needs the released head but is still CPU-only. Export/head agreement
+  proves neither backbone inference nor serving readiness.
+- [CI](https://github.com/InferMatrixLab/system1-omni/blob/285c79102966d341085f14853c20f8b69ea0692e/.github/workflows/ci.yml) now includes `kev-export` with
+  Python 3.12 and CPU PyTorch 2.8.0. CUDA contract/compile checks remain distinct
+  from device execution. Route with current manifests and recipes, not the
+  historical architecture map.
+
+Canonical review skill/references and CONTRIBUTING are unchanged across this
+four-commit delta. Preserve the thin loader, exact-label default and separate
+explicit daily override; no selection policy or authority changes here. No live
+candidate review/selection, model downloads, upstream test execution, GPU work
+or upstream writes were performed. Existing four adjudicated rows remain two
+related defect/fix pairs, not an accuracy sample.
+
+All 13 open skills PR inventories were inspected (including PR6 and PR17);
+none overlaps this reference file. No open branch was changed or closed.
+Validation: 267 network-free repository tests and 37 focused System1 tests
+passed, including packaging/install fixtures; frontmatter, script syntax and
+whitespace checks passed. Five pinned calibration source entries matched their
+Git blobs, SHA-256 and exact lines. Newly linked paths were read at the immutable
+upstream pin. These checks are not measured reviewer accuracy or GPU validation.
+
 ## Bounded update, 2026-11-07 Asia/Shanghai (release/v0.2.1)
 
 Public repository `InferMatrixLab/system1-omni` still has ID `1386454853`;
