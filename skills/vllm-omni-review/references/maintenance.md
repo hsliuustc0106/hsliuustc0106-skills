@@ -53,7 +53,40 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
-## Current bounded audit, 2026-11-09 Asia/Shanghai
+## Bounded audit, 2026-11-16 Asia/Shanghai
+
+The [comparison from the November 9 pin](https://github.com/vllm-project/vllm-omni/compare/62876f40ac77f14dccc4ab9d332e9d5110875ab9...0f55c39eb07ccc349d57ae436f99f7a612a2dd16)
+reports 195 new commits at the inspected main revision; the comparison file list
+is capped at 300. Only the source path below was audited in depth. The canonical
+review skill and process routing are unchanged. The latest stable release is
+[v0.32.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0);
+[v0.33.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.33.0rc1)
+is a prerelease. The design and connector paths below are absent on the stable
+tag. Do not infer release-candidate support from this main-only audit.
+
+### Follow-up reviews: Mooncake joint KV and hidden-state cache
+
+[Merged #10107](https://github.com/vllm-project/vllm-omni/pull/10107) adds an
+experimental external-only cache for unquantized Qwen3-Omni Thinker turn serving
+on CUDA / Model Runner V2 with single-rank parallelism. The
+[admission checks](https://github.com/vllm-project/vllm-omni/blob/0f55c39eb07ccc349d57ae436f99f7a612a2dd16/vllm_omni/distributed/kv_transfer/mooncake/connector.py#L295-L329)
+reject local prefix caching, speculation, LoRA and duplex. Two-level cache
+cooperation is deferred. The
+[lookup and load contract](https://github.com/vllm-project/vllm-omni/blob/0f55c39eb07ccc349d57ae436f99f7a612a2dd16/docs/design/feature/mooncake_kv_hs_cache.md#L69-L100)
+requires matching KV and hidden-state objects plus a completion record for each
+reused block. Trace both receive paths and
+[attempt fencing, cancellation and reset](https://github.com/vllm-project/vllm-omni/blob/0f55c39eb07ccc349d57ae436f99f7a612a2dd16/docs/design/feature/mooncake_kv_hs_cache.md#L129-L150)
+when evaluating changes. A late restore must not reach a newer attempt, and an
+online reset is not a supported way to invalidate old weights.
+
+The [configuration fixtures](https://github.com/vllm-project/vllm-omni/blob/0f55c39eb07ccc349d57ae436f99f7a612a2dd16/tests/engine/test_map_offload_config.py#L260-L285)
+check external-only admission, not real Store or GPU behavior. For a deployment
+claim, look for the [opt-in Store and GPU acceptance tests](https://github.com/vllm-project/vllm-omni/blob/0f55c39eb07ccc349d57ae436f99f7a612a2dd16/docs/design/feature/mooncake_kv_hs_cache.md#L247-L265),
+which are not run in CI. This is source inspection only; no upstream tests or
+model runs were executed. No new adjudicated calibration cases, policy changes,
+or reviewer-accuracy claims.
+
+## Previous bounded audit, 2026-11-09 Asia/Shanghai
 
 - Frozen upstream main: [`62876f40ac77f14dccc4ab9d332e9d5110875ab9`](https://github.com/vllm-project/vllm-omni/commit/62876f40ac77f14dccc4ab9d332e9d5110875ab9).
   The [delta from the previous audited pin](https://github.com/vllm-project/vllm-omni/compare/effab8c866b1196406ef5b25e064714a82a74d42...62876f40ac77f14dccc4ab9d332e9d5110875ab9)
