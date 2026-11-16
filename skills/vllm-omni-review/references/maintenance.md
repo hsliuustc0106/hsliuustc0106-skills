@@ -55,6 +55,101 @@ reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
 ## Bounded audit, 2026-11-16 Asia/Shanghai
 
+Frozen upstream main: [`7873c0b35c54cb7211bc16075b7cdff503026d76`](https://github.com/vllm-project/vllm-omni/commit/7873c0b35c54cb7211bc16075b7cdff503026d76)
+(`[Bugfix] Reset MiniCPM-o NPU host sampler at duplex segment boundaries`, #10319).
+The [delta from the earlier same-day pin](https://github.com/vllm-project/vllm-omni/compare/0f55c39eb07ccc349d57ae436f99f7a612a2dd16...7873c0b35c54cb7211bc16075b7cdff503026d76)
+contains 9 commits and 45 files on a single comparison page (`ahead_by=9`,
+`behind_by=0`, not truncated). Only the StagePool session-affinity path below was
+audited in depth. The other eight merges — #10411, #10413, #10414, #8248,
+#10377, #10248, #10416, and #10319 — were enumerated but not reviewed.
+
+Release inventory: 33 + empty page. Latest stable remains
+[v0.32.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.32.0)
+(2026-10-28); [v0.33.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.33.0rc1)
+(2026-11-04) is a prerelease. Re-read pinned AGENTS, CONTRIBUTING, lessons, the
+canonical review skill, and review-routing at this tip; their blob identities
+are unchanged from the 9 November audit (`AGENTS.md`
+`2cdf07dd33e098d8784d1607647e3d7cd3bf96c4`, `CONTRIBUTING.md`
+`eb860dd1e8ea78ed59d0c7f983e1f9f220cbf8da`, lessons
+`cadf97b2c35fe0fa80ea41afc7f825b7f7d5a841`, canonical skill
+`96e9116e1c902e7197130d44fdfe9584ca1d4c34`, routing
+`292ab4d8021c53beaafd68d55b842e9aaa6faef1`). The Mooncake joint-cache paths
+recorded in the earlier same-day audit remain byte-identical at this tip
+(connector `848bb3b00e0497dbcd4e62001e7d8e416959aeee`, design
+`cc3b2dde6e951f7984dc28116ab1d3056e5febb2`, config fixtures
+`a80c44339d70533f2f4ff2980c69bd642d5bace3`).
+
+### New source-discovery pointer: session-to-replica placement
+
+[Merged #9821](https://github.com/vllm-project/vllm-omni/pull/9821) adds a bounded
+session → replica ledger on `StagePool` so a diffusion follow-up is routed to the
+replica that already holds that session's KV, instead of being round-robined by
+request id.
+
+Identity is read from sampling-params `extra_args`: a typed
+`ARDiffusionTickRequest` wins over legacy `session_id` / `reset` / `chunk_base`
+fields when both are present
+([`session_id_of` / reset / chunk base](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/vllm_omni/engine/stage_pool.py#L92-L156)).
+The diffusion `submit_initial` path is the producer that binds from those
+params. A [caller pin and a session binding are reconciled as one ledger](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/vllm_omni/engine/stage_pool.py#L616-L630):
+a pin that contradicts the live holder is refused, a matching pin is kept, and a
+pin on a holderless session adopts it. After submit, [whatever replica the
+request ran on becomes the holder](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/vllm_omni/engine/stage_pool.py#L1563-L1601),
+an explicit pin included. An explicit reset is executed on the current holder so
+that worker can release KV and grants; after holder loss, reset may start cold.
+
+[Lost-holder lookup](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/vllm_omni/engine/stage_pool.py#L991-L1067)
+defaults to recording the loss and returning `None` (a cold restart). Pass
+`allow_cold=False` to raise `StageUnavailableError` instead of silently dropping
+history. Stale is cleared only on `release_session`. Evicting a live binding
+costs stickiness only: the next request is served cold, not failed. Aged-out
+owner records keep retired session ids, and submit also fail-closes when a
+non-reset request continues from a non-zero chunk base with no live holder,
+independent of how many loss records the pool still remembers.
+
+This extends the 9 November caller-selected `replica_id` guidance: do not keep a
+pin ledger and a session ledger that disagree, and do not report a follow-up
+served by a replica that never held the session as a continuation.
+
+The [27 CPU `core_model` fixtures](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/tests/engine/test_stage_pool_session_affinity.py)
+cover follow-up routing, pin/holder reconciliation, stale and retired refusal,
+reset, and distributed abort/interaction routes. They are not proof of real
+multi-replica GPU or membership-race behavior; this audit ran no upstream tests
+or model jobs. No design-page change landed in #9821 itself (18 files in the
+merge commit).
+[`docs/features/independent_stage_execution.md`](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/docs/features/independent_stage_execution.md)
+is unchanged (blob `bb0265c8e67fa8b6ea71a9aae74b811276677712`) and still documents
+only caller-selected `replica_id`.
+[`docs/design/feature/realtime_ar_diffusion.md`](https://github.com/vllm-project/vllm-omni/blob/7873c0b35c54cb7211bc16075b7cdff503026d76/docs/design/feature/realtime_ar_diffusion.md#L175-L186)
+still states that an AR-Diffusion stage must have exactly one replica; do not
+treat that sentence as proof that the new StagePool ledger is absent.
+
+Anchors: StagePool blob `1acedea7c9d3401f2bb027470f59ab632e03b7ab`;
+session-affinity tests blob `1cb53f8f82186e628d4065993de52a8ecf5a88c6`;
+request-binding helper blob `39f36c26615d7f41b1ca998380d929954ba658ac`.
+This is current-main guidance. `v0.32.0` and `v0.33.0rc1` have `stage_pool.py`
+but neither defines `session_id_of` / `MAX_SESSION_BINDINGS`, and both lack
+`tests/engine/test_stage_pool_session_affinity.py` and
+`vllm_omni/experimental/ar_diffusion/request_binding.py` (HTTP 404 on those
+paths). No release or release-candidate runtime pass is asserted.
+
+### Validation and limits
+
+Personal main baseline: `89b0abfa0455da536ec286e8c2258929715f79ee`.
+All 13 open skill PRs were enumerated (13 + empty page). PR6 remains at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8`; PR17 remains at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af`. Their recorded 4- and 18-file
+scopes and heads are unchanged. Neither branch nor its human edits was changed.
+Only this supplement changes; canonical checklist, selection policy, quotas,
+review authority and routing installation remain unchanged. The offline suite
+passes 267 tests, including 37 Omni selection, corpus grounding/severity/routing
+and packaging checks. The two historical defect families/four bounded outcomes
+remain unchanged; no new calibration sample, reviewer accuracy or upstream test
+pass is claimed. No GPU, model inference, distributed runtime or live selection
+collector ran.
+
+## Previous bounded audit, 2026-11-16 Asia/Shanghai (earlier pin)
+
 The [comparison from the November 9 pin](https://github.com/vllm-project/vllm-omni/compare/62876f40ac77f14dccc4ab9d332e9d5110875ab9...0f55c39eb07ccc349d57ae436f99f7a612a2dd16)
 reports 195 new commits at the inspected main revision; the comparison file list
 is capped at 300. Only the source path below was audited in depth. The canonical
