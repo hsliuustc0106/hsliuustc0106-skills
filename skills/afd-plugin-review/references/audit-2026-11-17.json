@@ -1,0 +1,203 @@
+{
+  "repository": "vllm-project/afd-plugin",
+  "audited_at_utc": "2026-11-16T16:13:00Z",
+  "previous_audit": "e58fdec5876782b9c6a03683416611deea42af92",
+  "main": "0d6ec9e0feff45dfa30d88a1141bf86441f24ffc",
+  "coverage": "Complete metadata for 20 commits and 235 changed paths; targeted source audit for DSpark graphs, connector ownership, M2N transport and expert dependencies, E2E and ready check reporting. No upstream tests, device execution, or reviewer-accuracy measurement.",
+  "comparison": {
+    "commits": 20,
+    "changed_paths": 235,
+    "url": "https://github.com/vllm-project/afd-plugin/compare/e58fdec5876782b9c6a03683416611deea42af92...0d6ec9e0feff45dfa30d88a1141bf86441f24ffc"
+  },
+  "release": {
+    "tag": "v0.32.0rc1",
+    "commit": "652e249872bc968fc645c68ba6683182e0f69368",
+    "prerelease": true,
+    "main_commits_after_release": 36,
+    "url": "https://github.com/vllm-project/afd-plugin/releases/tag/v0.32.0rc1"
+  },
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "git_blob_sha": "12b349a20326dd72bf1fd39c0c6e8448476eb65a",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/AGENTS.md",
+      "sha256": "3903ca867e3b18d61d5b5421ccfff9b5092c36d98d078ec387c2e4d510564f43",
+      "bytes": 8920
+    },
+    {
+      "path": ".agents/skills/review-pr/SKILL.md",
+      "git_blob_sha": "c15faf1017b42950c4bf6a65c5eb38b2ca03fc00",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/.agents/skills/review-pr/SKILL.md",
+      "sha256": "1a60fec543b1cf44be1a4de6268a1197922f956bb3fc8e2985f230ba88eb877e",
+      "bytes": 17572
+    },
+    {
+      "path": ".agents/skills/review-pr/references/features/dspark-draft.md",
+      "git_blob_sha": "0042c68ff47a59f06d7544447ff8d7a14b8537bb",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/.agents/skills/review-pr/references/features/dspark-draft.md",
+      "sha256": "384c6e67bfe4870fe325b3273995ba1ab40c07be38e5851afef334f146f84960",
+      "bytes": 2418
+    },
+    {
+      "path": ".agents/skills/review-pr/references/modules/connectors.md",
+      "git_blob_sha": "3e96474528bcd2c851adbeac22193ac10b8efc9c",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/.agents/skills/review-pr/references/modules/connectors.md",
+      "sha256": "222ba9481344123fe3d11602f44d75eb1fb5b0841f7391e08e09cbb4855a7957",
+      "bytes": 3937
+    },
+    {
+      "path": ".agents/skills/review-pr/references/modules/e2e-harness.md",
+      "git_blob_sha": "eec7ee3316c8c097d4f841dad74e051c92442c06",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/.agents/skills/review-pr/references/modules/e2e-harness.md",
+      "sha256": "84cc9e1d160fb032c2135d1a0fb8270f968bf33bedf04bb090b1865ee5ceef53",
+      "bytes": 3791
+    },
+    {
+      "path": "afd_plugin/compat/npu/feature_validation.py",
+      "git_blob_sha": "1ddb9d23355c218fc7912e5959a41410bc61165b",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/compat/npu/feature_validation.py",
+      "sha256": "bafdc19fc5a47034294cffa4f92edab2b131d0f2c7217635e2e61111a5ea7124",
+      "bytes": 16441
+    },
+    {
+      "path": "afd_plugin/v1/worker/npu/dspark_speculator.py",
+      "git_blob_sha": "6f963b0507eb86080fae10e285c1daa95c62926b",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/v1/worker/npu/dspark_speculator.py",
+      "sha256": "0b181d50bb494fd2a52728b6fad18b29f3b3b7a5e6210e413228ca61232c0ee2",
+      "bytes": 11661
+    },
+    {
+      "path": "afd_plugin/connectors/npu/camp2p/connector.py",
+      "git_blob_sha": "40d93aa357898724515ced2caf8bde0095fdf969",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/camp2p/connector.py",
+      "sha256": "af84ddc4e032a48300935fc851c97db1516e1f3b0e7dfebec6fc78d8142d4dcd",
+      "bytes": 51531
+    },
+    {
+      "path": "afd_plugin/connectors/npu/camp2p/external_routing.py",
+      "git_blob_sha": "f519e8a003b11eeb6491881ef68b3010f025db63",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/camp2p/external_routing.py",
+      "sha256": "4b49b5936061b20e6e6bf2d037c8a9c1ec162d43f7c17d7242f2e124236dd641",
+      "bytes": 5856
+    },
+    {
+      "path": "afd_plugin/connectors/npu/async_cam.py",
+      "git_blob_sha": "76b3e3c2fa3b04b965b5a66d76484583b0d22982",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/async_cam.py",
+      "sha256": "51b9a6ebad9b2255e7c0975807fd4fb1504ca3156dc7807a0245ec0db66cb7a5",
+      "bytes": 28391
+    },
+    {
+      "path": "afd_plugin/connectors/npu/async_cam_runtime/async_cam_dbo.py",
+      "git_blob_sha": "9385482479771b337de05dfb21b3f645a47eb30f",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/async_cam_runtime/async_cam_dbo.py",
+      "sha256": "041d508f67064fa5289e7cfcd88739d541cff2dc7d8e0f842f18a87afdef3cbe",
+      "bytes": 1624
+    },
+    {
+      "path": "afd_plugin/connectors/npu/async_cam_runtime/async_cam_layout.py",
+      "git_blob_sha": "6711c89897080cd11167828ba14eba494abc68fb",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/async_cam_runtime/async_cam_layout.py",
+      "sha256": "b1199f857b2d9ade028710d62c6893c31282cc22f18c7fec3518a85066874eba",
+      "bytes": 7196
+    },
+    {
+      "path": "afd_plugin/connectors/npu/async_cam_runtime/async_cam_layered.py",
+      "git_blob_sha": "0c6682d316f3d74b76ca0d2b7ba881481b79d89f",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/npu/async_cam_runtime/async_cam_layered.py",
+      "sha256": "66f13e9df8b14a6b80bc3742dd9ae94b01523e48c67af8422bb7e27f1c9c9be6",
+      "bytes": 4611
+    },
+    {
+      "path": "afd_plugin/connectors/gpu/deepep_m2n/connector.py",
+      "git_blob_sha": "ad772a3b2b3bdf8ae40c75a8be710d4ac4873678",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/gpu/deepep_m2n/connector.py",
+      "sha256": "ec6d77e93d772497501d7d9070cd5165bc7bad634411111486afeb180e864c01",
+      "bytes": 71443
+    },
+    {
+      "path": "afd_plugin/connectors/gpu/deepep_m2n/deepgemm.py",
+      "git_blob_sha": "69abee5791d9a899cc8d330bf302f2a81bcfd380",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/connectors/gpu/deepep_m2n/deepgemm.py",
+      "sha256": "d58a30319a2067d981653479e270c32de9c2a48e6743c32b2790f77d1dbc4875",
+      "bytes": 4086
+    },
+    {
+      "path": "afd_plugin/compat/vllm.py",
+      "git_blob_sha": "67850f9df5864d7623e6db61c62a92164b1d2bbf",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/afd_plugin/compat/vllm.py",
+      "sha256": "8aa3c756dbd8df00cfe2c008098643dff1ccd6b671f2661b4b9258fb7f1582fb",
+      "bytes": 2394
+    },
+    {
+      "path": "docs/installation.md",
+      "git_blob_sha": "1668aa69cc85ff19aba55fcbe183154957c297c5",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/docs/installation.md",
+      "sha256": "0855a355f36ad4a59aee732dafff983123cdfdd34ad43ffb2da0c388cf9843d7",
+      "bytes": 2888
+    },
+    {
+      "path": "pyproject.toml",
+      "git_blob_sha": "2687ed5de3db5f36278227bf83dbc07dcb80f27a",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/pyproject.toml",
+      "sha256": "e5aaf9ab205c12c5584d186f3c3a6d181ef1980823ad22a9934705f9ebba08d0",
+      "bytes": 5536
+    },
+    {
+      "path": "tests/gpu/test_deepep_m2n_gpu.py",
+      "git_blob_sha": "faf4d3cb07c5df2e291a37df60a7f22b0cf5463b",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/gpu/test_deepep_m2n_gpu.py",
+      "sha256": "6bc7fd993af907b9277898db6146aa0708dbedf074751e049674e3e090370ac1",
+      "bytes": 14569
+    },
+    {
+      "path": "tests/gpu/deepep_m2n_harness.py",
+      "git_blob_sha": "1f5c17ed5000232b317fc99b302d1280710c9168",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/gpu/deepep_m2n_harness.py",
+      "sha256": "eeed1987c29f1d42dc915cd7117eda04c298eacc477f84b77c235ed07c5d07ba",
+      "bytes": 62137
+    },
+    {
+      "path": "tests/gpu/README.md",
+      "git_blob_sha": "5ab53d18071b4a3c837cd3993e4637e02eb1d1ce",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/gpu/README.md",
+      "sha256": "13dd3a447f55e72fedc422863ec6616af7acbe55a5ad74c42f44c28612afc2b5",
+      "bytes": 5933
+    },
+    {
+      "path": "tests/e2e/README.md",
+      "git_blob_sha": "8f556453cf3e5629c9a4c719aa7c2e1b0a1a8ce8",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/e2e/README.md",
+      "sha256": "261ae3af61604776bbc1a6bb5d3ff96e539ed2f1ac3e58f565fea44b5f9f7f49",
+      "bytes": 38639
+    },
+    {
+      "path": "tests/e2e/runner.py",
+      "git_blob_sha": "27ca007d1748c5d03028884c1485eb9c2c0718f4",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/e2e/runner.py",
+      "sha256": "00181af2348e7611a0e0a9fdabe0a1ab8880c36b7f2f50075d34f42f09acf56b",
+      "bytes": 47504
+    },
+    {
+      "path": "tests/e2e/models/deepseek_v2_lite/cases.py",
+      "git_blob_sha": "ca1f97e7ec84e4456c674f4f4c0d1a04111f9562",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/e2e/models/deepseek_v2_lite/cases.py",
+      "sha256": "ddfbd904741480bec68f87606a669e933124a37d8287c3e94bd06c8fe43fc9e9",
+      "bytes": 8169
+    },
+    {
+      "path": "tests/e2e/models/deepseek_v4_flash/test_dspark_graph_checker.py",
+      "git_blob_sha": "f3e51d50969febb9fe11ed0adbedab3024cc688b",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/tests/e2e/models/deepseek_v4_flash/test_dspark_graph_checker.py",
+      "sha256": "faa6978c311fa056c7bd7746adfb2bcfff2876d810e82e300ecd31db52ed3063",
+      "bytes": 8025
+    },
+    {
+      "path": ".buildkite/cuda/test-ready.yml",
+      "git_blob_sha": "10429b50649c0ddcae3859bd1c2dc948a23fe537",
+      "url": "https://github.com/vllm-project/afd-plugin/blob/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc/.buildkite/cuda/test-ready.yml",
+      "sha256": "b1bc9b73edbdbc2e73ba2e4b7df55731d285b22e50f6ce3673b4bfa6083f518d",
+      "bytes": 2113
+    }
+  ]
+}

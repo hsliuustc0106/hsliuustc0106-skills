@@ -49,7 +49,76 @@ reconcile uncertain delivery before retrying. Serialize concurrent selection and
 delivery or reconcile reservations against the same ledger; this snapshot adapter
 does not enforce a cross-process cap. No delivery ledger belongs here.
 
-## Current bounded refresh, 2026-11-10 Asia/Shanghai
+## Current bounded refresh, 2026-11-17 Asia/Shanghai
+
+[Source identities](audit-2026-11-17.json) pin the source examined for this
+refresh. Upstream main is
+[`0d6ec9e0`](https://github.com/vllm-project/afd-plugin/commit/0d6ec9e0feff45dfa30d88a1141bf86441f24ffc).
+The comparison since November 10 covers 20 commits and 235 changed paths;
+the checks below are targeted, not a line-by-line audit. The latest published
+entry is still the
+[v0.32.0rc1 prerelease](https://github.com/vllm-project/afd-plugin/releases/tag/v0.32.0rc1)
+at `652e249872bc968fc645c68ba6683182e0f69368`, 36 commits behind main.
+The GitHub Latest endpoint excludes prereleases and returns v0.26.0rc1,
+which is marked non-prerelease there. The changes below are main-only.
+Read the reviewed head before using any of these rules.
+
+- **NPU DSpark:** [#545](https://github.com/vllm-project/afd-plugin/pull/545)
+  adds native target and draft Attention graphs;
+  [#589](https://github.com/vllm-project/afd-plugin/pull/589) moves draft
+  capture/replay scopes into the speculator. The current validation requires
+  DeepSeek-V4, matching target/draft TP and FFN TP=1. Draft-only graph mode
+  (eager target) is rejected on Attention, and the draft query row budget
+  still applies. The FFN graph remains independently configured as `FULL`;
+  do not apply the Attention graph mode to it. Do not carry the earlier
+  RC's eager-only rule onto main.
+  Route to graph and DSpark overlays; inspect native capture ownership,
+  request/phase restoration and real replay evidence, not just launch flags.
+- **NPU connector ownership:** [#503](https://github.com/vllm-project/afd-plugin/pull/503)
+  moves synchronous CAM into `afd_plugin/connectors/npu/camp2p/` with an
+  external-routing path: synchronous DeepSeek-V4, TP1, BF16, no DBO,
+  and matching Attention-side routing settings on both roles. Inspect the
+  producer/consumer metadata contract in that package instead of the former
+  `camp2p.py` named by the canonical connector reference.
+  [#587](https://github.com/vllm-project/afd-plugin/pull/587) and
+  [#590](https://github.com/vllm-project/afd-plugin/pull/590) place Async CAM
+  executors and Attention DBO/layout helpers under
+  `connectors/npu/async_cam_runtime/`. Follow the frozen head's connector
+  ownership before applying the worker or graph overlays.
+- **GPU DeepEP M2N:** [#564](https://github.com/vllm-project/afd-plugin/pull/564)
+  tears down lane groups before the owned transport group, not the
+  borrowed bootstrap group;
+  [#586](https://github.com/vllm-project/afd-plugin/pull/586) loads the DeepGEMM
+  bundled in vLLM CUDA instead of depending on a standalone install; the
+  runtime vLLM pin remains 0.32.0. Route dependency checks through installation,
+  CI image and the expert backend actually used. After
+  [#585](https://github.com/vllm-project/afd-plugin/pull/585), use the current
+  23-case suite (two without a GPU, up to four SM90+ GPUs) and check that
+  post-result hangs fail teardown. It runs outside CI; do not count the
+  ready routing helper as multi-rank transport evidence.
+- **E2E and CI:** [#561](https://github.com/vllm-project/afd-plugin/pull/561)
+  moves 48 single-deployment cases to model-owned definitions while retaining
+  pytest node IDs and the 15 unique CI-selected IDs. The 10 GPU multi-pod
+  cases use their model's Case and the local executor; this is not evidence
+  of a cross-pod run. A debug `run.json` or a host stub run does not satisfy
+  device acceptance; confirm `acceptance_passed=true`, intended case/ranks,
+  and phase evidence on the Case path. Check cleanup separately for the
+  dedicated Async CAM Pull MegaMoE path, where pytest can pass despite an
+  exit or cleanup failure after workload and execution checks. [#594](https://github.com/vllm-project/afd-plugin/pull/594)
+  lets the two ready steps publish distinct GitHub checks through the
+  Buildkite GitHub App: `ready / Simple · Unit Test` and
+  `ready / E2E · DeepSeekV2-Lite · GPU V2`. The aggregate status is unchanged.
+  Verify both actual steps at the built commit; missing step checks are not
+  proof that the build did not start.
+
+The label catalog includes exact `high priority` and `ready`; none of the
+15 open upstream PRs carried `high priority` at inspection. All 13 open
+personal-skills PR file lists, including #6 and #17, were checked for overlap;
+none touch this AFD supplement. No upstream code, test or accelerator was
+executed. The existing offline selection and adjudication fixtures cover
+two historical defect/fixed pairs, not current reviewer accuracy.
+
+## Historical bounded refresh, 2026-11-10 Asia/Shanghai
 
 This section supersedes older dated runtime assumptions below; it does not
 replace the canonical review skill. [Source identities](audit-2026-11-10.json)
