@@ -1,4 +1,43 @@
-## Current bounded refresh, 2026-11-11 Asia/Shanghai
+## Current bounded refresh, 2026-11-18 Asia/Shanghai
+
+The [source manifest](audit-2026-11-18.json) inventories seven commits and 126
+changed paths since the November 11 pin. This is a **partial source audit** of
+[Router main](https://github.com/vllm-project/router/commit/92030879116e9fc94dfd5163e6c54b9c5ecb331b),
+23 commits after the latest published release
+[v0.1.17](https://github.com/vllm-project/router/releases/tag/v0.1.17).
+The contracts below are main-only as of this audit.
+
+- [#500](https://github.com/vllm-project/router/pull/500): sequential P/D can
+  admit Prefill without charging Decode, then select and charge Decode after
+  Prefill using refreshed candidates. Inspect both the policy capability and
+  the connector handshake. Mooncake and eligible static NIXL can defer;
+  discovered NIXL, cached NIXL push and MoRI-IO keep the admission pick.
+  If Prefill reveals that KV targets the provisional Decode, commitment must
+  stay there. Check cancellation/abandonment separately from successful
+  commitment. The new gRPC re-selection tests use mock workers, not a live
+  KV transfer.
+- [#441](https://github.com/vllm-project/router/pull/441) adds Python integration
+  tests around KV events, credit, namespace isolation and P/D selection.
+  The harness drives Router and mock workers; a passing mock test is not
+  validation of live model behavior or hardware KV migration.
+- [#589](https://github.com/vllm-project/router/pull/589) configures separate
+  nightly Rust unit/integration LCOV artifacts. The script preserves failed
+  test exit status and excludes test/benchmark files from the report.
+  Do not sum the two percentages or treat a configured artifact as a run
+  result or a coverage threshold. Ready Rust tests are not coverage jobs.
+- [#550](https://github.com/vllm-project/router/pull/550) requires the MoRIIO
+  RDMA smoke to return one nonempty text choice, no error member, and a
+  `stop` or `length` finish reason before the smoke-only exit. Even a passing
+  response does not establish KV-transfer integrity or model accuracy.
+
+The canonical skill is still absent from main; [PR336](https://github.com/vllm-project/router/pull/336)
+remains an open draft. The 13 open personal-skills PRs' file lists did not
+overlap these Router paths; #17 touches the shared installer, which is unchanged.
+Selection, delivery checkpoints and the two historical defect families (four
+correlated outcomes) are unchanged. No new model-accuracy samples, Rust/GPU
+execution or CI performance results are claimed.
+
+## Historical bounded refresh, 2026-11-11 Asia/Shanghai
 
 This same-day tip refresh supersedes the midnight main pin below, not the
 repository-owned review checklist. The [source manifest](audit-2026-11-11.json)
