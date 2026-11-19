@@ -53,7 +53,177 @@ canonical draft's `high-priority` spelling for this personal queue only. Neither
 hyphenated labels nor `priority/major` are aliases. Do not mutate labels or broaden
 the queue to reconcile the discrepancy. Unknown current catalogs remain BLOCKED.
 
-## Current bounded audit, 2026-11-12 Asia/Shanghai
+## Current bounded audit, 2026-11-19 Asia/Shanghai
+
+This Thursday-morning refresh (~10:12 Asia/Shanghai) supersedes the November 12
+routing below and the same-day 00:08 SKILL.md pin at `d57fc26`; historical
+calibration pins remain unchanged. It is a source-contract audit, not an
+upstream PR review.
+
+- Personal main baseline: `9ca0f9384945deb0ae8d95a48a88754428a99c85`
+  (`docs(sciencediscovery-review): retire closed canonical source route`,
+  2026-11-18T16:08:20Z / 2026-11-19 00:08 Asia/Shanghai).
+  Target main: [59d05aa70a26801e2e907ca49060329028514608](https://github.com/openJiuwen-ai/sciencediscovery/commit/59d05aa70a26801e2e907ca49060329028514608)
+  (`fix(idea-tree): retry transient model 429s`, committer date
+  2026-11-18T17:36:19Z / 2026-11-19 01:36 Asia/Shanghai).
+  Local Git comparison from the November 12 audited pin
+  `807982f00da6253b41042146171554c51ecc2c3e` enumerated 174 new commits and
+  436 changed files. Comparison from the same-day 00:08 pin
+  `d57fc2693e0972b5c1040d47a4b74370eb011c3f` is one commit and 11 files, all
+  in that Idea Tree 429-retry change. Semantic inspection is limited to source
+  routing, the complete label and open-PR catalogs, release/tag ancestry,
+  Nightly job results on this tip, and the CI contracts cited below, not all
+  changed product code.
+- Canonical [PR231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
+  closed without merge at 2026-11-16 11:43 AM Asia/Shanghai
+  (`closed_at=2026-11-16T03:43:23Z`). It remains `draft=true` and
+  `merged=false` at recorded head `1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c`;
+  the head ref `codex/repository-review-skill-20261001` returns 404, though
+  the commit object is still reachable. The configured file
+  `.agents/skills/sciencediscovery-review/SKILL.md` and root `AGENTS.md` are
+  absent (HTTP 404) at the current tip. `.agents/skills` still contains only
+  `ci`, `create-github-pr`, `deploy`, `e2e-testing`, `frontend-quality`,
+  `gitcode`, and `github`, not a sciencediscovery-review replacement.
+  `skills/repository-review-source/sources.json` still lists PR231 as
+  `proposed_source`; after state verification that closed, unmerged PR is
+  historical, not a live draft-source fallback. This pass does not edit the
+  shared loader manifest. Project-specific review remains blocked until a
+  maintained entrypoint can be verified. Do not apply a sibling CI or
+  development skill as a substitute.
+- Latest stable remains [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0),
+  published October 31, peeled to `7acc1dcf62736f7e7bf06c6d51acb5114899f2de`.
+  Main has 691 unique commits and the release tag two. A newer prerelease
+  [v0.4.0-rc1](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.4.0-rc1)
+  was published 2026-11-13 5:06 PM Asia/Shanghai
+  (`published_at=2026-11-13T09:06:47Z`), built from
+  `5cac2ce590f09f97164f4528c034170dbc5d1c63` on `releases/v0.4.0.rc1`. Main
+  and the RC have diverged (100 main-only and 5 RC-only commits at this pin).
+  The product changes below are main-only evidence, not a claim about
+  released or RC behavior.
+- All 13 open personal-skills PRs were re-enumerated (`per_page=100`, page 2
+  empty). None is a sciencediscovery-review change. PR6 remains at
+  `68d7b38df04c382e9e51c9fde28428181d3bc5a8` (open, draft) and PR17 at
+  `f01a5df38f337e65d80f420e6b22e0b30a5237af` (open, not draft). Both remain
+  untouched, including shared manifest/installer changes proposed by PR17.
+- Labels were re-enumerated via GitHub REST
+  (`GET /repos/openJiuwen-ai/sciencediscovery/labels?per_page=100`): one page,
+  57 exact names, page 2 empty. Membership is unchanged from November 12,
+  including `release/0.4.0-rc1`. The catalog contains `ready`,
+  `priority/major`, `priority/unspecified`, and `agent-ready`; it does not
+  contain `high priority` or `high-priority`.
+- Open pull requests on `openJiuwen-ai/sciencediscovery` were re-enumerated at
+  the same transport (`per_page=100`): 42 open, page 2 empty. The same-day
+  00:08 SKILL.md checkpoint recorded 41 open PRs. Search and label-filtered
+  issue/PR lists found zero items labeled `high priority`, `high-priority`,
+  or exact `ready` (`incomplete_results=false`). One open PR carries
+  `priority/major` (#1216) and is not eligible. With `ready` present the
+  personal queue still requires exact `high priority` AND `ready`, so the
+  eligible set is empty before new-head or delivery checks. Do not treat
+  `priority/major`, `agent-ready`, or hyphenated spellings as aliases, and do
+  not create labels to force eligibility. No live queue was selected and no
+  review or delivery checkpoint changed.
+
+### Executable CI routing at the current pin
+
+CI blobs at this tip are identical to the 00:08 pin `d57fc26` and differ from
+the November 12 pin. Read
+[tier-policy.mjs](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.ci/tier-policy.mjs),
+[ci.yml](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.github/workflows/ci.yml)
+and [.ci/README.md](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.ci/README.md)
+together, and current [CONTRIBUTING.md](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/CONTRIBUTING.md)
+for the matching prose table. The canonical CI skill is still not a substitute
+for these executable contracts, and a job graph is not evidence that those
+jobs ran.
+
+- `windows_desktop` is now a separate route flag from `distribution`.
+  Ordinary `pr` profile: policy/L1/UT/ST plus Linux binary and Docker jobs;
+  mocked E2E, real E2E, and the Windows desktop installer are skipped. A
+  green PR gate does not prove browser E2E or a Windows installer build.
+- `merge` profile: policy/L1/UT/ST plus mocked and real E2E; Linux binary,
+  Docker, and Windows desktop jobs are skipped. Verify the merge-group SHA
+  separately.
+- `daily` and `release`: mocked and real E2E, Linux binary, Docker, and the
+  Windows desktop installer are required. Local cumulative test profiles
+  remain distinct from workflow job selection; `pnpm ci:e2e` still selects
+  the mocked slice locally.
+- Merged [#1194](https://github.com/openJiuwen-ai/sciencediscovery/pull/1194)
+  (2026-11-17 5:50 PM Asia/Shanghai) is present at this pin: the Windows
+  desktop job runs `pnpm --dir application dist --publish never`. That
+  disables implicit installer publishing; it is not a runtime desktop
+  acceptance test.
+- The documentation-only exception is retained: policy/L1 success with the
+  enumerated product jobs skipped, not executed product passes. Read actual
+  diff classification and job results; unknown diffs retain the full profile.
+- [Real E2E workflow](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.github/workflows/real-e2e.yml)
+  still references `nightly-research` (blob unchanged since November 12).
+  Workflow source does not verify live environment configuration or credentials.
+- L5 is no longer the same case set as L4. Read the frozen plan and
+  [real matrix](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.ci/real-matrix.mjs)
+  (blob unchanged since November 12),
+  [Biomni gate](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.ci/biomni-gate.mjs)
+  and [configuration](https://github.com/openJiuwen-ai/sciencediscovery/blob/59d05aa70a26801e2e907ca49060329028514608/.ci/biomni-gate.json).
+  Current configuration still declares 45 active versus 50 historical cases
+  and a temporary, unapproved baseline (`baseline` remains null). Versus the
+  November 12 pin, `total_tokens` and `tool_rounds` ratio thresholds were
+  removed, and `sum_e2e_ms` warning/block ratios are now 0.3/0.5. Those are
+  configuration facts, not measured 45-case results; do not claim an approved
+  non-regression baseline from a green or failed run. This pass ran no
+  benchmark, model or paid workflow.
+
+### Nightly on this tip
+
+The latest Nightly on the audited tip is
+[run 44415877405](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/44415877405)
+(Nightly run 99, attempt 2, event `schedule`, head `59d05aa70a26801e2e907ca49060329028514608`).
+It completed with conclusion `failure` at 2026-11-19 10:12 AM Asia/Shanghai
+(`updated_at=2026-11-19T02:12:31Z`). Of 34 jobs, Real E2E (research-6) failed
+at "Run the frozen real E2E shard" and "Summarize actual planned and executed
+cases"; Account for real cases, merge-gate, and Report the outcome also
+failed. Succeeded jobs included Stamp the build, Select CI policy, L1, UT,
+ST, Coverage, Freeze mocked and real E2E matrices, the mocked L2 shards,
+Real E2E (basic) and the other research shards, Docker image, Binary release
+(aarch64 and x86_64), and Windows desktop installer. L3 real E2E was skipped.
+The same-day 00:08 SKILL.md cited successful
+[Nov 18 Nightly 44199315530](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/44199315530)
+on `b2075e4972a5`, which is not this tip; run 98 on `d57fc26` also failed.
+Check-run annotations recorded process exit code 1 and a Node 20 deprecation
+warning, not a recovered case-level failure reason. Do not infer installed
+chat recovery, duplicate-tool prevention, or other runtime acceptance from
+installer or binary success, and do not treat a green Nightly on another SHA
+as evidence for this pin.
+
+### Validation and limits for this refresh
+
+The unchanged selector retains exact-label, pagination/error-as-unknown,
+old-PR/new-head, stale-head and cross-policy deduplication fixtures. The two
+historical defect families / four adjudicated outcomes remain bounded P2 and
+fixed-clean cases, not whole-PR approval or an accuracy estimate. LICENSE
+bytes still match main tip (SHA-256
+`c5accbbd8546e94c34aed24afe689a617627d18eed5a6c48277e48db57c23851`). No
+adjudicated-case pins changed.
+
+Validation of this Thursday-morning refresh: all 268 personal-repository
+tests passed, including 36 focused ScienceDiscovery selection/evidence/install
+tests. Frontmatter for all 24 skill entrypoints, scoped local links in this
+skill, immutable source paths and case pins, LICENSE SHA-256, installation
+routing via the plugin `./skills/` glob and `scripts/sync-project.sh` (covered
+by the existing installer tests), script syntax (`select_daily.py`,
+`replay_cases.mjs`) and `git diff --check` passed. Optional
+`replay_cases.mjs` still requires a checkout that already contains the pinned
+Git objects; it was syntax-checked here under Node 22.21.0 and not
+re-executed against a product checkout in this pass. No source-owned checklist
+was copied into the supplement.
+
+The source record is partial. No full application UT/ST/E2E, live models,
+scientific validation, Docker/binary qualification, sandbox changes or remote
+research were run by this maintenance pass. The failed upstream Nightly above
+is cited only as dated job evidence. The offline selector trusts verified
+collector flags; it does not fetch pages, prove ancestry, serialize deliveries
+or establish remote freshness. Unknown API results are blockers, never
+successful empties. Source-level adjudication does not measure reviewer
+accuracy, precision or recall.
+
+## Historical bounded audit, 2026-11-12 Asia/Shanghai
 
 This refresh supersedes the November 5 routing below; historical calibration
 pins remain unchanged. It is a source-contract audit, not an upstream PR review.
