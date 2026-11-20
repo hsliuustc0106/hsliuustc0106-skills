@@ -66,6 +66,37 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-11-21 Asia/Shanghai (released v0.2.2)
+
+[Audited main](https://github.com/InferMatrixLab/system1-omni/commit/614b0abcf3f67a11d07793e579925b1ab7aae0cb)
+and [release/v0.2.2](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.2.2)
+resolve to the same commit. Since the November 14 pin, the comparison contains
+three commits / 95 changed files: Open-Jev-9B (#196), Valen (#204), and the
+version bump (#214). This pass checked routing and evidence boundaries, not
+every changed file or worker.
+
+- [Runtime admission](https://github.com/InferMatrixLab/system1-omni/blob/614b0abcf3f67a11d07793e579925b1ab7aae0cb/src/runtime/README.md#L78-L108)
+  now has a weighted FIFO batch scheduler for the validated Open-Jev-9B path,
+  not general serving. Route packing evidence to the
+  [native recipe](https://github.com/InferMatrixLab/system1-omni/blob/614b0abcf3f67a11d07793e579925b1ab7aae0cb/recipe/open_jev/native.md#L412-L473)
+  and [executor guard](https://github.com/InferMatrixLab/system1-omni/blob/614b0abcf3f67a11d07793e579925b1ab7aae0cb/src/models/open_jev/native/src/executor.rs#L148-L171).
+  The default packed path requires the qualifying L20X profile (CUDA SM90,
+  132 SMs and cuBLASLt 130101). Distinguish serial eager fallback from actual
+  packed execution; compare packed and packing-disabled paths on the same
+  qualified device. An older or mismatched profile falling back is not a
+  packed-path pass. Pre-guard PR benchmark numbers are historical, not a
+  measurement of the release tip.
+- [Valen parity recipe](https://github.com/InferMatrixLab/system1-omni/blob/614b0abcf3f67a11d07793e579925b1ab7aae0cb/recipe/valen_decision_1_5/reference.md#L281-L350):
+  the Rust frontend routes to a separate Python reference worker. Reported
+  H200 parity is scoped to 0.8B/2B; the 4B/9B/27B pins are not qualification
+  evidence, and bounding-box requests are unsupported.
+
+The canonical skill remains authoritative for review policy. Its older
+architecture generalizations do not replace pinned current code for these
+paths. Selection policy and the four historical calibration rows (two related
+defect/fix pairs) are unchanged. No upstream tests, model downloads, GPU
+benchmark or review publication occurred.
+
 ## Bounded update, 2026-11-14 Asia/Shanghai (main-only routing)
 
 Personal skills baseline: `f728ed035ba6782ee4e4bf0903fec3a172ef9a19`.
