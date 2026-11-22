@@ -53,6 +53,53 @@ PR does not consume another distinct-PR slot. Preserve deferred heads as pending
 Selection is not delivery: update checkpoints only after confirmed delivery and
 reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
+## Bounded audit, 2026-11-23 Asia/Shanghai
+
+Frozen upstream main: [`bed8b53c013e46896e1862f8e6825eccbe6dfd23`](https://github.com/vllm-project/vllm-omni/commit/bed8b53c013e46896e1862f8e6825eccbe6dfd23).
+The [comparison from the last audited pin](https://github.com/vllm-project/vllm-omni/compare/7873c0b35c54cb7211bc16075b7cdff503026d76...bed8b53c013e46896e1862f8e6825eccbe6dfd23)
+reports 258 new commits; the file list is capped at 300. This pass inspected
+two transport/measurement paths, not the entire delta. The canonical skill
+and its routing reference retain their prior blobs. Latest stable is
+[v0.34.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.34.0), resolving to `06a28821a7f72bdb436c3df656b10f67fded0846`.
+The [tag and frozen main have diverged](https://github.com/vllm-project/vllm-omni/compare/06a28821a7f72bdb436c3df656b10f67fded0846...bed8b53c013e46896e1862f8e6825eccbe6dfd23)
+(main 171 ahead, 81 behind); confirm behavior on the target branch.
+
+### MRv2 audio transport: verify the receiver and EOF
+
+[Merged #10721](https://github.com/vllm-project/vllm-omni/pull/10721) is already represented in v0.34.0:
+the runtime and focused worker test files have identical blobs on the tag
+and frozen main. Review follow-ups through the OmniConnector and affected
+model contracts, not just a sender-side processor. The
+[pinned Nemotron worker test](https://github.com/vllm-project/vllm-omni/blob/06a28821a7f72bdb436c3df656b10f67fded0846/tests/worker_v2/test_omni_data_plane.py#L1060-L1117)
+uses the real processor, shared-memory connector, receiver and Talker timeline
+reader. It covers both draining and buffering, including EOF with no new model
+output: a cumulative token prefix is replaced, not appended a second time.
+Its shim replaces the sender write loop and it loads no model weights;
+this is not an end-to-end serving, inter-node or GPU acceptance result.
+
+### MiniCPM-o duplex latency: verify where the clock starts
+
+The [tagged E2E assertion](https://github.com/vllm-project/vllm-omni/blob/06a28821a7f72bdb436c3df656b10f67fded0846/tests/e2e/online_serving/test_minicpmo_4_5_duplex.py#L47-L62)
+checks nonnegative latency, which alone would also accept the client-clock
+fallback. [Merged #7872](https://github.com/vllm-project/vllm-omni/pull/7872) strengthens the
+[main E2E assertion](https://github.com/vllm-project/vllm-omni/blob/bed8b53c013e46896e1862f8e6825eccbe6dfd23/tests/e2e/online_serving/test_minicpmo_4_5_duplex.py#L47-L65)
+to require the server-request-start source and accepted native-append origin
+for both TTFT and TTFP. This is a main-only test-strength change relative
+to the inspected tag, not evidence that the tag lacks server timing. For
+latency follow-ups, verify the actual server event producer and the client
+fallback separately, and require a run that selects the assertions.
+
+### Validation and limits
+
+Personal main baseline: `2785f48cbd67210148a0b07af28e6f7514ff24f0`.
+The 13 open personal-repo PRs were listed; PR6 and PR17 have the same heads
+and 4-/18-file scopes as the earlier audit. Neither edits this supplement.
+This change leaves the canonical checklist, installed routing, portable
+selector, quotas, and historical calibration set unchanged (two defect
+families, four paired outcomes). No reviewer-accuracy claim, upstream test
+execution, or live GPU verification is made. The local offline suite ran
+268 tests.
+
 ## Bounded audit, 2026-11-16 Asia/Shanghai
 
 Frozen upstream main: [`7873c0b35c54cb7211bc16075b7cdff503026d76`](https://github.com/vllm-project/vllm-omni/commit/7873c0b35c54cb7211bc16075b7cdff503026d76)
