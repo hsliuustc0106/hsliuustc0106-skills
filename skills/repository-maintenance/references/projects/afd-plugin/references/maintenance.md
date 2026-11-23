@@ -15,7 +15,58 @@ Serialize concurrent selection and delivery or reconcile reservations against
 the same ledger; the adapter does not enforce a cross-process cap. See
 `tests/test_afd_daily.py` for executable normalized snapshots.
 
-## Current bounded refresh, 2026-11-17 Asia/Shanghai
+## Current bounded refresh, 2026-11-24 Asia/Shanghai
+
+[Source identities](audit-2026-11-24.json) pin the inspected main at
+[`6f2677c9`](https://github.com/vllm-project/afd-plugin/commit/6f2677c9fd81cebc89d525592d2766f6d52e36c2).
+The comparison from November 17 lists 14 commits and 144 changed paths;
+only the contracts below were audited. Main is 50 commits ahead of the
+[v0.32.0rc1 prerelease](https://github.com/vllm-project/afd-plugin/releases/tag/v0.32.0rc1).
+Do not apply these main-only updates to the RC or to an older review head.
+
+- **DeepEP M2N transport and MoE runners.**
+  [#588](https://github.com/vllm-project/afd-plugin/pull/588) switches to
+  the afdEP-comm role API; the current extra pins v1.2.1, while the vLLM
+  extra is still 0.32.0. At the reviewed head, trace role and rank agreement
+  before collective warmup and teardown: a placement mismatch must be seen
+  by all ranks, and lane teardown must precede destroying the owned transport
+  group. [#593](https://github.com/vllm-project/afd-plugin/pull/593) and
+  [#619](https://github.com/vllm-project/afd-plugin/pull/619) route CUDA model
+  construction through the connector-selected runner in the native MoE
+  factory. P2P does not run top-k locally; M2N does, and keeps local shared
+  experts separate from remote routed experts. In graph/DBO changes, check
+  microbatch output ownership and that TP padding rows remain unrouted.
+  Use the canonical connector and model-integration overlays, not the former
+  copied M2N MoE wrapper as the source of truth.
+- **M2N device evidence is now wired into Weekly, not Ready.**
+  [#592](https://github.com/vllm-project/afd-plugin/pull/592) configures two
+  four-H100 Weekly jobs: the M2N device suite selected with `-m gpu` and
+  Qwen3 MoE M2N 2A2F graph+DBO. The first job does not count the CPU-only
+  cases. Confirm both named jobs on the built commit, the selected tests and
+  skips, the exact dependency/image, and cleanup after results. A green
+  Ready gate, a rendered Weekly config, or a pre-role-API run does not prove
+  these two jobs passed on the current implementation.
+- **Ascend DSpark acceptance.**
+  [#606](https://github.com/vllm-project/afd-plugin/pull/606) adds opt-in A3
+  eager, graph and PD-graph cases. Graph compares with a qualified
+  matching eager run including service-runtime identity; PD graph compares
+  against DSpark-off with matched topology. The instrumented graph runs must
+  agree with the corresponding target. Require the case-level
+  `acceptance_passed` and nonempty real-request replay evidence, not just
+  capture or host checker success.
+- **Standalone FFN service with PD.**
+  [#578](https://github.com/vllm-project/afd-plugin/pull/578) adds standalone
+  Qwen3 FFN service scenarios. [#622](https://github.com/vllm-project/afd-plugin/pull/622)
+  moves consecutive per-rank status ports past HTTP role ports and around
+  AFD/torchrun rendezvous ports, removing the harness's blanket prefill-role
+  rejection. Port-plan checks are not evidence that a real PD+FFN deployment
+  served requests with clean teardown.
+
+No upstream tests or accelerators were run for this refresh. The existing
+network-free selector and historical corpus remain unchanged: two adjudicated
+defect/fix pairs, four correlated outcomes, not reviewer-accuracy measurements.
+
+## Historical bounded refresh, 2026-11-17 Asia/Shanghai
 
 [Source identities](audit-2026-11-17.json) pin the source examined for this
 refresh. Upstream main is
