@@ -6,9 +6,6 @@ alwaysApply: false
 
 # vLLM Omni Cookbook Guidance
 
-- Optimize examples for clarity, reproducibility, and user success.
-- Prefer complete runnable examples over abstract snippets.
-- Include environment assumptions, model names, expected inputs, and expected outputs when useful.
-- Keep tutorial code simple unless complexity teaches something important.
-- Test commands and examples when practical, or clearly mark unverified assumptions.
+Use `skills/repository-maintenance/references/development.md#tutorials-and-examples`
+for shared tutorial guidance.
 

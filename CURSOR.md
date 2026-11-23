@@ -14,14 +14,16 @@ Use the sync script so the selected rules and their loader dependencies are
 installed together:
 
 ```bash
-~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools cursor --target /path/to/project
+~/.agentic-coding-rules/scripts/sync-project.sh --project generic --tools cursor --target /path/to/project
 ```
 
 For Codex or Claude Code, select `--tools codex` or `--tools claude`. Existing
 conflicting files are preserved unless explicitly replaced with `--force`.
-Project review entrypoints load their canonical repository source through an
-authorized checkout or the connected GitHub API; review policy is not copied
-into this personal repository.
+Use a named project profile when its additional project-specific rules are
+needed. The generic profile provides the shared repository-maintenance SOP.
+The shared SOP loads the matching project overlay and canonical repository source
+through an authorized checkout or the connected GitHub API; project-owned review
+policy is not copied into this personal repository.
 
 ## Keep files in sync
 

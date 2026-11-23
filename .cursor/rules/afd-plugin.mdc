@@ -6,10 +6,8 @@ alwaysApply: false
 
 # AFD Plugin Guidance
 
-- Preserve plugin boundaries and avoid leaking project-specific logic into generic utilities.
-- Be conservative with public APIs, config names, integration behavior, and compatibility assumptions.
-- Check host framework expectations before changing lifecycle, registration, loading, or config behavior.
-- Prefer focused tests that exercise plugin integration points.
+Use `skills/repository-maintenance/references/development.md#plugin-and-host-integration`
+for shared plugin guidance.
 
-
-For PR or branch reviews, load `skills/afd-plugin-review/SKILL.md` and follow its canonical repository-owned source.
+For PR or branch reviews, use `skills/repository-maintenance/SKILL.md` and its
+`afd-plugin` review overlay and canonical source.

@@ -6,8 +6,8 @@ alwaysApply: false
 
 # vLLM Omni Guidance
 
-- Treat multimodal behavior as first-class: text, image, audio, video, processors, modality routing, and model-specific input paths may interact.
-- Preserve compatibility with upstream vLLM conventions where possible.
-- Inspect both text-only and multimodal paths before changing model loading, processing, or input plumbing.
-- Be careful around processor config, prompt formatting, batching, caching, streaming, and examples.
-- For code review, use `skills/vllm-omni-review/SKILL.md` to load the canonical repository-owned source and record its revision.
+Use `skills/repository-maintenance/references/development.md#multimodal-paths`
+for shared multimodal guidance. Preserve compatibility with upstream vLLM
+conventions where possible.
+
+- For code review, use `skills/repository-maintenance/SKILL.md` and its `vllm-omni` review overlay and canonical source; record its revision.

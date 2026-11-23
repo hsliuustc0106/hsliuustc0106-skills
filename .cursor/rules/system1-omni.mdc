@@ -4,4 +4,4 @@ globs:
 alwaysApply: true
 ---
 
-For system1-omni pull request or branch reviews, load `skills/system1-omni-review/SKILL.md`, then follow its canonical-source loader. Record the actual source revision and report missing or unmerged sources explicitly.
+For system1-omni pull request or branch reviews, use `skills/repository-maintenance/SKILL.md` and its `system1-omni` review overlay and canonical source. Record the actual source revision and report missing or unmerged sources explicitly.

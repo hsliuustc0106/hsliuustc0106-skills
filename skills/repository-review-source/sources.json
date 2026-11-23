@@ -20,7 +20,9 @@
     "proposed_source": "https://github.com/openJiuwen-ai/sciencediscovery/pull/231"
   },
   "system1-omni": {
-    "repository": "ThinkFlowLab/system1-omni",
+    "repository": "InferMatrixLab/system1-omni",
+    "repository_id": 1386454853,
+    "repository_aliases": ["ThinkFlowLab/system1-omni"],
     "path": ".agents/skills/system1-omni-review/SKILL.md"
   },
   "nanodot": {

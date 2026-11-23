@@ -10,6 +10,8 @@
 - `CLAUDE.md`：Claude Code 的轻量入口，导入 `AGENTS.md`。
 - `.cursor/rules/*.mdc`：Cursor 项目规则。
 - `skills/*/SKILL.md`：通用和项目级技能。
+- [skills/repository-maintenance/](skills/repository-maintenance/SKILL.md)：适用于
+  单个或多个仓库的统一维护 SOP，并遵循各项目自己的规则。
 - [skills/formal-slides/](skills/formal-slides/SKILL.md)：基于十种内置版式创建
   可编辑演示文稿；现有模板不适用时，调整或新增同风格模板。
 - `skills/ncu-report-skill/`：Nsight Compute CUDA 性能分析、瓶颈诊断与优化报告，
@@ -21,28 +23,60 @@
 - `skills/vllm-omni-deck/`：包含七种可复用示例版式、带品牌白色画布的八页
   空白 PowerPoint 模板、原始图表完整复用规则和类型化生成器的 vLLM-Omni
   演示技能。
-- `skills/nanodot-review/`：加载 nanodot 仓库维护的规范审查技能。
-- `skills/vllm-omni-review/`：加载 vLLM Omni 仓库维护的规范审查技能。
+- [项目审查覆盖内容](skills/repository-maintenance/references/project-reviews.md)：
+  统一 SOP 使用的项目特有审查上下文和每日队列规则。
 
 ## 安装
 
 ```bash
 git clone <this-repo-url> ~/.agentic-coding-rules
 cd /path/to/project
-~/.agentic-coding-rules/scripts/sync-project.sh --project vllm-omni --tools codex,claude,cursor
+~/.agentic-coding-rules/scripts/sync-project.sh --project generic --tools codex,claude,cursor
 ```
 
-支持的项目：
+`generic` 安装通用编码和维护技能、项目审查覆盖内容、每日队列选择器及规范
+审查来源加载器；项目资源不再是独立技能。若已启用插件，也可以直接调用 `$repository-maintenance`，
+无需逐仓库同步。例如，请它检查指定仓库的开放 PR 和 CI，并分别报告后续行动。
+一般健康检查覆盖文档体系、CI 分层、贡献及审查合并流程、issue/PR 标签体系；
+针对性任务只检查相关部分，不假设各项目使用相同的 CI 等级或标签规则。
+
+也可以将通用技能安装一次，供当前用户的所有 Codex 仓库使用：
+
+```bash
+~/.agentic-coding-rules/scripts/sync-project.sh --project generic --tools skills --target ~/.codex
+```
+
+如使用其他 Codex home，请调整目标路径。更新已安装文件时，确认需要替换后
+重新运行并加上 `--force`；本地 `review-sources.local.json` 不会被复制或覆盖。
+
+项目专用配置仍然可用：
 
 - `vllm`
 - `vllm-omni`
 - `afd-plugin`
 - `vllm-omni-cookbook`
 - `nanodot`
+- `router`
+- `sciencediscovery`
+- `system1-omni`
+
+统一 SOP 会遵循项目自己的审查规则；已配置的个人每日简报使用通用技能内对应的
+项目覆盖内容和选择规则。必要的规范审查来源不可用时，会报告阻塞，不会静默
+替换成通用审查。
+
+通用开发指导和显式启用的标签/新提交队列规则集中维护；项目开发和审查技能
+入口已整合。项目覆盖内容和 Cursor 规则保留项目特有的来源、证据和策略差异。
+新增仓库先使用通用 SOP，只有确实需要项目特有指导时才新增覆盖内容。
+对已证实、可能重复的问题，优先考虑合适的代码约束、静态检查或回归测试，
+并验证错误与正确情况；根据改动选择运行时证据，区分实际结果和配置中的检查。
 
 同步脚本会安装规则引用的 skills、参考文档和辅助脚本。复制前检查全部目标
 文件：内容相同则跳过，内容冲突则停止。请手动合并已有项目规则；仅在确定
 要替换时使用 `--force`。符号链接和目录不会被替换。
+同步不会自动删除之前安装的旧技能，请检查本地改动后再移除过期副本。
+使用旧项目审查技能名或选择器路径的命令和自动化，需要改用
+`$repository-maintenance` 及已安装技能中对应的
+`references/projects/<alias>/scripts/select_daily.py`；本次迁移不会修改自动化。
 
 辅助脚本回归测试无需联网，需要 Python 3.8+、Bash 和 `jq`：
 
@@ -64,7 +98,7 @@ MIT
 
 ## 仓库维护的审查技能
 
-项目仓库是审查规则的唯一维护源；个人技能仅保留可发现的加载入口。
+项目仓库是审查规则的唯一维护源；统一技能加载对应的项目覆盖内容与规范来源。
 加载器校验本地仓库 origin，并返回实际读取的提交、内容哈希和工作树状态。
 它不会联网更新源码；源码是否最新须另行核实。尚未合并的技能需显式使用其
 草稿分支，缺失时明确报告，不以通用审查代替。

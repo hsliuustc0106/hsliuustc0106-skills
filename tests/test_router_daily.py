@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills/router-review"
+SKILL = ROOT / "skills/repository-maintenance/references/projects/router"
 SPEC = importlib.util.spec_from_file_location("router_daily", SKILL / "scripts/select_daily.py")
 daily = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(daily)
@@ -225,7 +225,7 @@ class PackagingTests(unittest.TestCase):
                        "--tools", "codex,claude,cursor", "--target", target]
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
-            installed = Path(target) / "skills/router-review"
+            installed = Path(target) / "skills/repository-maintenance/references/projects/router"
             for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json", "references/audit-2026-11-04.json", "references/audit-2026-11-11.json", "references/audit-2026-11-18.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
