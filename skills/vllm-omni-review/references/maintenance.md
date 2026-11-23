@@ -55,6 +55,108 @@ reconcile uncertain delivery before retrying. No delivery ledger belongs here.
 
 ## Bounded audit, 2026-11-23 Asia/Shanghai
 
+Frozen upstream main: [`d43ccfac95effb191457895f74e93237ad7a66c6`](https://github.com/vllm-project/vllm-omni/commit/d43ccfac95effb191457895f74e93237ad7a66c6)
+(`[Doc] Update vLLM-Omni WeChat QR code`, #10974).
+The [delta from the earlier same-day pin](https://github.com/vllm-project/vllm-omni/compare/bed8b53c013e46896e1862f8e6825eccbe6dfd23...d43ccfac95effb191457895f74e93237ad7a66c6)
+contains 11 commits and 63 files on a single comparison page (`ahead_by=11`,
+`behind_by=0`, not truncated). Only the startup replica-exit path below was
+audited in depth. The other ten merges — #9408, #10962, #10961, #10940, #10963,
+#10966, #10965, #10968, #10969, and #10974 — were enumerated but not reviewed.
+
+Release inventory: 35 + empty page. Latest stable is
+[v0.34.0](https://github.com/vllm-project/vllm-omni/releases/tag/v0.34.0),
+resolving to `06a28821a7f72bdb436c3df656b10f67fded0846` (published 2026-11-22).
+[v0.34.0rc1](https://github.com/vllm-project/vllm-omni/releases/tag/v0.34.0rc1)
+is a prerelease. The tag and main remain diverged; confirm behavior on the
+target branch. Re-read the canonical review skill and its routing reference at
+this tip; they are byte-identical to the earlier same-day pin, as are the
+Nemotron worker transport test and MiniCPM-o duplex E2E assertion cited there.
+
+### New source-discovery pointer: startup replica-exit isolation
+
+[Merged #10881](https://github.com/vllm-project/vllm-omni/pull/10881) lets a
+single-API-server startup continue when a colocated EngineCore exits before
+READY, as long as every required stage still has a replica that can become
+ready. Failed slots stay empty so routing keeps the original replica IDs.
+If a required stage loses every replica, startup still fails and initialized
+clients are cleaned up.
+
+The handshake converts a readiness `RuntimeError` to
+`LocalReplicaStartupError` only when `num_api_servers == 1` and a process
+sentinel already confirms the local EngineCore exited
+([`launch_stage_replica`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/stage_engine_startup.py#L1134-L1265)).
+Timeouts without an exit, and the multi-API-server path, still propagate the
+original error. [`StageRuntime`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/stage_runtime.py#L1094-L1136)
+logs that isolated exit and continues while `replicas_left` for the stage is
+positive; the last replica, or any other exception, fails the group. Assembly
+keeps the sparse client list and errors if a stage's slots are all `None`
+([`_assemble_stage_pools`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/stage_runtime.py#L1495-L1518)).
+[`StagePool`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/stage_pool.py#L270-L284)
+reserves those empty indexes so later routing and metrics do not compact IDs.
+
+Because a replica that died during handshake never emits a runtime death
+notification, [`DuplexOrchestrator`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/duplex_orchestrator.py#L126-L130)
+marks each empty slot unavailable when placement is built.
+[`live_group_count`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/duplex/replica_placement.py#L152-L184)
+counts complete groups still owned by this frontend, including groups that are
+only at capacity. Opening a session when that count is zero returns
+`replica_unavailable`, with `retryable` set only when `frontend_count > 1`.
+If a complete group is still live but capacity is exhausted, the error remains
+retryable `resource_exhausted`. The session manager
+[checks availability before a global-capacity rejection](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/vllm_omni/engine/duplex/session/manager.py#L628-L634),
+so a vanished topology wins over a temporary full slot. The
+[stage-config note](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/docs/configuration/stage_configs.md#L166-L170)
+says a frontend that starts with no complete group skips duplex warmup and
+logs a warning; ordinary chat can still be served. With multiple frontends,
+the client can reconnect to try another frontend.
+
+This extends the 9 November caller-selected `replica_id` and 16 November
+session-affinity guidance: do not collapse empty startup slots, and do not
+treat `resource_exhausted` and `replica_unavailable` as the same admission
+failure.
+
+The focused CPU tests cover sibling preservation
+([`test_startup_crash_preserves_sibling_and_replica_id`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/tests/engine/test_async_omni_engine_stage_init.py#L1600-L1652)),
+implicit versus explicit crossed failures
+([`test_crossed_startup_failures_respect_session_groups`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/tests/engine/test_duplex_orchestrator.py#L1415-L1438)),
+per-frontend `live_group_count`
+([`test_live_group_count_tracks_only_this_frontends_replicas`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/tests/engine/duplex/test_replica_placement.py#L147-L171)),
+and unavailable-group precedence while a last session is closing
+([`test_no_live_group_takes_precedence_while_last_session_is_closing`](https://github.com/vllm-project/vllm-omni/blob/d43ccfac95effb191457895f74e93237ad7a66c6/tests/engine/duplex/test_session_manager.py#L2043-L2061)).
+They stub EngineCore and load no model weights. This audit ran no upstream
+tests, GPU jobs, or the author's MiniCPM-o 4.5 startup-fault runs. Implicit
+grouping may still form a crossed surviving pair; an explicit aligned-pair
+topology fails closed and keeps the configured groups. `route()` can also
+raise `replica_unavailable` if a reserved group later becomes unavailable;
+this audit does not treat that mid-session path as additional admission
+evidence.
+
+This is current-main guidance. The v0.34.0 tag's
+`stage_engine_startup.py` does not define `LocalReplicaStartupError`,
+`protocol/duplex/errors.py` does not mention `replica_unavailable`, and
+`test_startup_crash_preserves_sibling_and_replica_id` is absent from the
+tagged `test_async_omni_engine_stage_init.py`. No release or
+release-candidate runtime pass is asserted. The later #10969 commit also
+edits `vllm_omni/metrics/definitions.py`; on this tip the admission-reject
+reason set still includes `replica_unavailable`.
+
+### Validation and limits
+
+Personal main baseline: `81c0bd72ca2db9da28788ae423f359bfce545328`.
+All 13 open skill PRs were enumerated (13 + empty page). PR6 remains at
+`68d7b38df04c382e9e51c9fde28428181d3bc5a8`; PR17 remains at
+`f01a5df38f337e65d80f420e6b22e0b30a5237af`. Their recorded 4- and 18-file
+scopes and heads are unchanged. Neither branch nor its human edits was changed.
+Only this supplement changes; canonical checklist, selection policy, quotas,
+review authority and routing installation remain unchanged. The offline suite
+passes 268 tests, including 37 Omni selection, corpus grounding/severity/routing
+and packaging checks. The two historical defect families/four bounded outcomes
+remain unchanged; no new calibration sample, reviewer accuracy or upstream test
+pass is claimed. No GPU, model inference, distributed runtime or live selection
+collector ran.
+
+## Previous bounded audit, 2026-11-23 Asia/Shanghai (earlier pin)
+
 Frozen upstream main: [`bed8b53c013e46896e1862f8e6825eccbe6dfd23`](https://github.com/vllm-project/vllm-omni/commit/bed8b53c013e46896e1862f8e6825eccbe6dfd23).
 The [comparison from the last audited pin](https://github.com/vllm-project/vllm-omni/compare/7873c0b35c54cb7211bc16075b7cdff503026d76...bed8b53c013e46896e1862f8e6825eccbe6dfd23)
 reports 258 new commits; the file list is capped at 300. This pass inspected
