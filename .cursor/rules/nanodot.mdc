@@ -6,6 +6,7 @@ alwaysApply: false
 
 # nanodot Review
 
-For nanodot pull request or branch reviews, use `skills/nanodot-review/SKILL.md`.
+For nanodot pull request or branch reviews, use `skills/repository-maintenance/SKILL.md`
+and its `nanodot` review overlay and canonical source.
 Resolve the exact target SHA before applying runtime guidance: main and an open
 integration branch can have different implementations and test coverage.

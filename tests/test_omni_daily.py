@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills/vllm-omni-review"
+SKILL = ROOT / "skills/repository-maintenance/references/projects/vllm-omni"
 SPEC = importlib.util.spec_from_file_location("omni_daily", SKILL / "scripts/select_daily.py")
 daily = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(daily)
@@ -234,11 +234,11 @@ class SelectionTests(unittest.TestCase):
 class PackagingTests(unittest.TestCase):
     def test_resources_install_without_source_policy_copy(self):
         with tempfile.TemporaryDirectory() as target:
-            command = ["bash", str(ROOT / "scripts/sync-project.sh"), "--project", "vllm-omni",
+            command = ["bash", str(ROOT / "scripts/sync-project.sh"), "--project", "generic",
                        "--tools", "codex,claude,cursor", "--target", target]
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
-            installed = Path(target) / "skills/vllm-omni-review"
+            installed = Path(target) / "skills/repository-maintenance/references/projects/vllm-omni"
             for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills/afd-plugin-review"
+SKILL = ROOT / "skills/repository-maintenance/references/projects/afd-plugin"
 SPEC = importlib.util.spec_from_file_location("afd_daily", SKILL / "scripts/select_daily.py")
 daily = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(daily)
@@ -225,7 +225,7 @@ class PackagingTests(unittest.TestCase):
                        "--tools", "codex,claude,cursor", "--target", target]
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
-            installed = Path(target) / "skills/afd-plugin-review"
+            installed = Path(target) / "skills/repository-maintenance/references/projects/afd-plugin"
             for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-20.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],

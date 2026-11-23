@@ -13,15 +13,26 @@ def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
 
 
+def valid_repository(name):
+    return (isinstance(name, str)
+            and re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", name) is not None
+            and all(part not in {".", ".."} for part in name.split("/")))
+
+
 def load(alias, checkout, config=None):
     manifest = Path(config) if config else Path(__file__).resolve().parents[1] / "sources.json"
     item = json.loads(manifest.read_text())[alias]
     repo = item["repository"]
-    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+    aliases = item.get("repository_aliases", [])
+    if (not valid_repository(repo) or not isinstance(aliases, list)
+            or any(not valid_repository(name) for name in aliases)):
         raise ValueError("Invalid repository identity")
     root = Path(git(Path(checkout).resolve(), "rev-parse", "--show-toplevel")).resolve()
     origin = git(root, "remote", "get-url", "origin")
-    allowed = {"https://github.com/" + repo, "https://github.com/" + repo + ".git", "git@github.com:" + repo, "git@github.com:" + repo + ".git", "ssh://git@github.com/" + repo, "ssh://git@github.com/" + repo + ".git"}
+    allowed = {url for name in [repo, *aliases] for url in
+               ("https://github.com/" + name, "https://github.com/" + name + ".git",
+                "git@github.com:" + name, "git@github.com:" + name + ".git",
+                "ssh://git@github.com/" + name, "ssh://git@github.com/" + name + ".git")}
     if origin not in allowed:
         raise ValueError("Checkout origin does not match configured repository")
     relative = Path(item["path"])
@@ -38,7 +49,13 @@ def load(alias, checkout, config=None):
     except subprocess.CalledProcessError:
         head_data = None
     dirty = head_data != data or bool(git(root, "status", "--porcelain", "--ignored=matching", "--untracked-files=all", "--", relative.parent.as_posix()))
-    return {"alias": alias, "repository": repo, "commit": git(root, "rev-parse", "HEAD"), "path": relative.as_posix(), "source_directory": str(source.parent), "sha256": hashlib.sha256(data).hexdigest(), "source_tracked_at_head": head_data is not None, "working_tree_dirty": dirty, "skill": text}
+    return {
+        "alias": alias, "repository": repo, "checkout_origin": origin,
+        "commit": git(root, "rev-parse", "HEAD"), "path": relative.as_posix(),
+        "source_directory": str(source.parent), "sha256": hashlib.sha256(data).hexdigest(),
+        "source_tracked_at_head": head_data is not None,
+        "working_tree_dirty": dirty, "skill": text,
+    }
 
 
 def main():

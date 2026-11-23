@@ -5,7 +5,7 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("system1_daily", ROOT / "skills/system1-omni-review/scripts/select_daily.py")
+SPEC = importlib.util.spec_from_file_location("system1_daily", ROOT / "skills/repository-maintenance/references/projects/system1-omni/scripts/select_daily.py")
 daily = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(daily)
 
@@ -227,20 +227,43 @@ class System1OverrideTests(unittest.TestCase):
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_generic_install_preserves_system1_override(self):
+        import json
+        import subprocess
+        import tempfile
+        with tempfile.TemporaryDirectory() as target:
+            subprocess.run(['bash', str(ROOT / 'scripts/sync-project.sh'), '--project', 'generic',
+                            '--tools', 'skills', '--target', target], check=True, capture_output=True)
+            selector = Path(target) / 'skills/repository-maintenance/references/projects/system1-omni/scripts/select_daily.py'
+            value = snapshot()
+            value['policy'] = daily.SYSTEM1_POLICY
+            del value['labels_complete']; del value['label_pages']
+            candidate = value['pr_pages'][0][0]
+            candidate['draft'] = candidate['current']['draft'] = False
+            del candidate['labels']; del candidate['current']['labels']
+            for draft in (False, True):
+                candidate['draft'] = candidate['current']['draft'] = draft
+                result = subprocess.run(['python3', str(selector)], input=json.dumps(value),
+                                        text=True, capture_output=True, check=True)
+                self.assertEqual(json.loads(result.stdout), daily.select(value))
+                self.assertEqual(bool(json.loads(result.stdout)['selected']), not draft)
+
     def test_canonical_source_routes_to_merged_main(self):
         import json
         sources = json.loads((ROOT / 'skills/repository-review-source/sources.json').read_text())
         self.assertEqual(sources['system1-omni'], {
-            'repository': 'ThinkFlowLab/system1-omni',
+            'repository': 'InferMatrixLab/system1-omni',
+            'repository_id': 1386454853,
+            'repository_aliases': ['ThinkFlowLab/system1-omni'],
             'path': '.agents/skills/system1-omni-review/SKILL.md',
         })
-        skill = (ROOT / 'skills/system1-omni-review/SKILL.md').read_text()
-        self.assertTrue(skill.startswith('---\nname: system1-omni-review\ndescription: '))
-        self.assertIn('/blob/main/.agents/skills/system1-omni-review/SKILL.md', skill)
+        overlay = (ROOT / 'skills/repository-maintenance/references/projects/system1-omni/review.md').read_text()
+        self.assertTrue(overlay.startswith('# system1-omni review\n'))
+        self.assertIn('/blob/main/.agents/skills/system1-omni-review/SKILL.md', overlay)
 
     def test_clean_cases_have_fixed_side_adjudication(self):
         import json
-        cases = json.loads((ROOT / 'skills/system1-omni-review/references/adjudicated-cases.json').read_text())
+        cases = json.loads((ROOT / 'skills/repository-maintenance/references/projects/system1-omni/references/adjudicated-cases.json').read_text())
         for case in cases:
             if case['status'] == 'clean-for-this-finding':
                 self.assertEqual(case['evidence'],
@@ -249,7 +272,7 @@ class EvidenceTests(unittest.TestCase):
     def test_pinned_grounding_severity_and_component_routing(self):
         import json
         import re
-        cases = json.loads((ROOT / 'skills/system1-omni-review/references/adjudicated-cases.json').read_text())
+        cases = json.loads((ROOT / 'skills/repository-maintenance/references/projects/system1-omni/references/adjudicated-cases.json').read_text())
         self.assertEqual(len(cases), 4)
         self.assertEqual(sum(c['status'] == 'defect' for c in cases), 2)
         for case in cases:
@@ -270,7 +293,7 @@ class EvidenceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as target:
             subprocess.run(['bash', str(ROOT / 'scripts/sync-project.sh'), '--project', 'system1-omni',
                             '--tools', 'codex,claude,cursor', '--target', target], check=True, capture_output=True)
-            skill = Path(target) / 'skills/system1-omni-review'
+            skill = Path(target) / 'skills/repository-maintenance/references/projects/system1-omni'
             self.assertTrue((skill / 'scripts/select_daily.py').is_file())
             self.assertTrue((skill / 'references/adjudicated-cases.json').is_file())
             for md in skill.rglob('*.md'):

@@ -4,4 +4,4 @@ globs:
 alwaysApply: true
 ---
 
-For router pull request or branch reviews, load `skills/router-review/SKILL.md`, then follow its canonical-source loader. Record the actual source revision and report missing or unmerged sources explicitly.
+For router pull request or branch reviews, use `skills/repository-maintenance/SKILL.md` and its `router` review overlay and canonical source. Record the actual source revision and report missing or unmerged sources explicitly.

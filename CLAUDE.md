@@ -6,5 +6,5 @@
 
 - Treat `AGENTS.md` as the shared source of truth for agent behavior.
 - Keep this file small so Codex, Claude Code, and Cursor stay aligned.
-- Use the matching project skill under `skills/` for repository-specific work.
-- For vLLM Omni reviews, use `skills/vllm-omni-review/SKILL.md` to load the canonical repository-owned source and record its revision.
+- Use the shared maintenance skill and relevant project-owned instructions.
+- For reviews, follow `skills/repository-maintenance/SKILL.md` and its project-specific source routing.

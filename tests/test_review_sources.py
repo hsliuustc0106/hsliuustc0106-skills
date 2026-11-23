@@ -71,6 +71,35 @@ class SourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             loader.load('local', self.root, config)
 
+    def test_renamed_repository_accepts_recorded_origins_only(self):
+        source = self.root / '.agents/skills/system1-omni-review/SKILL.md'
+        source.parent.mkdir(parents=True)
+        source.write_text('---\nname: system1-omni-review\ndescription: Test fixture.\n---\nCanonical fixture\n')
+        self.git('add', '.')
+        self.git('commit', '-qm', 'renamed repository fixture')
+        for origin in ('https://github.com/InferMatrixLab/system1-omni.git',
+                       'git@github.com:ThinkFlowLab/system1-omni.git'):
+            with self.subTest(origin=origin):
+                self.git('remote', 'set-url', 'origin', origin)
+                result = loader.load('system1-omni', self.root)
+                self.assertEqual(result['repository'], 'InferMatrixLab/system1-omni')
+                self.assertEqual(result['checkout_origin'], origin)
+                self.assertEqual(result['skill'], source.read_text())
+                self.assertEqual(result['commit'], self.git('rev-parse', 'HEAD'))
+        self.git('remote', 'set-url', 'origin', 'https://github.com/other/system1-omni.git')
+        with self.assertRaises(ValueError):
+            loader.load('system1-omni', self.root)
+
+    def test_invalid_repository_alias_is_rejected(self):
+        config = Path(self.temp.name) / 'local.json'
+        config.write_text(json.dumps({'local': {
+            'repository': 'ThinkFlowLab/nanodot',
+            'repository_aliases': ['../outside'],
+            'path': '.agents/skills/nanodot-review/SKILL.md',
+        }}))
+        with self.assertRaises(ValueError):
+            loader.load('local', self.root, config)
+
     def test_ignored_untracked_skill_is_not_attributed_to_head(self):
         self.git('rm', '--cached', str(self.file.relative_to(self.root)))
         (self.root / '.gitignore').write_text('.agents/\n')
@@ -105,8 +134,8 @@ class SourceTests(unittest.TestCase):
         }})
         paths = (
             'skills/repository-review-source/review-sources.local.json',
-            'skills/router-review/references/review-sources.local.json',
-            'skills/vllm-omni-guidelines/review-sources.local.json',
+            'skills/repository-maintenance/references/projects/router/references/review-sources.local.json',
+            'skills/repository-maintenance/review-sources.local.json',
         )
         for relative in paths:
             (source / relative).write_text(mapping)
@@ -150,26 +179,48 @@ class SourceTests(unittest.TestCase):
             target = Path(self.temp.name) / ('cursor-' + project)
             subprocess.run(['bash', str(ROOT / 'scripts/sync-project.sh'), '--project', project, '--tools', 'cursor', '--target', str(target)], check=True, capture_output=True)
             rule = (target / '.cursor/rules' / (project + '.mdc')).read_text()
-            self.assertIn('skills/' + project + '-review/SKILL.md', rule)
-            self.assertTrue((target / 'skills' / (project + '-review') / 'SKILL.md').is_file())
+            self.assertIn('skills/repository-maintenance/SKILL.md', rule)
+            self.assertTrue((target / 'skills/repository-maintenance/references/projects' / project / 'review.md').is_file())
 
     def test_discovery_and_install_all_tools(self):
         manifest = json.loads((ROOT / '.claude-plugin/plugin.json').read_text())
         discovered = {p.parent.name for folder in manifest['skills'] for p in (ROOT / folder).glob('*/SKILL.md')}
+        retired = {'vllm-guidelines', 'vllm-omni-guidelines',
+                   'afd-plugin-guidelines', 'vllm-omni-cookbook-guidelines'}
         aliases = json.loads((SOURCE / 'sources.json').read_text())
+        retired.update(alias + '-review' for alias in aliases)
+        retired.add('personal-skills-review')
+        self.assertFalse(retired & discovered)
+        index = (ROOT / 'skills/repository-maintenance/references/project-reviews.md').read_text()
         for alias in aliases:
-            self.assertIn(alias + '-review', discovered)
+            self.assertTrue((ROOT / 'skills/repository-maintenance/references/projects' / alias / 'review.md').is_file())
+            self.assertIn('(projects/' + alias + '/review.md)', index)
         for tool in ('codex', 'claude', 'cursor'):
             target = Path(self.temp.name) / tool
             cmd = ['bash', str(ROOT / 'scripts/sync-project.sh'), '--project', 'router', '--tools', tool, '--target', str(target)]
             subprocess.run(cmd, check=True, capture_output=True)
             subprocess.run(cmd, check=True, capture_output=True)
+            self.assertFalse(any((target / 'skills' / name).exists() for name in retired))
             installed = target / 'skills/repository-review-source/scripts/load_source.py'
             result = subprocess.run(['python3', str(installed), 'nanodot', '--checkout', str(self.root)], check=True, capture_output=True, text=True)
             self.assertEqual(json.loads(result.stdout)['skill'], self.file.read_text())
-            (target / 'skills/router-review/SKILL.md').write_text('existing change')
+            overlay = target / 'skills/repository-maintenance/references/projects/router/review.md'
+            overlay.write_text('existing change')
             self.assertNotEqual(subprocess.run(cmd, capture_output=True).returncode, 0)
-            self.assertEqual((target / 'skills/router-review/SKILL.md').read_text(), 'existing change')
+            self.assertEqual(overlay.read_text(), 'existing change')
+
+    def test_generic_profile_loads_mapped_canonical_source(self):
+        target = Path(self.temp.name) / 'generic'
+        subprocess.run(['bash', str(ROOT / 'scripts/sync-project.sh'), '--project', 'generic',
+                        '--tools', 'codex,claude,cursor', '--target', str(target)],
+                       check=True, capture_output=True)
+        installed = target / 'skills/repository-review-source/scripts/load_source.py'
+        result = subprocess.run(['python3', str(installed), 'nanodot', '--checkout', str(self.root)],
+                                check=True, capture_output=True, text=True)
+        loaded = json.loads(result.stdout)
+        self.assertEqual(loaded['skill'], self.file.read_text())
+        self.assertEqual(loaded['commit'], self.git('rev-parse', 'HEAD'))
+        self.assertEqual(loaded['sha256'], hashlib.sha256(self.file.read_bytes()).hexdigest())
 
 
 if __name__ == '__main__':

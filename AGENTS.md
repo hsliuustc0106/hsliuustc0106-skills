@@ -61,19 +61,13 @@ Let the repository teach you how to move.
 
 ## Project Skills
 
-Use the matching skill when working in these repositories:
+For maintenance across repositories, use `skills/repository-maintenance/SKILL.md`.
+For plugin, inference, multimodal, or tutorial changes, read the relevant section
+of `skills/repository-maintenance/references/development.md` alongside applicable
+project-owned instructions.
 
-- `vllm`: `skills/vllm-guidelines/SKILL.md`
-- `vllm-omni`: `skills/vllm-omni-guidelines/SKILL.md`
-- nanodot reviews: `skills/nanodot-review/SKILL.md`
-- vLLM Omni reviews: `skills/vllm-omni-review/SKILL.md`
-- `afd-plugin`: `skills/afd-plugin-guidelines/SKILL.md`
-- `vllm-omni-cookbook`: `skills/vllm-omni-cookbook-guidelines/SKILL.md`
-
-Project review skills are thin loaders. The canonical source lives in each project repository; follow `skills/repository-review-source/SKILL.md` and record the source revision actually loaded.
-
-- AFD reviews: `skills/afd-plugin-review/SKILL.md`
-- Router reviews: `skills/router-review/SKILL.md`
-- ScienceDiscovery reviews: `skills/sciencediscovery-review/SKILL.md`
-- System1 Omni reviews: `skills/system1-omni-review/SKILL.md`
-- This repository: `skills/personal-skills-review/SKILL.md`
+For reviews, use `skills/repository-maintenance/SKILL.md` and its matching
+project review overlay. Canonical review sources live in their project
+repositories; follow `skills/repository-review-source/SKILL.md` and record the
+source revision actually loaded. For this repository, use
+`skills/repository-maintenance/references/projects/personal-skills/review.md`.

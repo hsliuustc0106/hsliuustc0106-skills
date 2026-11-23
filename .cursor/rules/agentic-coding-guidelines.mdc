@@ -21,4 +21,6 @@ alwaysApply: true
 - Never revert user or maintainer changes unless explicitly asked.
 - Run focused tests or explain why they were not run.
 - Summarize changed files and verification clearly.
+- For repository reviews and maintenance, follow `skills/repository-maintenance/SKILL.md` alongside applicable project instructions.
+- For plugin, inference, multimodal, or tutorial changes, read the relevant section of `skills/repository-maintenance/references/development.md`.
 
