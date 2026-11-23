@@ -172,8 +172,12 @@ for index in "${!FILES[@]}"; do
   file="${FILES[$index]}"
   source="${SOURCES[$index]}"
   destination="$TARGET/$file"
-  if [ -L "$destination" ] || [ -d "$destination" ]; then
-    echo "Refusing to replace a symlink or directory: $destination" >&2
+  if [ ! -f "$ROOT/$source" ] || [ ! -r "$ROOT/$source" ]; then
+    echo "Missing or unreadable install source: $ROOT/$source" >&2
+    exit 1
+  fi
+  if [ -L "$destination" ] || { [ -e "$destination" ] && [ ! -f "$destination" ]; }; then
+    echo "Refusing to replace a symlink or non-regular file: $destination" >&2
     exit 1
   fi
   if [ -e "$destination" ] && ! cmp -s "$ROOT/$source" "$destination" && [ "$FORCE" = false ]; then

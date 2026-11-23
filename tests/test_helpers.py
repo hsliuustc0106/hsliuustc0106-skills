@@ -95,6 +95,36 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual((target / "CLAUDE.md").read_bytes(),
                          (ROOT / "templates/generic/CLAUDE.md").read_bytes())
 
+    def test_missing_generic_template_aborts_before_installation(self):
+        source = self.root / "source"
+        target = self.root / "target"
+        (source / "scripts").mkdir(parents=True)
+        shutil.copy2(ROOT / "scripts/sync-project.sh", source / "scripts")
+        shutil.copytree(ROOT / "templates", source / "templates")
+        (source / "templates/generic/CLAUDE.md").unlink()
+        (source / "skills").mkdir()
+        for skill in ("agentic-coding-guidelines", "repository-maintenance", "repository-review-source"):
+            shutil.copytree(ROOT / "skills" / skill, source / "skills" / skill)
+        result = self.run_script(source / "scripts/sync-project.sh",
+                                 "--project", "generic", "--tools", "claude",
+                                 "--target", str(target))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(target.exists(), "missing template caused a partial install")
+        self.assertIn("Missing or unreadable install source", result.stderr)
+
+    def test_force_rejects_fifo_destination_before_installation(self):
+        target = self.root / "target"
+        target.mkdir()
+        os.mkfifo(target / "CLAUDE.md")
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/sync-project.sh"), "--project", "generic",
+             "--tools", "claude", "--force", "--target", str(target)],
+            env=self.env, text=True, capture_output=True, timeout=3, check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Refusing to replace", result.stderr)
+        self.assertFalse((target / "AGENTS.md").exists())
+
     def test_missing_required_skill_aborts_before_installation(self):
         for missing in ("directory", "entrypoint", "skill-symlink", "entrypoint-symlink"):
             with self.subTest(missing=missing):
