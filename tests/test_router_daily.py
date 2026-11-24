@@ -226,7 +226,7 @@ class PackagingTests(unittest.TestCase):
             subprocess.run(command, check=True, capture_output=True)
             subprocess.run(command, check=True, capture_output=True)
             installed = Path(target) / "skills/repository-maintenance/references/projects/router"
-            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json", "references/audit-2026-11-04.json", "references/audit-2026-11-11.json", "references/audit-2026-11-18.json"):
+            for relative in ("scripts/select_daily.py", "references/maintenance.md", "references/adjudicated-cases.json", "references/audit-2026-10-21.json", "references/audit-2026-10-28.json", "references/audit-2026-11-04.json", "references/audit-2026-11-11.json", "references/audit-2026-11-18.json", "references/audit-2026-11-25.json"):
                 self.assertEqual((installed / relative).read_bytes(), (SKILL / relative).read_bytes())
             result = subprocess.run(["python3", str(installed / "scripts/select_daily.py")],
                                     input=json.dumps(snapshot()), text=True, capture_output=True)
@@ -343,6 +343,27 @@ class EvidenceTests(unittest.TestCase):
             self.assertRegex(source["git_blob_sha"], r"^[0-9a-f]{40}$")
             self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
             self.assertGreater(source["bytes"], 0)
+
+    def test_november_25_audit_separates_merged_source_and_draft(self):
+        prior = json.loads((SKILL / "references/audit-2026-11-18.json").read_text())
+        data = json.loads((SKILL / "references/audit-2026-11-25.json").read_text())
+        self.assertEqual(data["previous_audit"], prior["main"])
+        self.assertEqual(data["release"]["commit"], prior["release"]["commit"])
+        self.assertEqual(len({item["sha"] for item in data["commits"]}), 13)
+        self.assertEqual(data["commits"][0]["sha"], data["main"])
+        self.assertEqual(len(set(data["changed_paths"])), 162)
+        self.assertIn("Partial source audit", data["coverage"])
+        canonical = data["canonical"]
+        self.assertTrue(canonical["draft"])
+        self.assertFalse(canonical["on_main"])
+        self.assertFalse(data["selection_policy_changed"])
+        self.assertFalse(data["live_review_checkpoint_advanced"])
+        self.assertEqual(data["sample_size"]["new_adjudicated_outcomes"], 0)
+        for source in data["sources"]:
+            path = source["path"]
+            ref = canonical["head"] if path == canonical["path"] else data["main"]
+            self.assertEqual(source["commit"], ref)
+            self.assertEqual(source["url"], f"https://github.com/{daily.REPOSITORY}/blob/{ref}/{path}")
 
     def test_november_audit_pins_new_pd_completion_and_ci_sources(self):
         data = json.loads((SKILL / "references/audit-2026-11-04.json").read_text())

@@ -1,4 +1,61 @@
-## Current bounded refresh, 2026-11-18 Asia/Shanghai
+## Current bounded refresh, 2026-11-25 Asia/Shanghai
+
+The [source manifest](audit-2026-11-25.json) inventories 13 commits and 162
+changed paths since the November 18 pin, with 12 exact-byte main source pins
+and one separate draft skill pin. This is a **partial source audit** of
+[Router main](https://github.com/vllm-project/router/commit/159dcfcfcd717765d48b2ad24267f2a073d2501b),
+36 commits after the latest published release
+[v0.1.17](https://github.com/vllm-project/router/releases/tag/v0.1.17).
+The contracts below are main-only at this pin.
+
+- [#493](https://github.com/vllm-project/router/pull/493) supports both
+  full-attention and hybrid event-backed layouts. Check the engine's verified
+  group layout, full-width `sha256_cbor` hashes and input preparation on the
+  specific worker. HTTP scoring needs worker rendering or supported simple
+  Completion tokenization; without preparation the request can still route by
+  load without rewriting the body. Hybrid P/D needs mode-specific pairing and
+  should not be inferred to support Program scheduling.
+  [Source and setup limits](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/load_balancing/kv_aware.md).
+- [#531](https://github.com/vllm-project/router/pull/531) makes recovery state
+  source-scoped. Test that a gap, stale lease, or replacement cannot leak
+  credit from the old source. After replay budget exhaustion, a fresh live
+  connection is not itself strict-recovery proof: the strict path requires a
+  valid worker-local clear before it resumes. Do not infer a general snapshot
+  protocol or hardware recovery qualification from this code.
+  [Strict live re-entry](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/kv_index/source/events/event_stream.rs#L127-L173).
+- [#460](https://github.com/vllm-project/router/pull/460) makes exact input
+  facts the default where prepared counts clear Engine settlement probation;
+  unsupported, unverified, revoked or absent facts fall back to estimates.
+  Exact means the forwarded input IDs, not output length, engine residency or
+  an encoding-cache hit. Separately, [#546](https://github.com/vllm-project/router/pull/546)
+  can apply a mature return-time TTL on regular HTTP; explicit request TTL
+  wins, immature prediction uses the existing fitted TTL, output-length
+  prediction stays observational, and P/D accepts only off or shadow. Keep
+  optional `retention_value` repair separate when attributing perf results.
+  [Program contracts](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/program_scheduling/program-scheduling.md).
+- [#563](https://github.com/vllm-project/router/pull/563) extends gRPC P/D
+  Completion to client-supplied token IDs. Check both legs and the Completion
+  response shape; do not infer text-prompt support from those mock-worker
+  tests. [#596](https://github.com/vllm-project/router/pull/596) excludes an
+  abort finish from first-output notification; test generated output separately
+  from prompt accounting, abort and terminal settlement.
+  [P/D test source](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/tests/rust/grpc_pd_routing.rs#L152-L198).
+- [#593](https://github.com/vllm-project/router/pull/593) can skip Buildkite
+  builds/tests for verified docs-only PR and merge-queue diffs. Scheduled,
+  explicit nightly, ordinary branch pushes and unresolved comparisons take
+  the full pipeline. A deliberate skip is not L1 or a successful runtime
+  result. [Bootstrap guard](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/.buildkite/scripts/skip_docs.py).
+
+The canonical skill and root `AGENTS.md` remain absent from main;
+[PR336](https://github.com/vllm-project/router/pull/336) is still an open draft,
+pinned separately. None of the 13 open personal-skills proposals, including
+#6 and #17, overlaps these Router reference and test paths. The selector and
+delivery checkpoint are unchanged. The existing corpus remains two historical
+defect families and four correlated outcomes, not independent accuracy samples.
+No new adjudications, Rust/runtime runs, hardware acceptance, or performance
+results are claimed.
+
+## Historical bounded refresh, 2026-11-18 Asia/Shanghai
 
 The [source manifest](audit-2026-11-18.json) inventories seven commits and 126
 changed paths since the November 11 pin. This is a **partial source audit** of
