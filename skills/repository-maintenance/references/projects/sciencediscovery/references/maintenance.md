@@ -17,7 +17,86 @@ Serialize concurrent selection and delivery or reconcile reservations against
 the same ledger; the adapter does not enforce a cross-process cap. See
 `tests/test_sciencediscovery_daily.py` for executable normalized snapshots.
 
-## Current bounded audit, 2026-11-19 Asia/Shanghai
+## Current bounded audit, 2026-11-26 Asia/Shanghai
+
+This source-contract audit supersedes the November 19 routing below. The
+historical case pins and personal exact-label queue are unchanged.
+
+- Skills main before this change: `5d3ee8e1243d14f543ba0e734f2fa4f1cac6740c`.
+  [ScienceDiscovery main](https://github.com/openJiuwen-ai/sciencediscovery/commit/645dc7ba3dde868bf7dcdc6f674e937d42284d3a):
+  `645dc7ba3dde868bf7dcdc6f674e937d42284d3a`, 391 commits ahead and 617
+  changed paths since `59d05aa70a26801e2e907ca49060329028514608`. This is
+  a complete path inventory and a partial semantic audit of CI and review
+  routing, not a review of every product change.
+- Root AGENTS.md and the configured canonical review entrypoint are still
+  absent at this pin. [Source PR 231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
+  remains closed without merge. Do not revive it or use a CI/development
+  skill as the project review checklist. Source-contract maintenance and
+  an offline queue check do not unblock a product PR review.
+- Stable [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0)
+  peels to `7acc1dcf62736f7e7bf06c6d51acb5114899f2de` (2 release-only,
+  1,082 main-only commits); prerelease [v0.4.0-rc1](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.4.0-rc1)
+  peels to `5cac2ce590f09f97164f4528c034170dbc5d1c63` (5 release-only,
+  491 main-only). Neither bare nor prefixed 0.4.0 GA tag was present at
+  this audit. Main-only checks below do not qualify either released pin.
+- Public API catalog: 60 labels and 68 open PRs; second pages empty. The
+  exact `ready` label exists, but neither `high priority` nor
+  `high-priority` exists. The one open `priority/major` item is not
+  eligible. No review, queue reservation, label, or user-facing PR action.
+- Inspected file lists for 13 open skills-repo PRs; none modifies this
+  overlay. PR 6 and PR 17 remain open at their November 19 pins, untouched.
+
+### Read CI by event, then by actual job and artifact
+
+Use the exact [policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.ci/tier-policy.mjs)
+and [workflow](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/ci.yml),
+not a static tier table:
+
+- Ordinary PRs require policy, L1, UT, ST, Linux binary and Docker; changed
+  paths can additionally select Web UI-ST/mock shards and Desktop mocked
+  specs. Changes to shared desktop harness files select all mocked desktop
+  specs. Real E2E and both installers are outside ordinary PR coverage.
+  Explicit docs-only routing is a separate exception, not a product pass.
+- Merge-group runs require full mocked web/desktop coverage and L3 real
+  E2E, with no installer jobs. [Run 45618207725](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45618207725)
+  on the exact audited commit reports the mocked desktop and the L3 real
+  desktop smoke successful, but the macOS/Windows installers and L4/L5
+  real jobs skipped. This is not installed-release or Windows recovery
+  evidence.
+- Daily and release require Linux, Docker and both desktop installers as
+  well as scheduled real coverage. The macOS packaging workflow runs an
+  ad-hoc packed-app launch with an absolute hang gate, not the performance
+  regression judge or a signed DMG install. Windows uses `dist --publish
+  never`; the explicit Verify step runs only for the package profile and
+  checks that the sole matching EXE exists and is nonempty. It does not
+  install or launch it. Match an actual runtime receipt to the installed
+  artifact and build before judging native recovery.
+- [Package](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/package.yml)
+  is a distinct on-demand profile: `linux-windows`, `macos`, or `all`
+  select their named packaging jobs and leave product test tiers inactive.
+  [Release](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/release.yml)
+  manual dispatch validates but does not publish; a matching tag push can
+  create a draft after the gate, reusing checked build artifacts. Manual
+  release gate [45586964125](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45586964125)
+  uses a different commit and was not complete at audit time. It is not
+  a GA release receipt.
+- [Nightly](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/nightly.yml)
+  dispatch runs normally; the scheduled fallback first looks for a successful
+  dispatch on the same branch since the latest 16:00 UTC boundary. A green
+  guarded fallback can skip the gate. An API error fails the guard rather
+  than proving no dispatch existed.
+- [Version policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.ci/release-version.mjs)
+  reads the application package version. In PR runs, inspect the tested
+  synthetic merge's first parent, not a potentially stale event base, and
+  verify its second parent is the event PR head.
+
+Verified 60 upstream Node CI-policy fixtures locally (docs, Nightly guard,
+release version, desktop evidence and layer routing). These are not product
+UT/ST/E2E, Windows acceptance, remote CI runs or live-model tests. The two
+historical defect families / four outcomes remain calibration only, not an
+accuracy estimate.
+
+## Historical bounded audit, 2026-11-19 Asia/Shanghai
 
 This Thursday-morning refresh (~10:12 Asia/Shanghai) supersedes the November 12
 routing below and the same-day 00:08 SKILL.md pin at `d57fc26`; historical
