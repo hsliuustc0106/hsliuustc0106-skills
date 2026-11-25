@@ -348,17 +348,28 @@ class EvidenceTests(unittest.TestCase):
         prior = json.loads((SKILL / "references/audit-2026-11-18.json").read_text())
         data = json.loads((SKILL / "references/audit-2026-11-25.json").read_text())
         self.assertEqual(data["previous_audit"], prior["main"])
+        self.assertEqual(data["same_day_previous_tip"], "159dcfcfcd717765d48b2ad24267f2a073d2501b")
+        self.assertEqual(data["main"], "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166")
+        self.assertEqual(data["commits_since_same_day_pin"], 1)
         self.assertEqual(data["release"]["commit"], prior["release"]["commit"])
-        self.assertEqual(len({item["sha"] for item in data["commits"]}), 13)
+        self.assertEqual(data["release"]["main_commits_after_release"], 37)
+        self.assertEqual(len({item["sha"] for item in data["commits"]}), 14)
+        self.assertEqual(len(data["commits"]), data["commits_since_previous_audit"])
         self.assertEqual(data["commits"][0]["sha"], data["main"])
-        self.assertEqual(len(set(data["changed_paths"])), 162)
+        self.assertEqual(len(set(data["changed_paths"])), 204)
         self.assertIn("Partial source audit", data["coverage"])
+        self.assertIn("Same-day tip refresh", data["coverage"])
         canonical = data["canonical"]
         self.assertTrue(canonical["draft"])
         self.assertFalse(canonical["on_main"])
         self.assertFalse(data["selection_policy_changed"])
         self.assertFalse(data["live_review_checkpoint_advanced"])
         self.assertEqual(data["sample_size"]["new_adjudicated_outcomes"], 0)
+        self.assertEqual(data["sample_size"]["current_main_and_draft_sources_total"], 15)
+        paths = [source["path"] for source in data["sources"]]
+        self.assertEqual(len(paths), len(set(paths)))
+        self.assertIn("tests/python/integration/test_pd_merge_routing.py", paths)
+        self.assertIn("tests/rust/grpc_policy_routing.rs", paths)
         for source in data["sources"]:
             path = source["path"]
             ref = canonical["head"] if path == canonical["path"] else data["main"]

@@ -1,10 +1,12 @@
 {
   "repository": "vllm-project/router",
   "audited_on_asia_shanghai": "2026-11-25",
-  "personal_skills_main": "8d97b0c90f1e4f55a35c494f0188280dba1437d3",
+  "personal_skills_main": "6c8c15bd4e1b19139079b0d0da5de5217f6d820e",
   "previous_audit": "92030879116e9fc94dfd5163e6c54b9c5ecb331b",
-  "main": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
-  "commits_since_previous_audit": 13,
+  "same_day_previous_tip": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+  "main": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
+  "commits_since_previous_audit": 14,
+  "commits_since_same_day_pin": 1,
   "changed_paths": [
     ".buildkite/README.md",
     ".buildkite/bootstrap-upload-steps.yml",
@@ -167,9 +169,55 @@
     "tests/rust/kv_index_sequence_lifecycle.rs",
     "tests/rust/routing_edge_cases_test.rs",
     "tests/rust/test_dp_routing.rs",
-    "tests/rust/test_pd_routing.rs"
+    "tests/rust/test_pd_routing.rs",
+    "conftest.py",
+    "tests/__init__.py",
+    "tests/python/conftest.py",
+    "tests/python/e2e/__init__.py",
+    "tests/python/e2e/conftest.py",
+    "tests/python/e2e/perf/grpc/stack_launcher.py",
+    "tests/python/e2e/perf/l1_encode/stack_launcher.py",
+    "tests/python/e2e/test_e2e_embeddings.py",
+    "tests/python/e2e/test_pd_router.py",
+    "tests/python/e2e/test_regular_router.py",
+    "tests/python/fixtures/__init__.py",
+    "tests/python/helpers/__init__.py",
+    "tests/python/helpers/bench.py",
+    "tests/python/helpers/client.py",
+    "tests/python/helpers/fixtures/__init__.py",
+    "tests/python/helpers/fixtures/bench.py",
+    "tests/python/helpers/fixtures/hardware.py",
+    "tests/python/helpers/fixtures/router.py",
+    "tests/python/helpers/fixtures/worker.py",
+    "tests/python/helpers/mock.py",
+    "tests/python/helpers/mock_worker.py",
+    "tests/python/helpers/monitor.py",
+    "tests/python/helpers/ports.py",
+    "tests/python/helpers/process.py",
+    "tests/python/helpers/router_manager.py",
+    "tests/python/helpers/vllm_worker.py",
+    "tests/python/helpers/worker_manager.py",
+    "tests/python/integration/load_balancing/test_cache_aware.py",
+    "tests/python/integration/load_balancing/test_power_of_two.py",
+    "tests/python/integration/load_balancing/test_random.py",
+    "tests/python/integration/load_balancing/test_round_robin.py",
+    "tests/python/integration/test_api_auth.py",
+    "tests/python/integration/test_circuit_breaker.py",
+    "tests/python/integration/test_fault_tolerance.py",
+    "tests/python/integration/test_payload_size.py",
+    "tests/python/integration/test_pd_merge_routing.py",
+    "tests/python/integration/test_rate_limiting.py",
+    "tests/python/integration/test_retries.py",
+    "tests/python/integration/test_service_discovery_shim.py",
+    "tests/python/integration/test_wasm_middleware.py",
+    "tests/python/integration/test_worker_management.py",
+    "tests/python/unit/test_mark.py"
   ],
   "commits": [
+    {
+      "sha": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
+      "subject": "[Test] Cover scheduling policies under the PD aggregation deployment (#536)"
+    },
     {
       "sha": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
       "subject": "feat(program-scheduling): activate workflow return-time TTL (#546)"
@@ -228,7 +276,7 @@
     "commit": "3451e66a8ba5416d3e3e8eb3d9ee604211cde042",
     "published_at": "2026-11-04T02:25:30Z",
     "url": "https://github.com/vllm-project/router/releases/tag/v0.1.17",
-    "main_commits_after_release": 36
+    "main_commits_after_release": 37
   },
   "canonical": {
     "pr": 336,
@@ -238,7 +286,7 @@
     "path": ".agents/skills/review-pr/SKILL.md",
     "on_main": false
   },
-  "coverage": "Partial source audit of hybrid KV layout and source recovery, input facts and Active return-time TTL, gRPC P/D Completion and aborted output notification, and Buildkite docs-only gating. Exact-byte pins are not exhaustive diff coverage, runtime execution, hardware validation, or performance qualification.",
+  "coverage": "Partial source audit. Same-day tip refresh after midnight pin 159dcfcfcd717765d48b2ad24267f2a073d2501b. Complete 14-commit / 204-path inventory since the November 18 pin; one commit / 47 paths since the midnight pin. The prior 12 main source pins and the draft skill pin were re-hashed: blobs unchanged at the new tip or PR336 head. Two additional exact-byte pins cover #536 PD merge (colocated) policy-selection tests (Python integration and the gRPC counterpart). Hashes cover full files, not a full-file correctness review or runtime execution. Other post-release delta paths remain unaudited. No Rust toolchain or upstream runtime tests, GPU, performance or accuracy evaluation.",
   "overlap_check": {
     "open_prs": 13,
     "collection_pages": 2,
@@ -254,97 +302,99 @@
     "historical_defect_families": 2,
     "correlated_outcomes": 4,
     "new_adjudicated_outcomes": 0,
-    "main_sources_pinned": 12,
-    "draft_skill_sources_pinned": 1
+    "current_main_sources_rehashed_unchanged": 12,
+    "draft_skill_sources_rehashed_unchanged": 1,
+    "new_sources_pinned": 2,
+    "current_main_and_draft_sources_total": 15
   },
   "sources": [
     {
       "path": "docs/load_balancing/kv_aware.md",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "c56a21ca33fff5ec42c205ad229232dcecf5d573",
       "sha256": "de51d7bb83a8dba1414d7c3004a8e48acfb87233b3f83ed423ed29ab02427244",
       "bytes": 29367,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/load_balancing/kv_aware.md"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/docs/load_balancing/kv_aware.md"
     },
     {
       "path": "src/kv_index/layout/capabilities.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "617d974aacca051e109c380b171d252edf44bda4",
       "sha256": "80591204383845370ead2e86d9b9cf0b2758a7e89e39ac985fceb3b83c29c3ea",
       "bytes": 22805,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/kv_index/layout/capabilities.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/kv_index/layout/capabilities.rs"
     },
     {
       "path": "src/kv_index/source/events/subscriber.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "11caf2625ac74c15e5c47e3c2b92d593263bba7c",
       "sha256": "24d3ba03615e2ba352b7eb3bc9068993ede4da25386a152d4b103638ec49358c",
       "bytes": 33032,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/kv_index/source/events/subscriber.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/kv_index/source/events/subscriber.rs"
     },
     {
       "path": "src/kv_index/source/events/event_stream.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "35c9fac6b4173262af783908919222ab6d1b5ed9",
       "sha256": "3673efe113605e5c91ed63f2b8768f14ae18248e23f8ac578e034124baf7621a",
       "bytes": 41947,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/kv_index/source/events/event_stream.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/kv_index/source/events/event_stream.rs"
     },
     {
       "path": "docs/program_scheduling/program-scheduling.md",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "0d8e877afc7df90185a136b8258f4da612bf62ce",
       "sha256": "247d8a8fb83e6b8384d294e2efb1656bcc7e39461a2bce6f65b85ff738bbedb3",
       "bytes": 48664,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/program_scheduling/program-scheduling.md"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/docs/program_scheduling/program-scheduling.md"
     },
     {
       "path": "src/program_scheduling/token_facts.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "8896cdd6ee66548f7059417f35cff86cdc43e636",
       "sha256": "4c5c205a90f15eaa01f9eb9c6f120e55d04e7cfd75ab0104ce227a9a7f3cb31f",
       "bytes": 21627,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/program_scheduling/token_facts.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/program_scheduling/token_facts.rs"
     },
     {
       "path": "src/program_scheduling/scheduler_lifecycle.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "00786b9a453e9a1169f404f20863e5c3354e606e",
       "sha256": "0dd9f3d3f450af081d8f00986d54242acf9337cf05f7017a3d02cb7a23eddcce",
       "bytes": 80371,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/program_scheduling/scheduler_lifecycle.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/program_scheduling/scheduler_lifecycle.rs"
     },
     {
       "path": "src/backend/grpc.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "24db075f47b485d2ac505bfaa2fac79a8c00a6ab",
       "sha256": "8a01a76b6e9b827deddbbad1e99f0c6938cfa968cce93f669d54c9cda11b9263",
       "bytes": 41244,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/backend/grpc.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/backend/grpc.rs"
     },
     {
       "path": "tests/rust/grpc_pd_routing.rs",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "ef85ea859c3fb35f1603fd01722668eb120e824f",
       "sha256": "e2af040928aa5b15f8fb3ad8308d89279027f67efc939092b2e9955327f0973f",
       "bytes": 50916,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/tests/rust/grpc_pd_routing.rs"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/rust/grpc_pd_routing.rs"
     },
     {
       "path": ".buildkite/scripts/skip_docs.py",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "12f14b1c087be00d2924a2802b96134aabce587e",
       "sha256": "633d233993ff567f63fff7c6910fad1db91c3c3a05a4dd47a0edbe2b967fc5a7",
       "bytes": 3123,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/.buildkite/scripts/skip_docs.py"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/.buildkite/scripts/skip_docs.py"
     },
     {
       "path": ".buildkite/bootstrap-upload-steps.yml",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "5d19a8e613320c128700e82b4636215f5d117c5b",
       "sha256": "bd12e8eda0fd98850eaabb152a78be2044ce1660449fefe19976f1f8c967bb82",
       "bytes": 7250,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/.buildkite/bootstrap-upload-steps.yml"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/.buildkite/bootstrap-upload-steps.yml"
     },
     {
       "path": ".agents/skills/review-pr/SKILL.md",
@@ -356,11 +406,27 @@
     },
     {
       "path": ".buildkite/pipeline.yml",
-      "commit": "159dcfcfcd717765d48b2ad24267f2a073d2501b",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
       "git_blob_sha": "4b686d2ae28be2c9cb945c0d7564411133c8a277",
       "sha256": "ee13cb9cc276698b69bf6530e314f05fca9df80697bc8f6fef880f5375323470",
       "bytes": 238,
-      "url": "https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/.buildkite/pipeline.yml"
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/.buildkite/pipeline.yml"
+    },
+    {
+      "path": "tests/python/integration/test_pd_merge_routing.py",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
+      "git_blob_sha": "8c7b2d28b72b6df2ac0f92b503c5573ca27e3e7a",
+      "sha256": "5731281b38a2d57ae4532319bc548203e1d4cd4815bbfbf795d8a8bd24984245",
+      "bytes": 10096,
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/python/integration/test_pd_merge_routing.py"
+    },
+    {
+      "path": "tests/rust/grpc_policy_routing.rs",
+      "commit": "8d4963c1699d0c53af5bdb665d47b6dbe6a8c166",
+      "git_blob_sha": "e06062036b7f82eb575f639977adfaee45aa1ff3",
+      "sha256": "4a94647ca089f95a5a9af8c70829672f7c77758198d3b34fceb4e6fd6b574ab6",
+      "bytes": 22279,
+      "url": "https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/rust/grpc_policy_routing.rs"
     }
   ]
 }

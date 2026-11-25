@@ -1,12 +1,17 @@
 ## Current bounded refresh, 2026-11-25 Asia/Shanghai
 
-The [source manifest](audit-2026-11-25.json) inventories 13 commits and 162
-changed paths since the November 18 pin, with 12 exact-byte main source pins
-and one separate draft skill pin. This is a **partial source audit** of
-[Router main](https://github.com/vllm-project/router/commit/159dcfcfcd717765d48b2ad24267f2a073d2501b),
-36 commits after the latest published release
+The [source manifest](audit-2026-11-25.json) is a **same-day tip refresh**
+after the midnight pin
+[159dcfcf](https://github.com/vllm-project/router/commit/159dcfcfcd717765d48b2ad24267f2a073d2501b).
+It inventories 14 commits and 204 changed paths since the November 18 pin
+(one commit and 47 paths since midnight). The prior 12 main source pins were
+re-hashed unchanged, the draft skill pin is unchanged, and two new exact-byte
+pins cover the #536 tests. This is a **partial source audit** of
+[Router main](https://github.com/vllm-project/router/commit/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166),
+37 commits after the latest published release
 [v0.1.17](https://github.com/vllm-project/router/releases/tag/v0.1.17).
-The contracts below are main-only at this pin.
+The contracts below are main-only at this pin, except the separately pinned
+draft skill.
 
 - [#493](https://github.com/vllm-project/router/pull/493) supports both
   full-attention and hybrid event-backed layouts. Check the engine's verified
@@ -15,14 +20,14 @@ The contracts below are main-only at this pin.
   Completion tokenization; without preparation the request can still route by
   load without rewriting the body. Hybrid P/D needs mode-specific pairing and
   should not be inferred to support Program scheduling.
-  [Source and setup limits](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/load_balancing/kv_aware.md).
+  [Source and setup limits](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/docs/load_balancing/kv_aware.md).
 - [#531](https://github.com/vllm-project/router/pull/531) makes recovery state
   source-scoped. Test that a gap, stale lease, or replacement cannot leak
   credit from the old source. After replay budget exhaustion, a fresh live
   connection is not itself strict-recovery proof: the strict path requires a
   valid worker-local clear before it resumes. Do not infer a general snapshot
   protocol or hardware recovery qualification from this code.
-  [Strict live re-entry](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/src/kv_index/source/events/event_stream.rs#L127-L173).
+  [Strict live re-entry](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/src/kv_index/source/events/event_stream.rs#L127-L173).
 - [#460](https://github.com/vllm-project/router/pull/460) makes exact input
   facts the default where prepared counts clear Engine settlement probation;
   unsupported, unverified, revoked or absent facts fall back to estimates.
@@ -32,19 +37,35 @@ The contracts below are main-only at this pin.
   wins, immature prediction uses the existing fitted TTL, output-length
   prediction stays observational, and P/D accepts only off or shadow. Keep
   optional `retention_value` repair separate when attributing perf results.
-  [Program contracts](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/docs/program_scheduling/program-scheduling.md).
+  [Program contracts](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/docs/program_scheduling/program-scheduling.md).
 - [#563](https://github.com/vllm-project/router/pull/563) extends gRPC P/D
   Completion to client-supplied token IDs. Check both legs and the Completion
   response shape; do not infer text-prompt support from those mock-worker
   tests. [#596](https://github.com/vllm-project/router/pull/596) excludes an
   abort finish from first-output notification; test generated output separately
   from prompt accounting, abort and terminal settlement.
-  [P/D test source](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/tests/rust/grpc_pd_routing.rs#L152-L198).
+  [P/D test source](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/rust/grpc_pd_routing.rs#L152-L198).
 - [#593](https://github.com/vllm-project/router/pull/593) can skip Buildkite
   builds/tests for verified docs-only PR and merge-queue diffs. Scheduled,
   explicit nightly, ordinary branch pushes and unresolved comparisons take
   the full pipeline. A deliberate skip is not L1 or a successful runtime
-  result. [Bootstrap guard](https://github.com/vllm-project/router/blob/159dcfcfcd717765d48b2ad24267f2a073d2501b/.buildkite/scripts/skip_docs.py).
+  result. [Bootstrap guard](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/.buildkite/scripts/skip_docs.py).
+- [#536](https://github.com/vllm-project/router/pull/536) adds CPU integration
+  tests for scheduling policies on the PD merge (colocated) deployment: one
+  worker pool started with `--worker-urls`, without
+  `--vllm-pd-disaggregation`. The cases cover power of two, round robin,
+  random, consistent hash, cache aware, kv aware (including session affinity),
+  and program scheduling, as a companion to `test_pd_disagg_routing.py`.
+  Regular `/v1/completions` consistent_hash hashes the prompt text unless
+  `X-Session-ID` is present; kv_aware without KV-cache data picks the fewest
+  in-flight requests and breaks ties by position, so those merge cases overlap
+  requests. The change is test and helper layout only; it does not modify
+  router production code. The gRPC file documents itself as the in-process
+  `grpc://` counterpart of that merge deployment and adds a header-session
+  consistent_hash case plus overlapping kv_aware load. These pins are source
+  evidence, not tests we executed.
+  [Merge policy tests](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/python/integration/test_pd_merge_routing.py)
+  and the [gRPC counterpart](https://github.com/vllm-project/router/blob/8d4963c1699d0c53af5bdb665d47b6dbe6a8c166/tests/rust/grpc_policy_routing.rs).
 
 The canonical skill and root `AGENTS.md` remain absent from main;
 [PR336](https://github.com/vllm-project/router/pull/336) is still an open draft,
