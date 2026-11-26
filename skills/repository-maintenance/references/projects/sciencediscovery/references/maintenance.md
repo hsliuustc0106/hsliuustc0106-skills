@@ -19,37 +19,53 @@ the same ledger; the adapter does not enforce a cross-process cap. See
 
 ## Current bounded audit, 2026-11-26 Asia/Shanghai
 
-This source-contract audit supersedes the November 19 routing below. The
-historical case pins and personal exact-label queue are unchanged.
+This Thursday-morning refresh (~10:20 Asia/Shanghai) supersedes the same-day
+00:04 pin at `645dc7ba` and the November 19 routing below. The historical
+case pins and personal exact-label queue are unchanged.
 
-- Skills main before this change: `5d3ee8e1243d14f543ba0e734f2fa4f1cac6740c`.
-  [ScienceDiscovery main](https://github.com/openJiuwen-ai/sciencediscovery/commit/645dc7ba3dde868bf7dcdc6f674e937d42284d3a):
-  `645dc7ba3dde868bf7dcdc6f674e937d42284d3a`, 391 commits ahead and 617
-  changed paths since `59d05aa70a26801e2e907ca49060329028514608`. This is
-  a complete path inventory and a partial semantic audit of CI and review
-  routing, not a review of every product change.
+- Skills main before this change: `20674f33615661a27e72993e6984e1181cd57b94`.
+  [ScienceDiscovery main](https://github.com/openJiuwen-ai/sciencediscovery/commit/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837):
+  `991ba2cc5d33fd9ac49f6b1289c8db156e4cc837`
+  (`fix(sessions): tear kernels down on archive, delete and approval-mode
+  change even when the Runner probe fails`, committer date
+  2026-11-25T18:05:35Z / 2026-11-26 02:05 AM Asia/Shanghai).
+  Local Git comparison from the November 19 audited pin
+  `59d05aa70a26801e2e907ca49060329028514608` enumerated 392 new commits and
+  618 changed paths. Comparison from the same-day 00:04 pin
+  `645dc7ba3dde868bf7dcdc6f674e937d42284d3a` is one commit and two files,
+  both in that session-kernel teardown change
+  (`services/api/src/http/index.ts`,
+  `services/api/src/session-kernel-teardown.test.ts`). This is a complete
+  path inventory and a partial semantic audit of CI and review routing, not
+  a review of that product change.
 - Root AGENTS.md and the configured canonical review entrypoint are still
   absent at this pin. [Source PR 231](https://github.com/openJiuwen-ai/sciencediscovery/pull/231)
-  remains closed without merge. Do not revive it or use a CI/development
-  skill as the project review checklist. Source-contract maintenance and
-  an offline queue check do not unblock a product PR review.
+  remains closed without merge (`draft=true`, `merged=false`, recorded head
+  `1a12b6e50369d00ae17c3161c5d1c3bc3b0ad15c`); the head ref
+  `codex/repository-review-skill-20261001` still returns 404. Do not revive
+  it or use a CI/development skill as the project review checklist.
+  Source-contract maintenance and an offline queue check do not unblock a
+  product PR review.
 - Stable [v0.3.0](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.3.0)
   peels to `7acc1dcf62736f7e7bf06c6d51acb5114899f2de` (2 release-only,
-  1,082 main-only commits); prerelease [v0.4.0-rc1](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.4.0-rc1)
+  1,083 main-only commits); prerelease [v0.4.0-rc1](https://github.com/openJiuwen-ai/sciencediscovery/releases/tag/v0.4.0-rc1)
   peels to `5cac2ce590f09f97164f4528c034170dbc5d1c63` (5 release-only,
-  491 main-only). Neither bare nor prefixed 0.4.0 GA tag was present at
-  this audit. Main-only checks below do not qualify either released pin.
-- Public API catalog: 60 labels and 68 open PRs; second pages empty. The
+  492 main-only). Neither bare nor prefixed 0.4.0 GA tag was present at
+  this audit. The application package version on main is `0.4.0`; that is
+  main-only evidence and does not qualify either released pin.
+- Public API catalog: 60 labels and 77 open PRs; second pages empty. The
   exact `ready` label exists, but neither `high priority` nor
-  `high-priority` exists. The one open `priority/major` item is not
-  eligible. No review, queue reservation, label, or user-facing PR action.
-- Inspected file lists for 13 open skills-repo PRs; none modifies this
-  overlay. PR 6 and PR 17 remain open at their November 19 pins, untouched.
+  `high-priority` exists. The one open `priority/major` item (PR 1256) is
+  not eligible. No review, queue reservation, label, or user-facing PR
+  action.
+- Inspected the 13 open skills-repo PRs; all remain at their November 19
+  heads, none modifies this overlay, and none was retargeted since the
+  00:04 audit. PR 6 and PR 17 remain open at those pins, untouched.
 
 ### Read CI by event, then by actual job and artifact
 
-Use the exact [policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.ci/tier-policy.mjs)
-and [workflow](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/ci.yml),
+Use the exact [policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.ci/tier-policy.mjs)
+and [workflow](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.github/workflows/ci.yml),
 not a static tier table:
 
 - Ordinary PRs require policy, L1, UT, ST, Linux binary and Docker; changed
@@ -58,11 +74,11 @@ not a static tier table:
   specs. Real E2E and both installers are outside ordinary PR coverage.
   Explicit docs-only routing is a separate exception, not a product pass.
 - Merge-group runs require full mocked web/desktop coverage and L3 real
-  E2E, with no installer jobs. [Run 45618207725](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45618207725)
+  E2E, with no installer jobs. [Run 45671614221](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45671614221)
   on the exact audited commit reports the mocked desktop and the L3 real
-  desktop smoke successful, but the macOS/Windows installers and L4/L5
-  real jobs skipped. This is not installed-release or Windows recovery
-  evidence.
+  desktop smoke successful, but the macOS/Windows installers, Linux
+  binary, Docker image, and L4/L5 real jobs skipped. This is not
+  installed-release or Windows recovery evidence.
 - Daily and release require Linux, Docker and both desktop installers as
   well as scheduled real coverage. The macOS packaging workflow runs an
   ad-hoc packed-app launch with an absolute hang gate, not the performance
@@ -71,30 +87,41 @@ not a static tier table:
   checks that the sole matching EXE exists and is nonempty. It does not
   install or launch it. Match an actual runtime receipt to the installed
   artifact and build before judging native recovery.
-- [Package](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/package.yml)
+- [Package](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.github/workflows/package.yml)
   is a distinct on-demand profile: `linux-windows`, `macos`, or `all`
   select their named packaging jobs and leave product test tiers inactive.
-  [Release](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/release.yml)
+  [Release](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.github/workflows/release.yml)
   manual dispatch validates but does not publish; a matching tag push can
   create a draft after the gate, reusing checked build artifacts. Manual
   release gate [45586964125](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45586964125)
-  uses a different commit and was not complete at audit time. It is not
-  a GA release receipt.
-- [Nightly](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.github/workflows/nightly.yml)
+  later completed successfully on `9c74af8ba4ee0e28115db7e94b500d7f8d9be4b3`,
+  a different ancestor commit, not this tip. It is not a GA release
+  receipt.
+- [Nightly](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.github/workflows/nightly.yml)
   dispatch runs normally; the scheduled fallback first looks for a successful
   dispatch on the same branch since the latest 16:00 UTC boundary. A green
   guarded fallback can skip the gate. An API error fails the guard rather
-  than proving no dispatch existed.
-- [Version policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/645dc7ba3dde868bf7dcdc6f674e937d42284d3a/.ci/release-version.mjs)
+  than proving no dispatch existed. Scheduled
+  [run 45726448464](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45726448464)
+  on the exact tip completed successfully but skipped Stamp, Gate, and
+  Report after the guard found successful dispatch
+  [45659625993](https://github.com/openJiuwen-ai/sciencediscovery/actions/runs/45659625993)
+  on parent `645dc7ba` since that 16:00 UTC boundary. The green fallback is
+  not gate evidence for this tip. The dispatch itself is parent-commit
+  evidence (installers, Docker, binaries, and L4/L5 real E2E succeeded
+  there) and does not cover the session-kernel teardown commit.
+- [Version policy](https://github.com/openJiuwen-ai/sciencediscovery/blob/991ba2cc5d33fd9ac49f6b1289c8db156e4cc837/.ci/release-version.mjs)
   reads the application package version. In PR runs, inspect the tested
   synthetic merge's first parent, not a potentially stale event base, and
   verify its second parent is the event PR head.
 
-Verified 60 upstream Node CI-policy fixtures locally (docs, Nightly guard,
-release version, desktop evidence and layer routing). These are not product
-UT/ST/E2E, Windows acceptance, remote CI runs or live-model tests. The two
-historical defect families / four outcomes remain calibration only, not an
-accuracy estimate.
+CI policy, workflow, Nightly, package, release, and version-policy files are
+unchanged from the same-day 00:04 pin (the one new commit does not touch
+them). The 60 local Node CI-policy fixtures verified at that pin still
+apply to these unchanged files; they were not re-executed in this pass.
+These are not product UT/ST/E2E, Windows acceptance, remote CI runs or
+live-model tests. The two historical defect families / four outcomes remain
+calibration only, not an accuracy estimate.
 
 ## Historical bounded audit, 2026-11-19 Asia/Shanghai
 
