@@ -66,6 +66,34 @@ updates after confirmed delivery. Reconcile uncertain delivery before retrying.
 The helper trusts the collector's evidence; it does not implement GitHub fetching,
 ancestry validation, persistence, or dispatch.
 
+## Bounded update, 2026-11-28 Asia/Shanghai (released v0.2.3)
+
+[Audited main](https://github.com/InferMatrixLab/system1-omni/commit/3a93485528205ce0796a456a01b4e75b55440a1c)
+and [release/v0.2.3](https://github.com/InferMatrixLab/system1-omni/releases/tag/release/v0.2.3)
+resolve to the same commit. The delta from the v0.2.2 pin is two commits and
+20 changed files: the CUDA attention tile (#202) and the workspace version
+bump (#219). This is a source release without binary or model assets; rebuild
+native components together. This pass audits review routing, not every file.
+
+- [Attention launch](https://github.com/InferMatrixLab/system1-omni/blob/3a93485528205ce0796a456a01b4e75b55440a1c/src/backends/cuda/qwen3_5/attention.cu#L318-L390):
+  route wide-tile changes to SM89/SM120, at least 640 query rows, and a
+  128-aligned query base. Full causal and bidirectional paths can widen;
+  shared-prefix, batched launches, and SM90 keep the narrow tile. Check
+  both sides of the 640-row gate, aligned and unaligned prefix behavior,
+  and per-device, per-kernel shared-memory opt-in. A dispatch/parity run
+  that silently stays on the narrow tile does not cover the change.
+- [Benchmark protocol and limits](https://github.com/InferMatrixLab/system1-omni/blob/3a93485528205ce0796a456a01b4e75b55440a1c/benchmarks/attention-wide/README.md#L23-L71):
+  the reported L20 and RTX 5060 Laptop A/B exercises the public kernel entry
+  point. Match shape, dtype, device and path for latency comparisons; keep
+  byte-parity and sanitizer evidence separate from HTTP/Public231 C1 and
+  whole-model quality, which are not established by those runs.
+  [Compile and contract checks](https://github.com/InferMatrixLab/system1-omni/blob/3a93485528205ce0796a456a01b4e75b55440a1c/.github/workflows/ci.yml#L80-L135)
+  do not exercise CUDA device behavior.
+
+Canonical review source and fixtures are unchanged. The personal label-gated
+mode and the separate explicit daily override are unchanged. This pass did
+not run model/device tests, select live review candidates, or post reviews.
+
 ## Bounded update, 2026-11-21 Asia/Shanghai (released v0.2.2)
 
 [Audited main](https://github.com/InferMatrixLab/system1-omni/commit/614b0abcf3f67a11d07793e579925b1ab7aae0cb)
